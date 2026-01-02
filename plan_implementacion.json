@@ -1,0 +1,882 @@
+{
+  "project": "observable_fcarnes_censo_estrategico_nacional",
+  "version": "1.0.0-roadmap",
+  "metadata": {
+    "author": "AI Data App Architect",
+    "created_at": "2025-12-29",
+    "client": "FCarnes",
+    "contract_value": "$78,000 MXN + IVA",
+    "stack_principal": ["Observable Framework", "JavaScript", "DuckDB", "Plot", "Leaflet"],
+    "observable_features": ["data_loaders", "sql", "reactive_inputs", "plot", "leaflet_maps"],
+    "deployment_target": "github-pages",
+    "project_scope": {
+      "name": "Censo Estratégico y Validación Visual (Base) - Opción 1",
+      "description": "Dashboard interactivo de ubicaciones nacional con base de datos depurada",
+      "deliverables": [
+        "Dashboard Interactivo de Ubicaciones (Nacional)",
+        "Base de Datos Depurada con distancia a planta"
+      ],
+      "coverage": {
+        "macro_regions": ["NORESTE", "FRONTERA_NORTE", "BAJIO", "OCCIDENTE", "NOROESTE", "CENTRO"],
+        "channel_filter": "Canal tradicional: Carnicerías y Obradores",
+        "visual_enrichment": ["Link a Street View", "Horarios operativos"]
+      }
+    },
+    "data_metrics": {
+      "tam_bruto": 78952,
+      "clientes_actuales": 282,
+      "tam_neto": 78670,
+      "penetracion_pct": 0.36,
+      "google_maps_records": 880
+    }
+  },
+  "modules": [
+    {
+      "id": "MOD-000",
+      "name": "Setup & Configuration",
+      "priority": "critical",
+      "status": "partial",
+      "estimated_hours": 2.0,
+      "context": {
+        "problem": "Proyecto Observable existente pero sin configuración completa ni estructura de páginas",
+        "impact": "Base necesaria para todo el desarrollo del dashboard",
+        "root_cause": "Proyecto inicializado pero no desarrollado"
+      },
+      "tasks": [
+        {
+          "id": "MOD-000-T01",
+          "title": "Actualizar configuración Observable",
+          "type": "setup",
+          "description": "Configurar observablehq.config.js con navegación, tema, metadata y SEO",
+          "status": "pending",
+          "hours": {"estimated": 0.5, "actual": 0},
+          "technical_meta": {
+            "project_name": "strtgy_predict_fcarnes_expansion_nacional",
+            "files_affected": ["observablehq.config.js"],
+            "config_updates": {
+              "title": "STRTGY Predict | Censo Estratégico FCarnes",
+              "theme": ["cotton", "wide"],
+              "sidebar": true,
+              "search": true,
+              "pager": true,
+              "footer": "© 2025 STRTGY.ai | Proyecto FCarnes"
+            },
+            "pages_structure": [
+              {"name": "Inicio", "path": "/"},
+              {"name": "TAM por Región", "path": "/tam-regional"},
+              {"name": "Explorador de Prospectos", "path": "/explorador-prospectos"},
+              {"name": "📥 Descargas", "path": "/descargas"}
+            ]
+          },
+          "acceptance_criteria": [
+            "Sidebar con navegación de 4 páginas",
+            "Tema cotton+wide aplicado",
+            "Search habilitado",
+            "Footer con branding STRTGY"
+          ]
+        },
+        {
+          "id": "MOD-000-T02",
+          "title": "Instalar dependencias adicionales",
+          "type": "setup",
+          "description": "Agregar dependencias para mapas Leaflet y utilidades",
+          "status": "pending",
+          "hours": {"estimated": 0.25, "actual": 0},
+          "technical_meta": {
+            "files_affected": ["package.json"],
+            "dependencies": ["leaflet", "arquero"],
+            "commands": ["npm install leaflet arquero"]
+          },
+          "acceptance_criteria": [
+            "Dependencias instaladas sin errores",
+            "package.json actualizado"
+          ]
+        },
+        {
+          "id": "MOD-000-T03",
+          "title": "Crear estructura de directorios",
+          "type": "setup",
+          "description": "Crear carpetas para componentes y datos",
+          "status": "pending",
+          "hours": {"estimated": 0.25, "actual": 0},
+          "technical_meta": {
+            "directories": [
+              "src/components/",
+              "src/data/"
+            ],
+            "files_affected": ["src/components/.gitkeep", "src/data/.gitkeep"]
+          },
+          "acceptance_criteria": [
+            "Directorios components/ y data/ creados",
+            "Estructura lista para desarrollo"
+          ]
+        },
+        {
+          "id": "MOD-000-T04",
+          "title": "Configurar head con Leaflet CSS",
+          "type": "setup",
+          "description": "Agregar CSS de Leaflet y meta tags OG al head",
+          "status": "pending",
+          "hours": {"estimated": 0.25, "actual": 0},
+          "technical_meta": {
+            "files_affected": ["observablehq.config.js"],
+            "head_content": [
+              "<link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css\">",
+              "<meta property=\"og:title\" content=\"STRTGY Predict | FCarnes Censo Nacional\">",
+              "<meta property=\"og:description\" content=\"Dashboard de inteligencia comercial para expansión nacional\">"
+            ]
+          },
+          "acceptance_criteria": [
+            "Leaflet CSS cargado globalmente",
+            "Meta tags OG configurados"
+          ]
+        }
+      ],
+      "testing": {
+        "build_tests": [
+          {"id": "BT-000-01", "description": "npm run dev inicia sin errores"},
+          {"id": "BT-000-02", "description": "npm run build completa exitosamente"}
+        ],
+        "visual_tests": [],
+        "interaction_tests": []
+      }
+    },
+    {
+      "id": "MOD-001",
+      "name": "Data Pipeline & Preparation",
+      "priority": "critical",
+      "status": "not_started",
+      "estimated_hours": 3.0,
+      "depends_on": ["MOD-000"],
+      "context": {
+        "problem": "Datos procesados en notebooks pero no optimizados para dashboard web",
+        "impact": "Sin datos optimizados, el dashboard no puede funcionar o será muy lento",
+        "root_cause": "Datasets de Python (parquet/gpkg) deben convertirse a formatos web (JSON/CSV)"
+      },
+      "tasks": [
+        {
+          "id": "MOD-001-T01",
+          "title": "Crear data loader para TAM por macro-región",
+          "type": "data_loader",
+          "description": "Copiar y optimizar CSV de TAM por macro-región desde data/processed/fcarnes/",
+          "status": "pending",
+          "hours": {"estimated": 0.5, "actual": 0},
+          "technical_meta": {
+            "loader_name": "tam_por_macroregion.csv",
+            "language": "static",
+            "output_format": "csv",
+            "files_affected": ["src/data/tam_por_macroregion.csv"],
+            "source_file": "data/processed/fcarnes/tam_por_macroregion.csv",
+            "columns": ["macro_region", "tam_bruto", "clientes_fcarnes", "tam_neto", "penetracion_pct", "distancia_promedio"]
+          },
+          "acceptance_criteria": [
+            "CSV con 6-7 filas (una por macro-región)",
+            "Columnas numéricas correctamente tipadas",
+            "Archivo < 5KB"
+          ]
+        },
+        {
+          "id": "MOD-001-T02",
+          "title": "Crear data loader para Top 50 ciudades",
+          "type": "data_loader",
+          "description": "Copiar CSV de top 50 ciudades por TAM neto",
+          "status": "pending",
+          "hours": {"estimated": 0.5, "actual": 0},
+          "technical_meta": {
+            "loader_name": "tam_top50_ciudades.csv",
+            "language": "static",
+            "output_format": "csv",
+            "files_affected": ["src/data/tam_top50_ciudades.csv"],
+            "source_file": "data/processed/fcarnes/tam_top50_ciudades.csv",
+            "columns": ["ciudad_estado", "tam_bruto", "tam_neto", "clientes_fcarnes", "penetracion_pct", "distancia_promedio", "con_google_match"]
+          },
+          "acceptance_criteria": [
+            "CSV con 50 filas",
+            "Ordenado por tam_neto descendente",
+            "Archivo < 10KB"
+          ]
+        },
+        {
+          "id": "MOD-001-T03",
+          "title": "Crear GeoJSON simplificado de prospectos",
+          "type": "data_loader",
+          "description": "Convertir DENUE consolidado a GeoJSON simplificado para web (<15MB)",
+          "status": "pending",
+          "hours": {"estimated": 1.5, "actual": 0},
+          "technical_meta": {
+            "loader_name": "prospectos_nacional.json",
+            "language": "python",
+            "output_format": "geojson",
+            "files_affected": ["src/data/prospectos_nacional.json"],
+            "source_file": "data/processed/fcarnes/denue_consolidado_*.gpkg",
+            "simplification_strategy": {
+              "select_columns": [
+                "nombre", "ciudad", "estado", "macro_region", "zona_logistica",
+                "categoria_fcarnes", "tier", "score_total", "distancia_planta_km",
+                "telefono", "horario_lunes", "abre_sabado", "url_streetview"
+              ],
+              "coordinate_precision": 5,
+              "max_records": 79000
+            },
+            "expected_size": "10-15MB"
+          },
+          "acceptance_criteria": [
+            "GeoJSON válido con features de tipo Point",
+            "Archivo < 15MB",
+            "Todos los campos requeridos presentes",
+            "URL Street View generada para cada registro"
+          ]
+        },
+        {
+          "id": "MOD-001-T04",
+          "title": "Crear JSON de clientes actuales",
+          "type": "data_loader",
+          "description": "Exportar clientes FCarnes geocodificados para referencia",
+          "status": "pending",
+          "hours": {"estimated": 0.5, "actual": 0},
+          "technical_meta": {
+            "loader_name": "clientes_fcarnes.json",
+            "language": "python",
+            "output_format": "geojson",
+            "files_affected": ["src/data/clientes_fcarnes.json"],
+            "source_file": "data/processed/fcarnes/clientes_fcarnes_geocodificados_v2.gpkg",
+            "expected_records": 282
+          },
+          "acceptance_criteria": [
+            "GeoJSON con ~282 features",
+            "Coordenadas válidas",
+            "Archivo < 500KB"
+          ]
+        }
+      ],
+      "testing": {
+        "data_validation_tests": [
+          {"id": "DV-001-01", "description": "TAM por región suma correctamente al total nacional"},
+          {"id": "DV-001-02", "description": "Top 50 ciudades ordenadas por TAM neto"},
+          {"id": "DV-001-03", "description": "GeoJSON de prospectos es válido y parseable"},
+          {"id": "DV-001-04", "description": "Todos los prospectos tienen coordenadas válidas"}
+        ],
+        "build_tests": [
+          {"id": "BT-001-01", "description": "Archivos de datos cargados correctamente en preview"}
+        ]
+      }
+    },
+    {
+      "id": "MOD-002",
+      "name": "Componentes Reutilizables",
+      "priority": "high",
+      "status": "not_started",
+      "estimated_hours": 3.5,
+      "depends_on": ["MOD-000"],
+      "context": {
+        "problem": "Se requieren componentes reutilizables para UI, mapas y branding",
+        "impact": "Componentes facilitan desarrollo consistente y mantenible",
+        "root_cause": "Patrón establecido en otros proyectos STRTGY (Electrolit)"
+      },
+      "tasks": [
+        {
+          "id": "MOD-002-T01",
+          "title": "Crear componente ui.js",
+          "type": "component",
+          "description": "Componentes de UI: KPIs, tablas, formatters",
+          "status": "pending",
+          "hours": {"estimated": 1.0, "actual": 0},
+          "technical_meta": {
+            "component_name": "ui",
+            "component_type": "js",
+            "files_affected": ["src/components/ui.js"],
+            "exports": ["kpi", "formatNumber", "table", "badge"],
+            "dependencies": [],
+            "design_reference": "reports/strtgy_predict_midmen_electrolit_hermosillo/src/components/ui.js"
+          },
+          "acceptance_criteria": [
+            "Función kpi() renderiza cards de KPIs",
+            "formatNumber() formatea números con separador de miles",
+            "table() genera tablas ordenables",
+            "Estilos consistentes con branding FCarnes (rojo #C41E3A)"
+          ]
+        },
+        {
+          "id": "MOD-002-T02",
+          "title": "Crear componente brand.js",
+          "type": "component",
+          "description": "Componentes de branding STRTGY: hero, callouts",
+          "status": "pending",
+          "hours": {"estimated": 0.75, "actual": 0},
+          "technical_meta": {
+            "component_name": "brand",
+            "component_type": "js",
+            "files_affected": ["src/components/brand.js"],
+            "exports": ["heroSTRTGY", "decisionCallout", "insightCallout"],
+            "brand_colors": {
+              "primary": "#C41E3A",
+              "secondary": "#1a1a2e",
+              "accent": "#FF9800"
+            }
+          },
+          "acceptance_criteria": [
+            "Hero con título y contexto del proyecto",
+            "Callouts para decisiones e insights",
+            "Colores de marca aplicados"
+          ]
+        },
+        {
+          "id": "MOD-002-T03",
+          "title": "Crear componente maps.js",
+          "type": "component",
+          "description": "Utilidades para mapas Leaflet",
+          "status": "pending",
+          "hours": {"estimated": 1.5, "actual": 0},
+          "technical_meta": {
+            "component_name": "maps",
+            "component_type": "js",
+            "files_affected": ["src/components/maps.js"],
+            "exports": ["createBaseMap", "addGeoJsonLayer", "createLegend", "fitBounds", "L"],
+            "dependencies": ["leaflet"],
+            "map_config": {
+              "default_center": [23.6345, -102.5528],
+              "default_zoom": 5,
+              "tile_provider": "CartoDB Positron"
+            }
+          },
+          "acceptance_criteria": [
+            "createBaseMap() inicializa mapa Leaflet",
+            "addGeoJsonLayer() agrega capas con popups",
+            "createLegend() genera leyenda posicionada",
+            "Soporte para clustering de puntos"
+          ]
+        },
+        {
+          "id": "MOD-002-T04",
+          "title": "Crear componente streetview.js",
+          "type": "component",
+          "description": "Generador de URLs de Street View y popups enriquecidos",
+          "status": "pending",
+          "hours": {"estimated": 0.25, "actual": 0},
+          "technical_meta": {
+            "component_name": "streetview",
+            "component_type": "js",
+            "files_affected": ["src/components/streetview.js"],
+            "exports": ["generateStreetViewUrl", "createProspectPopup"],
+            "url_template": "https://www.google.com/maps/@{lat},{lon},3a,75y,90t/data=!3m6!1e1!3m4!1s"
+          },
+          "acceptance_criteria": [
+            "URLs de Street View válidas generadas",
+            "Popup con datos del prospecto + botón Street View",
+            "Horarios mostrados cuando disponibles"
+          ]
+        }
+      ],
+      "testing": {
+        "visual_tests": [
+          {"id": "VT-002-01", "description": "KPIs renderizan correctamente en diferentes tamaños"},
+          {"id": "VT-002-02", "description": "Mapa Leaflet carga sin errores"},
+          {"id": "VT-002-03", "description": "Colores de marca consistentes"}
+        ],
+        "interaction_tests": [
+          {"id": "IT-002-01", "description": "Popups de mapa abren al hacer clic"},
+          {"id": "IT-002-02", "description": "Links de Street View abren en nueva pestaña"}
+        ]
+      }
+    },
+    {
+      "id": "MOD-003",
+      "name": "Página Principal (index.md)",
+      "priority": "critical",
+      "status": "not_started",
+      "estimated_hours": 2.0,
+      "depends_on": ["MOD-001", "MOD-002"],
+      "context": {
+        "problem": "Página principal actual es placeholder sin contenido",
+        "impact": "Primera impresión del dashboard, resumen ejecutivo para dirección",
+        "root_cause": "Proyecto iniciado pero no desarrollado"
+      },
+      "tasks": [
+        {
+          "id": "MOD-003-T01",
+          "title": "Desarrollar página index.md",
+          "type": "page",
+          "description": "Página principal con KPIs, resumen ejecutivo y navegación",
+          "status": "pending",
+          "hours": {"estimated": 2.0, "actual": 0},
+          "technical_meta": {
+            "page_path": "src/index.md",
+            "route": "/",
+            "front_matter": {
+              "title": "Censo Estratégico Nacional FCarnes",
+              "toc": false,
+              "theme": ["cotton", "wide"]
+            },
+            "files_affected": ["src/index.md"],
+            "data_dependencies": ["tam_por_macroregion.csv", "tam_top50_ciudades.csv"],
+            "components_used": ["kpi", "formatNumber", "decisionCallout"],
+            "sections": [
+              "Hero con branding FCarnes",
+              "KPIs principales: TAM Bruto, Clientes, TAM Neto, Top Ciudad",
+              "Cards de alcance y cobertura geográfica",
+              "Grid de navegación a otras páginas"
+            ]
+          },
+          "acceptance_criteria": [
+            "KPIs calculados dinámicamente desde datos",
+            "Hero con contexto del proyecto",
+            "Cards de navegación funcionales",
+            "Diseño responsive"
+          ]
+        }
+      ],
+      "testing": {
+        "visual_tests": [
+          {"id": "VT-003-01", "description": "Layout correcto en desktop y mobile"},
+          {"id": "VT-003-02", "description": "KPIs muestran valores correctos"}
+        ],
+        "data_validation_tests": [
+          {"id": "DV-003-01", "description": "TAM Bruto = suma de tam_bruto por región"},
+          {"id": "DV-003-02", "description": "Penetración calculada correctamente"}
+        ]
+      }
+    },
+    {
+      "id": "MOD-004",
+      "name": "Página TAM Regional",
+      "priority": "high",
+      "status": "not_started",
+      "estimated_hours": 2.5,
+      "depends_on": ["MOD-001", "MOD-002"],
+      "context": {
+        "problem": "Análisis de oportunidad por macro-región necesario para priorización comercial",
+        "impact": "Permite a dirección priorizar inversión por región",
+        "root_cause": "Entregable clave del alcance: Reporte TAM Nacional"
+      },
+      "tasks": [
+        {
+          "id": "MOD-004-T01",
+          "title": "Desarrollar página tam-regional.md",
+          "type": "page",
+          "description": "Página con visualizaciones de TAM por macro-región y top ciudades",
+          "status": "pending",
+          "hours": {"estimated": 1.5, "actual": 0},
+          "technical_meta": {
+            "page_path": "src/tam-regional.md",
+            "route": "/tam-regional",
+            "front_matter": {
+              "title": "TAM por Macro-Región",
+              "toc": false
+            },
+            "files_affected": ["src/tam-regional.md"],
+            "data_dependencies": ["tam_por_macroregion.csv", "tam_top50_ciudades.csv"],
+            "components_used": ["kpi", "formatNumber"]
+          },
+          "acceptance_criteria": [
+            "Gráfico de barras TAM Neto por región",
+            "Gráfico de penetración por región",
+            "Tabla top 20 ciudades",
+            "Insight destacado sobre NORESTE"
+          ]
+        },
+        {
+          "id": "MOD-004-T02",
+          "title": "Implementar visualizaciones Plot",
+          "type": "visualization",
+          "description": "Gráficos de barras horizontales con Observable Plot",
+          "status": "pending",
+          "hours": {"estimated": 1.0, "actual": 0},
+          "technical_meta": {
+            "viz_type": "bar",
+            "library": "Plot",
+            "files_affected": ["src/tam-regional.md"],
+            "data_source": "tam_por_macroregion.csv",
+            "charts": [
+              {
+                "name": "TAM Neto por Región",
+                "type": "barX",
+                "encoding": {"y": "macro_region", "x": "tam_neto"},
+                "highlight": "NORESTE"
+              },
+              {
+                "name": "Penetración por Región",
+                "type": "barX",
+                "encoding": {"y": "macro_region", "x": "penetracion_pct"}
+              }
+            ],
+            "interactive": false,
+            "responsive": true
+          },
+          "acceptance_criteria": [
+            "Barras horizontales ordenadas por valor",
+            "NORESTE destacado en color rojo",
+            "Labels con valores formateados",
+            "Gráficos responsivos con resize()"
+          ]
+        }
+      ],
+      "testing": {
+        "visual_tests": [
+          {"id": "VT-004-01", "description": "Gráficos renderizan correctamente"},
+          {"id": "VT-004-02", "description": "Colores aplicados según región"}
+        ],
+        "data_validation_tests": [
+          {"id": "DV-004-01", "description": "Suma de TAM Neto = total nacional"}
+        ]
+      }
+    },
+    {
+      "id": "MOD-005",
+      "name": "Página Explorador de Prospectos",
+      "priority": "critical",
+      "status": "not_started",
+      "estimated_hours": 5.0,
+      "depends_on": ["MOD-001", "MOD-002"],
+      "context": {
+        "problem": "Equipo comercial necesita herramienta para filtrar y explorar prospectos",
+        "impact": "Entregable principal del dashboard - uso operativo diario",
+        "root_cause": "Entregable clave: Dashboard Interactivo de Ubicaciones"
+      },
+      "tasks": [
+        {
+          "id": "MOD-005-T01",
+          "title": "Desarrollar página explorador-prospectos.md",
+          "type": "page",
+          "description": "Dashboard interactivo con filtros, mapa y tabla de prospectos",
+          "status": "pending",
+          "hours": {"estimated": 2.0, "actual": 0},
+          "technical_meta": {
+            "page_path": "src/explorador-prospectos.md",
+            "route": "/explorador-prospectos",
+            "front_matter": {
+              "title": "Explorador de Prospectos",
+              "toc": false
+            },
+            "files_affected": ["src/explorador-prospectos.md"],
+            "data_dependencies": ["prospectos_nacional.json"],
+            "components_used": ["createBaseMap", "addGeoJsonLayer", "kpi", "formatNumber", "createProspectPopup"]
+          },
+          "acceptance_criteria": [
+            "Filtros funcionales por región, zona, categoría, tier",
+            "Mapa actualiza según filtros",
+            "Tabla de resultados ordenable",
+            "KPIs de selección actualizados"
+          ]
+        },
+        {
+          "id": "MOD-005-T02",
+          "title": "Implementar filtros reactivos",
+          "type": "input",
+          "description": "Selectores para macro-región, zona logística, categoría y tier",
+          "status": "pending",
+          "hours": {"estimated": 1.0, "actual": 0},
+          "technical_meta": {
+            "inputs": [
+              {
+                "input_type": "select",
+                "variable_name": "regionFiltro",
+                "options": ["Todas", "NORESTE", "FRONTERA_NORTE", "BAJIO", "OCCIDENTE", "NOROESTE", "CENTRO"],
+                "default_value": "Todas"
+              },
+              {
+                "input_type": "select",
+                "variable_name": "zonaFiltro",
+                "options": ["Todas", "LOCAL", "REGIONAL", "FORANEA", "LEJANA"],
+                "default_value": "Todas"
+              },
+              {
+                "input_type": "select",
+                "variable_name": "categoriaFiltro",
+                "options": ["Todas", "MAYOREO", "RETAIL", "PROCESO"],
+                "default_value": "Todas"
+              },
+              {
+                "input_type": "select",
+                "variable_name": "tierFiltro",
+                "options": ["Todos", "A_PREMIUM", "B_ALTA", "C_MEDIA", "D_BAJA"],
+                "default_value": "Todos"
+              }
+            ],
+            "files_affected": ["src/explorador-prospectos.md"],
+            "reactive_dependents": ["prospectosFiltrados", "map", "tabla", "kpis"]
+          },
+          "acceptance_criteria": [
+            "Filtros en grid de 4 columnas",
+            "Selección 'Todas/Todos' muestra todo",
+            "Filtros combinables (AND logic)",
+            "Conteo de resultados actualiza"
+          ]
+        },
+        {
+          "id": "MOD-005-T03",
+          "title": "Implementar mapa Leaflet con prospectos",
+          "type": "visualization",
+          "description": "Mapa interactivo con puntos coloreados por tier y popups con Street View",
+          "status": "pending",
+          "hours": {"estimated": 1.5, "actual": 0},
+          "technical_meta": {
+            "viz_type": "choropleth",
+            "library": "Leaflet",
+            "files_affected": ["src/explorador-prospectos.md"],
+            "data_source": "prospectos_nacional.json",
+            "map_features": {
+              "center": [23.6345, -102.5528],
+              "zoom": 5,
+              "tile_layer": "CartoDB Positron",
+              "point_style": {
+                "radius_by": "tier",
+                "color_by": "tier",
+                "colors": {
+                  "A_PREMIUM": "#C41E3A",
+                  "B_ALTA": "#FF9800",
+                  "C_MEDIA": "#2196F3",
+                  "D_BAJA": "#9E9E9E"
+                }
+              },
+              "popup_fields": [
+                "nombre", "ciudad", "macro_region", "zona_logistica",
+                "categoria_fcarnes", "tier", "score_total", "distancia_planta_km",
+                "telefono", "horario_lunes", "abre_sabado"
+              ],
+              "streetview_button": true
+            },
+            "interactive": true,
+            "responsive": true
+          },
+          "acceptance_criteria": [
+            "Puntos renderizan según filtros",
+            "Colores por tier visibles",
+            "Popups con información completa",
+            "Botón Street View funcional",
+            "Leyenda visible",
+            "fitBounds ajusta vista a resultados"
+          ]
+        },
+        {
+          "id": "MOD-005-T04",
+          "title": "Implementar tabla de resultados",
+          "type": "visualization",
+          "description": "Tabla ordenable con datos de prospectos filtrados",
+          "status": "pending",
+          "hours": {"estimated": 0.5, "actual": 0},
+          "technical_meta": {
+            "viz_type": "table",
+            "library": "Inputs.table",
+            "files_affected": ["src/explorador-prospectos.md"],
+            "columns": [
+              "nombre", "ciudad", "macro_region", "categoria",
+              "tier", "score", "distancia_km", "telefono", "abre_sabado"
+            ],
+            "sortable": true,
+            "rows": 20
+          },
+          "acceptance_criteria": [
+            "Tabla ordenable por columna",
+            "Limitada a 500 registros para rendimiento",
+            "Formato de números aplicado",
+            "Abre sábado como emoji"
+          ]
+        }
+      ],
+      "testing": {
+        "visual_tests": [
+          {"id": "VT-005-01", "description": "Mapa carga correctamente"},
+          {"id": "VT-005-02", "description": "Puntos visibles con colores correctos"},
+          {"id": "VT-005-03", "description": "Tabla renderiza sin scroll horizontal"}
+        ],
+        "interaction_tests": [
+          {"id": "IT-005-01", "description": "Filtros actualizan mapa y tabla"},
+          {"id": "IT-005-02", "description": "Popups abren al hacer clic"},
+          {"id": "IT-005-03", "description": "Street View abre en nueva pestaña"},
+          {"id": "IT-005-04", "description": "Tabla ordena al hacer clic en header"}
+        ],
+        "performance_tests": [
+          {"id": "PT-005-01", "description": "Mapa con 5000 puntos carga en < 3s"},
+          {"id": "PT-005-02", "description": "Filtros responden en < 500ms"}
+        ]
+      }
+    },
+    {
+      "id": "MOD-006",
+      "name": "Página de Descargas",
+      "priority": "medium",
+      "status": "not_started",
+      "estimated_hours": 1.0,
+      "depends_on": ["MOD-001"],
+      "context": {
+        "problem": "Equipo necesita exportar datos para uso en CRM y Excel",
+        "impact": "Permite uso de datos fuera del dashboard",
+        "root_cause": "Entregable: Base de Datos Depurada"
+      },
+      "tasks": [
+        {
+          "id": "MOD-006-T01",
+          "title": "Desarrollar página descargas.md",
+          "type": "page",
+          "description": "Página con links de descarga directa de CSVs y documentación",
+          "status": "pending",
+          "hours": {"estimated": 1.0, "actual": 0},
+          "technical_meta": {
+            "page_path": "src/descargas.md",
+            "route": "/descargas",
+            "front_matter": {
+              "title": "Descargas",
+              "toc": false
+            },
+            "files_affected": ["src/descargas.md"],
+            "download_files": [
+              {"name": "TAM por Macro-Región", "path": "data/tam_por_macroregion.csv"},
+              {"name": "Top 50 Ciudades", "path": "data/tam_top50_ciudades.csv"}
+            ],
+            "note": "Base completa CENSO_FCARNES_NACIONAL_FINAL.xlsx se entrega por separado"
+          },
+          "acceptance_criteria": [
+            "Links de descarga funcionales",
+            "Tabla de archivos disponibles",
+            "Nota sobre base completa"
+          ]
+        }
+      ],
+      "testing": {
+        "interaction_tests": [
+          {"id": "IT-006-01", "description": "Links descargan archivos correctamente"}
+        ]
+      }
+    },
+    {
+      "id": "MOD-007",
+      "name": "Deployment & QA Final",
+      "priority": "high",
+      "status": "not_started",
+      "estimated_hours": 1.5,
+      "depends_on": ["MOD-003", "MOD-004", "MOD-005", "MOD-006"],
+      "context": {
+        "problem": "Dashboard debe ser accesible vía URL para el cliente",
+        "impact": "Entrega final del proyecto",
+        "root_cause": "Requisito de entregable: Dashboard Interactivo"
+      },
+      "tasks": [
+        {
+          "id": "MOD-007-T01",
+          "title": "Configurar GitHub Pages deployment",
+          "type": "deployment",
+          "description": "Configurar GitHub Actions para deploy automático",
+          "status": "pending",
+          "hours": {"estimated": 0.5, "actual": 0},
+          "technical_meta": {
+            "platform": "github-pages",
+            "files_affected": [".github/workflows/deploy.yml", "observablehq.config.js"],
+            "build_command": "npm run build",
+            "output_directory": "dist",
+            "base_path": "/strtgy_ai_geointelligence/"
+          },
+          "acceptance_criteria": [
+            "GitHub Action configurado",
+            "Deploy automático en push a main",
+            "URL pública accesible"
+          ]
+        },
+        {
+          "id": "MOD-007-T02",
+          "title": "QA final y validación de datos",
+          "type": "qa",
+          "description": "Verificación completa de todas las páginas y funcionalidades",
+          "status": "pending",
+          "hours": {"estimated": 1.0, "actual": 0},
+          "technical_meta": {
+            "checklist": [
+              "Todas las páginas cargan sin errores",
+              "KPIs muestran valores correctos",
+              "Filtros funcionan correctamente",
+              "Mapa renderiza todos los puntos",
+              "Street View links funcionan",
+              "Descargas funcionan",
+              "Responsive en mobile",
+              "Search funciona"
+            ]
+          },
+          "acceptance_criteria": [
+            "0 errores en consola",
+            "Todas las páginas pasan checklist",
+            "Performance aceptable (< 5s carga inicial)"
+          ]
+        }
+      ],
+      "testing": {
+        "build_tests": [
+          {"id": "BT-007-01", "description": "Build completa sin errores ni warnings"}
+        ],
+        "performance_tests": [
+          {"id": "PT-007-01", "description": "Tiempo de carga < 5s en conexión 4G"},
+          {"id": "PT-007-02", "description": "Lighthouse score > 80"}
+        ]
+      }
+    }
+  ],
+  "summary_metrics": {
+    "total_estimated_hours": 20.5,
+    "total_tasks": 19,
+    "total_modules": 8,
+    "percentage_completed": 0,
+    "hours_by_module": {
+      "MOD-000": 2.0,
+      "MOD-001": 3.0,
+      "MOD-002": 3.5,
+      "MOD-003": 2.0,
+      "MOD-004": 2.5,
+      "MOD-005": 5.0,
+      "MOD-006": 1.0,
+      "MOD-007": 1.5
+    },
+    "critical_path": ["MOD-000", "MOD-001", "MOD-002", "MOD-005", "MOD-007"]
+  },
+  "execution_order": [
+    {
+      "phase": 1,
+      "modules": ["MOD-000"],
+      "estimated_hours": 2.0,
+      "description": "Setup y configuración inicial",
+      "parallel": false
+    },
+    {
+      "phase": 2,
+      "modules": ["MOD-001", "MOD-002"],
+      "estimated_hours": 6.5,
+      "description": "Data pipeline y componentes (paralelo)",
+      "parallel": true
+    },
+    {
+      "phase": 3,
+      "modules": ["MOD-003", "MOD-004", "MOD-005", "MOD-006"],
+      "estimated_hours": 10.5,
+      "description": "Desarrollo de páginas",
+      "parallel": true
+    },
+    {
+      "phase": 4,
+      "modules": ["MOD-007"],
+      "estimated_hours": 1.5,
+      "description": "Deployment y QA final",
+      "parallel": false
+    }
+  ],
+  "risks": [
+    {
+      "id": "RISK-001",
+      "description": "GeoJSON de prospectos muy grande (>15MB) afecta rendimiento",
+      "probability": "medium",
+      "impact": "high",
+      "mitigation": "Implementar clustering en Leaflet, limitar registros visibles"
+    },
+    {
+      "id": "RISK-002",
+      "description": "Datos de notebooks no están actualizados o incompletos",
+      "probability": "low",
+      "impact": "high",
+      "mitigation": "Validar datos antes de conversión, ejecutar notebooks si es necesario"
+    },
+    {
+      "id": "RISK-003",
+      "description": "URLs de Street View no disponibles para todos los registros",
+      "probability": "medium",
+      "impact": "low",
+      "mitigation": "Generar URL estándar basada en coordenadas como fallback"
+    }
+  ]
+}
+

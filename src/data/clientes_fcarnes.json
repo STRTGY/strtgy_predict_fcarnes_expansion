@@ -1,0 +1,78 @@
+{
+  "fecha_actualizacion": "2025-12-30T16:56:57.323061",
+  "version": "2.0",
+  "nota": "Datos con nueva estructura de 8 macro-regiones (sin categoria OTRA)",
+  "metodologia": {
+    "total_en_archivo": 3370,
+    "excluidos_no_usar": 83,
+    "excluidos_invalidos": 12,
+    "duplicados_por_nombre": 67,
+    "clientes_unicos_finales": 3208,
+    "asignados_a_tam": 3059,
+    "sin_match_geografico": 149,
+    "ciudades_sin_match": 29
+  },
+  "resumen": {
+    "total_clientes_unicos": 3208,
+    "clientes_asignados_tam": 3059,
+    "clientes_sin_match": 149,
+    "tam_nacional": 55469,
+    "penetracion_nacional": 5.51
+  },
+  "por_tipo": {
+    "LOCAL": 1610,
+    "FORANEO": 1598,
+    "pct_local": 50.2,
+    "pct_foraneo": 49.8
+  },
+  "por_region": [
+    {
+      "region": "NORESTE",
+      "tam": 4163,
+      "clientes": 2958,
+      "penetracion_pct": 71.05
+    },
+    {
+      "region": "PENINSULA",
+      "tam": 2373,
+      "clientes": 32,
+      "penetracion_pct": 1.35
+    },
+    {
+      "region": "FRONTERA_NORTE",
+      "tam": 1793,
+      "clientes": 27,
+      "penetracion_pct": 1.51
+    },
+    {
+      "region": "BAJIO",
+      "tam": 4434,
+      "clientes": 12,
+      "penetracion_pct": 0.27
+    },
+    {
+      "region": "NOROESTE",
+      "tam": 1985,
+      "clientes": 11,
+      "penetracion_pct": 0.55
+    },
+    {
+      "region": "GOLFO_SURESTE",
+      "tam": 13795,
+      "clientes": 7,
+      "penetracion_pct": 0.05
+    },
+    {
+      "region": "CENTRO",
+      "tam": 19300,
+      "clientes": 6,
+      "penetracion_pct": 0.03
+    },
+    {
+      "region": "OCCIDENTE",
+      "tam": 7626,
+      "clientes": 6,
+      "penetracion_pct": 0.08
+    }
+  ]
+}
