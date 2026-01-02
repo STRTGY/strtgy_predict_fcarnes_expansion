@@ -15,15 +15,24 @@ const leafletCss = html`<link rel="stylesheet" href="https://cdn.jsdelivr.net/np
 const prospectosRaw = await FileAttachment("data/prospectos_sample.json").json();
 const tamRegion = await FileAttachment("data/tam_por_macroregion.csv").csv({typed: true});
 
+// Mapeo de regiones truncadas a nombres completos
+const REGION_EXPAND = {
+  "GOLFO_SURE": "GOLFO_SURESTE",
+  "FRONTERA_N": "FRONTERA_NORTE",
+  "SIN_REGION": "OTRA"
+};
+
 // Mapeo de campos abreviados a completos
 function expandProps(p) {
   const lat = p.geometry?.coordinates?.[1] || 0;
   const lon = p.geometry?.coordinates?.[0] || 0;
+  const rawRegion = p.properties?.r || p.properties?.macro_region || "N/A";
+  const expandedRegion = REGION_EXPAND[rawRegion] || rawRegion;
   return {
     nombre: p.properties?.n || p.properties?.nombre || "Sin nombre",
     ciudad: p.properties?.c || p.properties?.ciudad || "N/A",
     estado: p.properties?.e || p.properties?.estado || "N/A",
-    macro_region: p.properties?.r || p.properties?.macro_region || "N/A",
+    macro_region: expandedRegion,
     zona_logistica: p.properties?.z || p.properties?.zona_logistica || "N/A",
     categoria_fcarnes: p.properties?.cat || p.properties?.categoria_fcarnes || "N/A",
     tier: p.properties?.t || p.properties?.tier || "C_MEDIA",

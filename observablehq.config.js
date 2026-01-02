@@ -24,6 +24,13 @@ export default {
     <meta property="og:description" content="Dashboard de inteligencia comercial para expansión nacional de FCarnes">
     <meta property="og:type" content="website">
     <meta name="twitter:card" content="summary_large_image">
+    <style>
+      :root { --fcarnes-primary: #C41E3A; }
+      main .card { border-radius: 8px; transition: box-shadow 0.2s; }
+      main .card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+      main table thead th { background: #f8f9fa; font-weight: 600; text-transform: uppercase; font-size: 0.75rem; }
+      main table tbody tr:hover { background: #fef5f5; }
+    </style>
   `,
 
   // The path to the source root.

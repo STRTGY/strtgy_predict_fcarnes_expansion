@@ -1,0 +1,146 @@
+/**
+ * Custom CSS para Dashboard FCarnes
+ * IMPORTANTE: Solo estilos de contenido, NO afectar sidebar de Observable
+ */
+
+/* ===========================================
+   VARIABLES CSS (no afectan framework)
+   =========================================== */
+:root {
+  --fcarnes-primary: #C41E3A;
+  --fcarnes-primary-dark: #8B0000;
+  --fcarnes-secondary: #1565C0;
+  --fcarnes-success: #2E7D32;
+  --fcarnes-warning: #E65100;
+  --fcarnes-accent: #FF9800;
+}
+
+/* ===========================================
+   CARDS - Solo contenido principal
+   =========================================== */
+main .card {
+  border-radius: 8px;
+  transition: box-shadow 0.2s ease;
+}
+
+main .card:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+/* ===========================================
+   NOTAS Y CALLOUTS
+   =========================================== */
+main .note-callout,
+main .insight-callout {
+  transition: transform 0.2s ease;
+}
+
+main .note-callout:hover,
+main .insight-callout:hover {
+  transform: translateX(4px);
+}
+
+/* ===========================================
+   TABLAS EN CONTENIDO
+   =========================================== */
+main table {
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+main table thead th {
+  background: #f8f9fa;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.5px;
+  color: #666;
+}
+
+main table tbody tr:hover {
+  background: #fef5f5;
+}
+
+/* ===========================================
+   BADGES
+   =========================================== */
+main .badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.6rem;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+/* ===========================================
+   INPUTS EN CONTENIDO
+   =========================================== */
+main input[type="text"],
+main input[type="search"],
+main select {
+  border-radius: 4px;
+  border: 1px solid #ddd;
+  padding: 0.5rem 0.75rem;
+}
+
+main input[type="text"]:focus,
+main input[type="search"]:focus,
+main select:focus {
+  border-color: var(--fcarnes-primary);
+  box-shadow: 0 0 0 3px rgba(196, 30, 58, 0.1);
+  outline: none;
+}
+
+/* ===========================================
+   GRÁFICAS
+   =========================================== */
+main figure[class*="plot"] {
+  border-radius: 8px;
+  overflow: hidden;
+  background: #fafafa;
+}
+
+/* ===========================================
+   ANIMACIONES SUAVES
+   =========================================== */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in-up {
+  animation: fadeInUp 0.4s ease-out forwards;
+}
+
+/* ===========================================
+   RESPONSIVE
+   =========================================== */
+@media (max-width: 768px) {
+  main .grid-cols-2,
+  main .grid-cols-3,
+  main .grid-cols-4 {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* ===========================================
+   PRINT
+   =========================================== */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  
+  main .card {
+    break-inside: avoid;
+    box-shadow: none !important;
+    border: 1px solid #ddd;
+  }
+}

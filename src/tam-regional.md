@@ -152,7 +152,7 @@ display(resize((width) => Plot.plot({
 ## TAM Neto por Macro-Región (Total)
 
 ```js
-// Colores por región (8 regiones, sin OTRA)
+// Colores por región (9 regiones incluyendo OTRA)
 const regionColors = {
   "NORESTE": "#C41E3A",        // Rojo FCarnes - mercado principal
   "CENTRO": "#1565C0",         // Azul - megalópolis
@@ -161,7 +161,8 @@ const regionColors = {
   "BAJIO": "#F57C00",          // Naranja - industrial
   "PENINSULA": "#00838F",      // Teal - presencia (32 cli)
   "FRONTERA_NORTE": "#5D4037", // Café
-  "NOROESTE": "#546E7A"        // Gris azul
+  "NOROESTE": "#546E7A",       // Gris azul
+  "OTRA": "#9E9E9E"            // Gris - sin clasificar
 };
 ```
 
@@ -433,10 +434,10 @@ const getPeninsula = regionesOrdenadas.find(r => r.macro_region === "PENINSULA")
   <div class="card" style="border-left: 4px solid #4CAF50;">
     <h4 style="margin-top: 0; color: #4CAF50;">🟢 Fase 1: Consolidar</h4>
     <p style="margin: 0; font-size: 0.85rem; color: #555;">
-      <strong>NORESTE</strong> (71% penetración)<br>
+      <strong>NORESTE</strong> (${Math.round(getNoreste?.penetracion_pct || 0)}% penetración)<br>
       ${formatNumber(getNoreste?.tam_neto || 0)} prospectos<br>
       ~128 km | <strong>$781/viaje</strong><br>
-      <em>Mercado saturado - optimizar</em>
+      <em>Mercado principal - optimizar</em>
     </p>
   </div>
   <div class="card" style="border-left: 4px solid #FF9800;">
@@ -471,6 +472,6 @@ const getPeninsula = regionesOrdenadas.find(r => r.macro_region === "PENINSULA")
 ---
 
 <small style="color: #999; display: block; text-align: center; margin-top: 2rem; padding-top: 1rem; border-top: 1px solid #eee;">
-  <strong>STRTGY</strong> — Transformando complejidad en certeza | Proyecto FCarnes | Diciembre 2025
+  <strong>STRTGY</strong> — Transformando complejidad en certeza | Proyecto FCarnes | Enero 2026
 </small>
 

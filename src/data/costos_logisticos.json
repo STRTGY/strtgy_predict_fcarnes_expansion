@@ -1,173 +1,162 @@
 {
-  "fecha_actualizacion": "2025-12-30T16:06:39.710336",
-  "fuente": "INEGI Sakbe API",
   "resumen": {
-    "ciudades_con_datos_sakbe": 40,
-    "distancia_promedio_km": 489.9,
-    "costo_casetas_promedio": 1189.0,
-    "costo_combustible_promedio": 2154.0,
-    "costo_total_promedio": 3343.0
+    "total_rutas": 20,
+    "rutas_con_casetas": 13,
+    "rutas_sin_casetas": 7,
+    "distancia_promedio_km": 483.9,
+    "costo_casetas_promedio": 1594.0,
+    "costo_combustible_promedio": 2127.0,
+    "costo_total_promedio": 3164.0,
+    "distancia_max_km": 2228.0,
+    "costo_max_mxn": 13608.0
   },
   "rutas_principales": [
     {
-      "ciudad": "Monterrey",
-      "clientes_fcarnes": 905,
-      "distancia_km": 3.29,
-      "costo_casetas_mxn": 0.0,
-      "costo_combustible_mxn": 14.46613,
-      "costo_total_mxn": 14.46613
-    },
-    {
-      "ciudad": "Victoria",
-      "clientes_fcarnes": 520,
-      "distancia_km": 282.95,
-      "costo_casetas_mxn": 0.0,
-      "costo_combustible_mxn": 1244.13115,
-      "costo_total_mxn": 1244.13115
-    },
-    {
-      "ciudad": "Guadalupe",
-      "clientes_fcarnes": 337,
-      "distancia_km": 11.41,
-      "costo_casetas_mxn": 0.0,
-      "costo_combustible_mxn": 50.16977,
-      "costo_total_mxn": 50.16977
-    },
-    {
-      "ciudad": "Reynosa",
-      "clientes_fcarnes": 188,
-      "distancia_km": 220.54,
-      "costo_casetas_mxn": 748.0,
-      "costo_combustible_mxn": 969.71438,
-      "costo_total_mxn": 1717.71438
-    },
-    {
-      "ciudad": "Apodaca",
-      "clientes_fcarnes": 129,
-      "distancia_km": 18.57,
-      "costo_casetas_mxn": 0.0,
-      "costo_combustible_mxn": 81.65229000000001,
-      "costo_total_mxn": 81.65229000000001
-    },
-    {
-      "ciudad": "Juárez",
-      "clientes_fcarnes": 75,
-      "distancia_km": 23.85,
-      "costo_casetas_mxn": 0.0,
-      "costo_combustible_mxn": 104.86845,
-      "costo_total_mxn": 104.86845
-    },
-    {
-      "ciudad": "Saltillo",
-      "clientes_fcarnes": 59,
-      "distancia_km": 92.87,
-      "costo_casetas_mxn": 294.0,
-      "costo_combustible_mxn": 408.34939,
-      "costo_total_mxn": 702.3493900000001
-    },
-    {
-      "ciudad": "Benito Juárez",
-      "clientes_fcarnes": 48,
-      "distancia_km": 23.85,
-      "costo_casetas_mxn": 0.0,
-      "costo_combustible_mxn": 104.86845,
-      "costo_total_mxn": 104.86845
-    },
-    {
-      "ciudad": "Benito Juárez",
-      "clientes_fcarnes": 48,
-      "distancia_km": 23.85,
-      "costo_casetas_mxn": 0.0,
-      "costo_combustible_mxn": 104.86845,
-      "costo_total_mxn": 104.86845
-    },
-    {
-      "ciudad": "Torreón",
-      "clientes_fcarnes": 9,
-      "distancia_km": 331.17,
-      "costo_casetas_mxn": 849.0,
-      "costo_combustible_mxn": 1456.15449,
-      "costo_total_mxn": 2305.15449
-    },
-    {
       "ciudad": "Tijuana",
-      "clientes_fcarnes": 8,
-      "distancia_km": 2228.47,
+      "distancia_km": 2228.0,
       "costo_casetas_mxn": 3809.0,
-      "costo_combustible_mxn": 9798.58259,
-      "costo_total_mxn": 13607.58259
-    },
-    {
-      "ciudad": "San Luis Potosí",
-      "clientes_fcarnes": 7,
-      "distancia_km": 509.82,
-      "costo_casetas_mxn": 745.0,
-      "costo_combustible_mxn": 2241.67854,
-      "costo_total_mxn": 2986.67854
-    },
-    {
-      "ciudad": "Chihuahua",
-      "clientes_fcarnes": 6,
-      "distancia_km": 801.14,
-      "costo_casetas_mxn": 1952.0,
-      "costo_combustible_mxn": 3522.6125800000004,
-      "costo_total_mxn": 5474.612580000001
+      "costo_combustible_mxn": 9799.0,
+      "costo_total_mxn": 13608.0,
+      "tiempo_horas": 27.9
     },
     {
       "ciudad": "Culiacán",
-      "clientes_fcarnes": 5,
-      "distancia_km": 1035.25,
+      "distancia_km": 1035.0,
       "costo_casetas_mxn": 4704.0,
-      "costo_combustible_mxn": 4551.99425,
-      "costo_total_mxn": 9255.99425
-    },
-    {
-      "ciudad": "Aguascalientes",
-      "clientes_fcarnes": 4,
-      "distancia_km": 568.56,
-      "costo_casetas_mxn": 747.0,
-      "costo_combustible_mxn": 2499.95832,
-      "costo_total_mxn": 3246.95832
+      "costo_combustible_mxn": 4552.0,
+      "costo_total_mxn": 9256.0,
+      "tiempo_horas": 12.9
     },
     {
       "ciudad": "Puebla",
-      "clientes_fcarnes": 3,
-      "distancia_km": 1017.5,
+      "distancia_km": 1018.0,
       "costo_casetas_mxn": 2255.0,
-      "costo_combustible_mxn": 4473.9475,
-      "costo_total_mxn": 6728.9475
+      "costo_combustible_mxn": 4474.0,
+      "costo_total_mxn": 6729.0,
+      "tiempo_horas": 12.7
     },
     {
-      "ciudad": "Querétaro",
-      "clientes_fcarnes": 3,
-      "distancia_km": 699.78,
-      "costo_casetas_mxn": 922.0,
-      "costo_combustible_mxn": 3076.93266,
-      "costo_total_mxn": 3998.93266
+      "ciudad": "Chihuahua",
+      "distancia_km": 801.0,
+      "costo_casetas_mxn": 1952.0,
+      "costo_combustible_mxn": 3523.0,
+      "costo_total_mxn": 5475.0,
+      "tiempo_horas": 10.0
     },
     {
       "ciudad": "Durango",
-      "clientes_fcarnes": 3,
-      "distancia_km": 583.13,
+      "distancia_km": 583.0,
       "costo_casetas_mxn": 2315.0,
-      "costo_combustible_mxn": 2564.02261,
-      "costo_total_mxn": 4879.02261
-    },
-    {
-      "ciudad": "Tampico",
-      "clientes_fcarnes": 3,
-      "distancia_km": 510.86,
-      "costo_casetas_mxn": 64.0,
-      "costo_combustible_mxn": 2246.25142,
-      "costo_total_mxn": 2310.25142
+      "costo_combustible_mxn": 2564.0,
+      "costo_total_mxn": 4879.0,
+      "tiempo_horas": 7.3
     },
     {
       "ciudad": "León",
-      "clientes_fcarnes": 2,
-      "distancia_km": 690.19,
+      "distancia_km": 690.0,
       "costo_casetas_mxn": 1321.0,
-      "costo_combustible_mxn": 3034.7654300000004,
-      "costo_total_mxn": 4355.76543
+      "costo_combustible_mxn": 3035.0,
+      "costo_total_mxn": 4356.0,
+      "tiempo_horas": 8.6
+    },
+    {
+      "ciudad": "Querétaro",
+      "distancia_km": 700.0,
+      "costo_casetas_mxn": 922.0,
+      "costo_combustible_mxn": 3077.0,
+      "costo_total_mxn": 3999.0,
+      "tiempo_horas": 8.7
+    },
+    {
+      "ciudad": "Aguascalientes",
+      "distancia_km": 569.0,
+      "costo_casetas_mxn": 747.0,
+      "costo_combustible_mxn": 2500.0,
+      "costo_total_mxn": 3247.0,
+      "tiempo_horas": 7.1
+    },
+    {
+      "ciudad": "San Luis Potosí",
+      "distancia_km": 510.0,
+      "costo_casetas_mxn": 745.0,
+      "costo_combustible_mxn": 2242.0,
+      "costo_total_mxn": 2987.0,
+      "tiempo_horas": 6.4
+    },
+    {
+      "ciudad": "Tampico",
+      "distancia_km": 511.0,
+      "costo_casetas_mxn": 64.0,
+      "costo_combustible_mxn": 2246.0,
+      "costo_total_mxn": 2310.0,
+      "tiempo_horas": 6.4
+    },
+    {
+      "ciudad": "Torreón",
+      "distancia_km": 331.0,
+      "costo_casetas_mxn": 849.0,
+      "costo_combustible_mxn": 1456.0,
+      "costo_total_mxn": 2305.0,
+      "tiempo_horas": 4.1
+    },
+    {
+      "ciudad": "Reynosa",
+      "distancia_km": 221.0,
+      "costo_casetas_mxn": 748.0,
+      "costo_combustible_mxn": 970.0,
+      "costo_total_mxn": 1718.0,
+      "tiempo_horas": 2.8
+    },
+    {
+      "ciudad": "Victoria",
+      "distancia_km": 283.0,
+      "costo_casetas_mxn": 0.0,
+      "costo_combustible_mxn": 1244.0,
+      "costo_total_mxn": 1244.0,
+      "tiempo_horas": 3.5
+    },
+    {
+      "ciudad": "Saltillo",
+      "distancia_km": 93.0,
+      "costo_casetas_mxn": 294.0,
+      "costo_combustible_mxn": 408.0,
+      "costo_total_mxn": 702.0,
+      "tiempo_horas": 1.2
+    },
+    {
+      "ciudad": "Juárez",
+      "distancia_km": 24.0,
+      "costo_casetas_mxn": 0.0,
+      "costo_combustible_mxn": 105.0,
+      "costo_total_mxn": 105.0,
+      "tiempo_horas": 0.3
+    }
+  ],
+  "rutas_cercanas": [
+    {
+      "ciudad": "Monterrey",
+      "distancia_km": 3.0,
+      "costo_total_mxn": 14.0
+    },
+    {
+      "ciudad": "Guadalupe",
+      "distancia_km": 11.0,
+      "costo_total_mxn": 50.0
+    },
+    {
+      "ciudad": "Apodaca",
+      "distancia_km": 19.0,
+      "costo_total_mxn": 82.0
+    },
+    {
+      "ciudad": "Juárez",
+      "distancia_km": 24.0,
+      "costo_total_mxn": 105.0
+    },
+    {
+      "ciudad": "Benito Juárez",
+      "distancia_km": 24.0,
+      "costo_total_mxn": 105.0
     }
   ]
 }
