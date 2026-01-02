@@ -1,4 +1,24 @@
-.DS_Store
-/dist/
+# Dependencies
 node_modules/
+
+# Build output (generate with npm run build)
+dist/
+
+# Observable cache
+src/.observablehq/cache/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Logs
+*.log
 yarn-error.log
+
+# Environment (should not contain secrets for this project)
+.env
+.env.local

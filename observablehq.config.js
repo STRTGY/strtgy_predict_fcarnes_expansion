@@ -11,6 +11,7 @@ export default {
     { name: "Inicio", path: "/" },
     { name: "TAM por Región", path: "/tam-regional" },
     { name: "Explorador de Prospectos", path: "/explorador-prospectos" },
+    { name: "📋 Metodología", path: "/metodologia" },
     { name: "📥 Descargas", path: "/descargas" }
   ],
 
@@ -32,7 +33,7 @@ export default {
   theme: ["cotton", "wide"],
   
   // Footer
-  footer: "© 2025 STRTGY.ai | Proyecto FCarnes",
+  footer: "© 2026 STRTGY.ai | Proyecto FCarnes",
   
   // Enable sidebar navigation
   sidebar: true,

@@ -290,7 +290,7 @@ display(Inputs.table(top10, {
     <ul style="margin: 0; padding-left: 1.2rem; font-size: 0.9rem; color: #555;">
       <li><strong>Canal:</strong> Tradicional consolidado (Carnicerías, Obradores)</li>
       <li><strong>Fuentes:</strong> DENUE INEGI 2024, Google Maps</li>
-      <li><strong>Cobertura:</strong> 6 macro-regiones prioritarias</li>
+      <li><strong>Cobertura:</strong> 8 macro-regiones nacionales</li>
       <li><strong>Validación:</strong> Links Street View para cada prospecto</li>
     </ul>
   </div>

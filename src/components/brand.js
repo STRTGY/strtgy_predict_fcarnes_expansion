@@ -195,7 +195,9 @@ export function coberturaGeografica(regiones = {}) {
     "BAJIO": "#2E7D32",
     "OCCIDENTE": "#7B1FA2",
     "NOROESTE": "#F57C00",
-    "CENTRO": "#00838F"
+    "CENTRO": "#00838F",
+    "GOLFO_SURESTE": "#6A1B9A",
+    "PENINSULA": "#00695C"
   };
 
   for (const [region, estados] of Object.entries(data)) {
@@ -244,7 +246,7 @@ export function strtgyFooter() {
 
   footer.innerHTML = `
     <strong>STRTGY</strong> — Transformando complejidad en certeza<br>
-    <span style="font-size: 0.8rem;">Proyecto FCarnes | Diciembre 2025</span>
+    <span style="font-size: 0.8rem;">Proyecto FCarnes | Enero 2026</span>
   `;
 
   return footer;

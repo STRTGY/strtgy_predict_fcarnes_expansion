@@ -208,6 +208,6 @@ La base de datos completa incluye los siguientes campos:
 ---
 
 <small style="color: #999; display: block; text-align: center; margin-top: 2rem; padding-top: 1rem; border-top: 1px solid #eee;">
-  <strong>STRTGY</strong> — Transformando complejidad en certeza | Proyecto FCarnes | Diciembre 2025
+  <strong>STRTGY</strong> — Transformando complejidad en certeza | Proyecto FCarnes | Enero 2026
 </small>
 
