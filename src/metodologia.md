@@ -107,12 +107,16 @@ display(kpi([
 
 **Análisis visual con inteligencia artificial**
 
+| Tier | Analizados | Con IA | Cobertura |
+|------|------------|--------|-----------|
+| **A_PREMIUM** | 338 | 274 | 72.7% |
+| **B_ALTA** | 10,119 | 9,639 | 43.7% |
+| **Total** | 10,457 | 9,913 | — |
+
 | Atributo | Valor |
 |----------|-------|
 | **Modelo utilizado** | GPT-4o-mini |
-| **Prospectos analizados** | 338 (Tier A_PREMIUM) |
-| **Tasa de éxito** | 85.5% |
-| **Costo total** | ~$2.60 USD |
+| **Costo total** | ~$48 USD |
 
 **Métricas de IA generadas:**
 - Vitalidad comercial de la escena (1-10)
@@ -120,6 +124,10 @@ display(kpi([
 - Condición de la fachada (1-10)
 - Target encontrado (sí/no)
 - Elementos detectados en la imagen
+
+**Prospectos sin análisis IA:**
+- A_PREMIUM sin IA (103): Sin cobertura Street View o errores de parsing
+- B_ALTA sin IA (12,413): No incluidos en el batch original
 
 </div>
 

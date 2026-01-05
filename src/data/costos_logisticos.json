@@ -1,162 +1,153 @@
 {
   "resumen": {
-    "total_rutas": 20,
-    "rutas_con_casetas": 13,
-    "rutas_sin_casetas": 7,
-    "distancia_promedio_km": 483.9,
-    "costo_casetas_promedio": 1594.0,
-    "costo_combustible_promedio": 2127.0,
-    "costo_total_promedio": 3164.0,
-    "distancia_max_km": 2228.0,
-    "costo_max_mxn": 13608.0
+    "total_rutas": 16,
+    "rutas_con_casetas": 15,
+    "rutas_sin_casetas": 1,
+    "distancia_promedio_km": 843.9,
+    "costo_casetas_promedio": 2126.0,
+    "costo_combustible_promedio": 3710.0,
+    "costo_total_promedio": 5704.0,
+    "distancia_max_km": 2600.0,
+    "costo_max_mxn": 18568.0
   },
   "rutas_principales": [
     {
       "ciudad": "Tijuana",
-      "distancia_km": 2228.0,
-      "costo_casetas_mxn": 3809.0,
-      "costo_combustible_mxn": 9799.0,
-      "costo_total_mxn": 13608.0,
-      "tiempo_horas": 27.9
+      "distancia_km": 2600.0,
+      "costo_casetas_mxn": 7135.0,
+      "costo_combustible_mxn": 11433.0,
+      "costo_total_mxn": 18568.0,
+      "tiempo_horas": 32.5,
+      "zona": "LEJANA"
     },
     {
-      "ciudad": "Culiacán",
-      "distancia_km": 1035.0,
-      "costo_casetas_mxn": 4704.0,
-      "costo_combustible_mxn": 4552.0,
-      "costo_total_mxn": 9256.0,
-      "tiempo_horas": 12.9
+      "ciudad": "Mexicali",
+      "distancia_km": 2429.0,
+      "costo_casetas_mxn": 6360.0,
+      "costo_combustible_mxn": 10680.0,
+      "costo_total_mxn": 17040.0,
+      "tiempo_horas": 30.4,
+      "zona": "LEJANA"
+    },
+    {
+      "ciudad": "Culiacan",
+      "distancia_km": 1529.0,
+      "costo_casetas_mxn": 3728.0,
+      "costo_combustible_mxn": 6724.0,
+      "costo_total_mxn": 10452.0,
+      "tiempo_horas": 19.1,
+      "zona": "LEJANA"
     },
     {
       "ciudad": "Puebla",
-      "distancia_km": 1018.0,
-      "costo_casetas_mxn": 2255.0,
-      "costo_combustible_mxn": 4474.0,
-      "costo_total_mxn": 6729.0,
-      "tiempo_horas": 12.7
+      "distancia_km": 1293.0,
+      "costo_casetas_mxn": 3453.0,
+      "costo_combustible_mxn": 5686.0,
+      "costo_total_mxn": 9139.0,
+      "tiempo_horas": 16.2,
+      "zona": "LEJANA"
+    },
+    {
+      "ciudad": "Ciudad Juarez",
+      "distancia_km": 1163.0,
+      "costo_casetas_mxn": 2392.0,
+      "costo_combustible_mxn": 5114.0,
+      "costo_total_mxn": 7506.0,
+      "tiempo_horas": 14.5,
+      "zona": "LEJANA"
     },
     {
       "ciudad": "Chihuahua",
-      "distancia_km": 801.0,
-      "costo_casetas_mxn": 1952.0,
-      "costo_combustible_mxn": 3523.0,
-      "costo_total_mxn": 5475.0,
-      "tiempo_horas": 10.0
+      "distancia_km": 800.0,
+      "costo_casetas_mxn": 1734.0,
+      "costo_combustible_mxn": 3518.0,
+      "costo_total_mxn": 5252.0,
+      "tiempo_horas": 10.0,
+      "zona": "LEJANA"
     },
     {
-      "ciudad": "Durango",
-      "distancia_km": 583.0,
-      "costo_casetas_mxn": 2315.0,
-      "costo_combustible_mxn": 2564.0,
-      "costo_total_mxn": 4879.0,
-      "tiempo_horas": 7.3
-    },
-    {
-      "ciudad": "León",
-      "distancia_km": 690.0,
-      "costo_casetas_mxn": 1321.0,
-      "costo_combustible_mxn": 3035.0,
-      "costo_total_mxn": 4356.0,
-      "tiempo_horas": 8.6
-    },
-    {
-      "ciudad": "Querétaro",
-      "distancia_km": 700.0,
-      "costo_casetas_mxn": 922.0,
-      "costo_combustible_mxn": 3077.0,
-      "costo_total_mxn": 3999.0,
-      "tiempo_horas": 8.7
+      "ciudad": "Leon",
+      "distancia_km": 693.0,
+      "costo_casetas_mxn": 1251.0,
+      "costo_combustible_mxn": 3047.0,
+      "costo_total_mxn": 4298.0,
+      "tiempo_horas": 8.7,
+      "zona": "FORANEA"
     },
     {
       "ciudad": "Aguascalientes",
-      "distancia_km": 569.0,
-      "costo_casetas_mxn": 747.0,
-      "costo_combustible_mxn": 2500.0,
-      "costo_total_mxn": 3247.0,
-      "tiempo_horas": 7.1
+      "distancia_km": 679.0,
+      "costo_casetas_mxn": 978.0,
+      "costo_combustible_mxn": 2983.0,
+      "costo_total_mxn": 3961.0,
+      "tiempo_horas": 8.5,
+      "zona": "FORANEA"
     },
     {
-      "ciudad": "San Luis Potosí",
+      "ciudad": "Queretaro",
+      "distancia_km": 703.0,
+      "costo_casetas_mxn": 852.0,
+      "costo_combustible_mxn": 3091.0,
+      "costo_total_mxn": 3943.0,
+      "tiempo_horas": 8.8,
+      "zona": "LEJANA"
+    },
+    {
+      "ciudad": "San Luis Potosi",
       "distancia_km": 510.0,
       "costo_casetas_mxn": 745.0,
       "costo_combustible_mxn": 2242.0,
       "costo_total_mxn": 2987.0,
-      "tiempo_horas": 6.4
+      "tiempo_horas": 6.4,
+      "zona": "FORANEA"
     },
     {
-      "ciudad": "Tampico",
-      "distancia_km": 511.0,
-      "costo_casetas_mxn": 64.0,
-      "costo_combustible_mxn": 2246.0,
-      "costo_total_mxn": 2310.0,
-      "tiempo_horas": 6.4
+      "ciudad": "Matamoros",
+      "distancia_km": 310.0,
+      "costo_casetas_mxn": 1040.0,
+      "costo_combustible_mxn": 1365.0,
+      "costo_total_mxn": 2405.0,
+      "tiempo_horas": 3.9,
+      "zona": "FORANEA"
     },
     {
-      "ciudad": "Torreón",
+      "ciudad": "Torreon",
       "distancia_km": 331.0,
       "costo_casetas_mxn": 849.0,
-      "costo_combustible_mxn": 1456.0,
-      "costo_total_mxn": 2305.0,
-      "tiempo_horas": 4.1
+      "costo_combustible_mxn": 1457.0,
+      "costo_total_mxn": 2306.0,
+      "tiempo_horas": 4.1,
+      "zona": "FORANEA"
     },
     {
       "ciudad": "Reynosa",
-      "distancia_km": 221.0,
+      "distancia_km": 218.0,
       "costo_casetas_mxn": 748.0,
-      "costo_combustible_mxn": 970.0,
-      "costo_total_mxn": 1718.0,
-      "tiempo_horas": 2.8
+      "costo_combustible_mxn": 958.0,
+      "costo_total_mxn": 1706.0,
+      "tiempo_horas": 2.7,
+      "zona": "FORANEA"
     },
     {
-      "ciudad": "Victoria",
-      "distancia_km": 283.0,
-      "costo_casetas_mxn": 0.0,
-      "costo_combustible_mxn": 1244.0,
-      "costo_total_mxn": 1244.0,
-      "tiempo_horas": 3.5
-    },
-    {
-      "ciudad": "Saltillo",
-      "distancia_km": 93.0,
-      "costo_casetas_mxn": 294.0,
-      "costo_combustible_mxn": 408.0,
-      "costo_total_mxn": 702.0,
-      "tiempo_horas": 1.2
-    },
-    {
-      "ciudad": "Juárez",
-      "distancia_km": 24.0,
-      "costo_casetas_mxn": 0.0,
-      "costo_combustible_mxn": 105.0,
-      "costo_total_mxn": 105.0,
-      "tiempo_horas": 0.3
+      "ciudad": "Nuevo Laredo",
+      "distancia_km": 218.0,
+      "costo_casetas_mxn": 621.0,
+      "costo_combustible_mxn": 957.0,
+      "costo_total_mxn": 1578.0,
+      "tiempo_horas": 2.7,
+      "zona": "FORANEA"
     }
   ],
   "rutas_cercanas": [
     {
-      "ciudad": "Monterrey",
-      "distancia_km": 3.0,
-      "costo_total_mxn": 14.0
+      "ciudad": "Santa Catarina",
+      "distancia_km": 18.6,
+      "costo_total_mxn": 91.0
     },
     {
       "ciudad": "Guadalupe",
-      "distancia_km": 11.0,
-      "costo_total_mxn": 50.0
-    },
-    {
-      "ciudad": "Apodaca",
-      "distancia_km": 19.0,
-      "costo_total_mxn": 82.0
-    },
-    {
-      "ciudad": "Juárez",
-      "distancia_km": 24.0,
-      "costo_total_mxn": 105.0
-    },
-    {
-      "ciudad": "Benito Juárez",
-      "distancia_km": 24.0,
-      "costo_total_mxn": 105.0
+      "distancia_km": 7.1,
+      "costo_total_mxn": 31.0
     }
   ]
 }
