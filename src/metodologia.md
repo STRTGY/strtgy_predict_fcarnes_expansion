@@ -27,7 +27,7 @@ display(kpi([
   { label: "Fuentes de Datos", value: "5", subtitle: "Integradas" },
   { label: "TAM Bruto Analizado", value: "79,620", subtitle: "Prospectos totales" },
   { label: "Prospectos Verificados", value: "8,761", subtitle: "Alta calidad (11%)" },
-  { label: "Cobertura Geográfica", value: "32", subtitle: "Estados de México" }
+  { label: "Macro-Regiones", value: "9", subtitle: "Cobertura nacional" }
 ]));
 ```
 
@@ -80,7 +80,7 @@ display(kpi([
 
 </div>
 
-### 1.3 INEGI Sakbe (Ruteo)
+### 1.3 Ruteo y Costos Logísticos (HERE + Sakbe)
 
 <div class="card">
 
@@ -88,16 +88,17 @@ display(kpi([
 
 | Atributo | Valor |
 |----------|-------|
-| **API utilizada** | INEGI Sakbe v1 |
-| **Rutas calculadas** | 102 |
-| **Rutas con datos reales** | 82 (80%) |
-| **Rutas con estimación** | 5 (5%) |
+| **APIs utilizadas** | HERE Routing API + INEGI Sakbe |
+| **Rutas principales calculadas** | 16 destinos estratégicos |
+| **Rutas con casetas** | 15 (94%) |
+| **Distancia máxima** | 2,600 km (Tijuana) |
 
 **Métricas obtenidas:**
-- Distancia en kilómetros (ruta óptima)
+- Distancia en kilómetros (ruta óptima por carretera)
 - Tiempo estimado de viaje
 - Costo de casetas (autopistas de cuota)
-- Costo de combustible (diesel)
+- Costo de combustible (diesel $23.5/L, 6 km/L)
+- Geometría de rutas para visualización en mapa
 
 </div>
 
@@ -159,18 +160,45 @@ display(kpi([
 
 ### 2.1 Pipeline de Datos
 
-```
-┌─────────────┐    ┌─────────────┐    ┌─────────────┐    ┌─────────────┐
-│  Extracción │───▶│   Limpieza  │───▶│ Integración │───▶│   Scoring   │
-│    DENUE    │    │   y Dedupe  │    │   Google    │    │  y Ranking  │
-└─────────────┘    └─────────────┘    └─────────────┘    └─────────────┘
-                                              │
-                                              ▼
-┌─────────────┐    ┌─────────────┐    ┌─────────────┐    ┌─────────────┐
-│  Dashboard  │◀───│   FILTRADO  │◀───│   Análisis  │◀───│   Sakbe     │
-│   Export    │    │   CALIDAD   │    │     IA      │    │   Routing   │
-└─────────────┘    └─────────────┘    └─────────────┘    └─────────────┘
-```
+El proceso de generación de prospectos sigue un flujo de 8 etapas:
+
+<div class="grid grid-cols-4" style="gap: 0.5rem; margin: 1rem 0;">
+  <div style="background: #E3F2FD; padding: 0.75rem; border-radius: 6px; text-align: center; font-size: 0.85rem;">
+    <strong>1. Extracción</strong><br>
+    <span style="color: #666;">DENUE INEGI</span>
+  </div>
+  <div style="background: #E8F5E9; padding: 0.75rem; border-radius: 6px; text-align: center; font-size: 0.85rem;">
+    <strong>2. Limpieza</strong><br>
+    <span style="color: #666;">Dedupe + Normalización</span>
+  </div>
+  <div style="background: #FFF3E0; padding: 0.75rem; border-radius: 6px; text-align: center; font-size: 0.85rem;">
+    <strong>3. Enriquecimiento</strong><br>
+    <span style="color: #666;">Google Maps API</span>
+  </div>
+  <div style="background: #FCE4EC; padding: 0.75rem; border-radius: 6px; text-align: center; font-size: 0.85rem;">
+    <strong>4. Scoring</strong><br>
+    <span style="color: #666;">Ranking por canal</span>
+  </div>
+</div>
+
+<div class="grid grid-cols-4" style="gap: 0.5rem; margin: 1rem 0;">
+  <div style="background: #F3E5F5; padding: 0.75rem; border-radius: 6px; text-align: center; font-size: 0.85rem;">
+    <strong>5. Logística</strong><br>
+    <span style="color: #666;">HERE + Sakbe</span>
+  </div>
+  <div style="background: #E0F7FA; padding: 0.75rem; border-radius: 6px; text-align: center; font-size: 0.85rem;">
+    <strong>6. Análisis IA</strong><br>
+    <span style="color: #666;">GPT-4o Vision</span>
+  </div>
+  <div style="background: #FBE9E7; padding: 0.75rem; border-radius: 6px; text-align: center; font-size: 0.85rem;">
+    <strong>7. Filtrado</strong><br>
+    <span style="color: #666;">Verificación calidad</span>
+  </div>
+  <div style="background: #FFEBEE; padding: 0.75rem; border-radius: 6px; text-align: center; font-size: 0.85rem;">
+    <strong>8. Dashboard</strong><br>
+    <span style="color: #666;">Export final</span>
+  </div>
+</div>
 
 ### 2.2 Filtrado de Calidad (Paso 08) ⭐ NUEVO
 
@@ -256,18 +284,19 @@ Score = (0.35 × Canal) + (0.25 × Tamaño) + (0.20 × Completitud) +
 
 ## 3. Macro-Regiones
 
-La segmentación geográfica se realizó agrupando los 32 estados en 8 macro-regiones:
+La segmentación geográfica se realizó agrupando los 32 estados en 9 macro-regiones:
 
 | Macro-Región | Estados | Características |
 |--------------|---------|-----------------|
-| **NORESTE** | NL, Coah, Tamps, SLP | Zona de origen, mercado maduro |
+| **NORESTE** | NL, Coah, Tamps, SLP | Zona de origen, mercado maduro (53.6% penetración) |
 | **FRONTERA_NORTE** | BC, Chih, Son, BCS | Alta demanda, logística compleja |
 | **NOROESTE** | Sin, Nay, Dgo | Mercado en desarrollo |
-| **BAJÍO** | Ags, Gto, Qro, Zac | Alto potencial industrial |
+| **BAJÍO** | Ags, Gto, Qro, Zac | Alto potencial industrial, costos moderados |
 | **OCCIDENTE** | Jal, Col, Mich | Mercado grande, competido |
-| **CENTRO** | CDMX, Edo.Méx, Hgo, Mor, Pue, Tlax | Mayor TAM, alta competencia |
-| **GOLFO_SURESTE** | Ver, Tab, Chis, Oax, Gro | Mercado emergente |
+| **CENTRO** | CDMX, Edo.Méx, Hgo, Mor, Pue, Tlax | Mayor TAM (28,251), baja penetración |
+| **GOLFO_SURESTE** | Ver, Tab, Chis, Oax, Gro | Mercado emergente, alto potencial |
 | **PENÍNSULA** | QRoo, Yuc, Camp | Turismo + mercado local |
+| **OTRA** | Estados sin clasificación específica | Registros pendientes de asignación |
 
 ---
 
@@ -287,22 +316,22 @@ display(decisionCallout({
 }));
 ```
 
-### 4.2 Rutas con Estimación (sin datos Sakbe reales)
+### 4.2 Rutas Logísticas Calculadas
 
-Las siguientes rutas no pudieron ser calculadas con la API de Sakbe y utilizan estimación basada en distancia Haversine con factor de ajuste 1.3x:
+Se calcularon 16 rutas estratégicas desde la planta de Monterrey usando HERE Routing API con restricción para no atravesar Estados Unidos:
 
-| Destino | Distancia Estimada |
-|---------|-------------------|
-| Tijuana | 2,328 km |
-| Mexicali | 2,155 km |
-| Ciudad Juárez | 1,163 km |
-| Puebla | 1,001 km |
-| Culiacán | 934 km |
-| Chihuahua | 856 km |
-| Querétaro | 737 km |
-| León | 684 km |
-| Aguascalientes | 608 km |
-| San Luis Potosí | 518 km |
+| Destino | Distancia Real | Costo Total | Zona |
+|---------|---------------|-------------|------|
+| Tijuana | 2,600 km | $18,568 | LEJANA |
+| Mexicali | 2,429 km | $17,040 | LEJANA |
+| Culiacán | 1,529 km | $10,452 | LEJANA |
+| Puebla | 1,293 km | $9,139 | LEJANA |
+| Ciudad Juárez | 1,163 km | $7,506 | LEJANA |
+| Chihuahua | 800 km | $5,252 | LEJANA |
+| Querétaro | 703 km | $3,943 | LEJANA |
+| León | 693 km | $4,298 | FORÁNEA |
+| Aguascalientes | 679 km | $3,961 | FORÁNEA |
+| San Luis Potosí | 510 km | $2,987 | FORÁNEA |
 
 ### 4.3 Precisión del Análisis de IA
 
@@ -312,73 +341,27 @@ Las siguientes rutas no pudieron ser calculadas con la API de Sakbe y utilizan e
 
 ---
 
-## 5. Actualizaciones Completadas y Futuras
+## 5. Estado del Análisis y Mejoras Futuras
 
-### 5.1 Actualizaciones Completadas ✅
+### 5.1 Análisis Completados ✅
 
-1. **Análisis IA B_ALTA** — Procesados 12,411 prospectos via OpenAI Batch API (Enero 2026)
-2. **Enriquecimiento de teléfonos** — Integrados 31,227 teléfonos DENUE (cobertura 39.4%)
+| Componente | Estado | Cobertura |
+|------------|--------|-----------|
+| Extracción DENUE | ✅ Completado | 79,620 registros |
+| Enriquecimiento Google Maps | ✅ Completado | 866 prospectos |
+| Análisis IA (Tier A+B) | ✅ Completado | 22,286 prospectos (99.4%) |
+| Cálculo de rutas logísticas | ✅ Completado | 16 destinos estratégicos |
+| Filtrado de calidad | ✅ Completado | 8,761 verificados |
+| Red logística visualizable | ✅ Completado | Rutas en mapa interactivo |
 
-### 5.2 Mejoras Planificadas
+### 5.2 Posibles Mejoras Futuras
 
-1. **Sakbe pendientes**: Reintentar las 18 rutas con estimación
-2. **Actualización DENUE**: Incorporar datos del censo económico 2024
-3. **Análisis C_MEDIA**: Procesar prospectos de media prioridad (56,372 pendientes)
-
-### 5.3 Costos Históricos y Estimados
-
-| Mejora | Costo | Estado |
-|--------|-------|--------|
-| Análisis IA A_PREMIUM | ~$15 USD | ✅ Completado |
-| Análisis IA B_ALTA | ~$35 USD | ✅ Completado |
-| Sakbe rutas pendientes | $0 (API gratuita) | Pendiente |
-| Análisis C_MEDIA (Batch) | ~$200 USD | Opcional |
-
----
-
-## 6. Reproducibilidad
-
-### 6.1 Código Fuente
-
-Todo el análisis es reproducible mediante el pipeline de datos ubicado en:
-
-```
-notebooks/FCarnes/pipeline/
-├── config.py                    # Configuración centralizada
-├── step_01_extract_denue.py     # Extracción DENUE
-├── step_02_clean_denue.py       # Limpieza y scoring
-├── step_03_integrate_google.py  # Integración Google Maps
-├── step_04_consolidate_tam.py   # Consolidación TAM
-├── step_04b_enrich_logistics.py # Enriquecimiento Sakbe
-├── step_05_streetview_urls.py   # URLs Street View
-├── step_06_export_dashboard.py  # Export prospectos
-├── step_07_final_database.py    # Base final
-├── step_08_filter_quality.py    # ⭐ FILTRADO DE CALIDAD
-└── run_pipeline.py              # Orquestador CLI
-```
-
-### 6.2 Ejecutar Filtrado de Calidad
-
-Para regenerar los prospectos verificados:
-
-```bash
-cd notebooks/FCarnes/pipeline
-python step_08_filter_quality.py
-```
-
-Esto genera:
-- `prospectos_verificados_alta_calidad_{fecha}.parquet`
-- `prospectos_verificados_alta_calidad_{fecha}.csv`
-- `reports/.../src/data/prospectos_sample.json`
-
-### 6.3 Dependencias
-
-- Python 3.10+
-- pandas, geopandas
-- geointelligence (paquete interno STRTGY)
-- OpenAI API (para análisis de IA)
-- Google Maps API (para enriquecimiento)
-- INEGI Sakbe API (para ruteo)
+| Mejora | Beneficio | Prioridad |
+|--------|-----------|-----------|
+| Análisis IA Tier C | +56,372 prospectos evaluados | Media |
+| Actualización DENUE 2025 | Datos más recientes | Alta |
+| Integración CRM | Sincronización automática | Media |
+| Alertas de nuevos prospectos | Detección en tiempo real | Baja |
 
 ---
 
