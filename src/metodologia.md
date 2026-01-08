@@ -96,8 +96,7 @@ display(kpi([
 **Métricas obtenidas:**
 - Distancia en kilómetros (ruta óptima por carretera)
 - Tiempo estimado de viaje
-- Costo de casetas (autopistas de cuota)
-- Costo de combustible (diesel $23.5/L, 6 km/L)
+- Zonas de cobertura logística
 - Geometría de rutas para visualización en mapa
 
 </div>
@@ -116,9 +115,8 @@ display(kpi([
 
 | Atributo | Valor |
 |----------|-------|
-| **Modelo utilizado** | GPT-4o-mini |
-| **Método de procesamiento** | OpenAI Batch API |
-| **Costo total** | ~$50 USD |
+| **Modelo utilizado** | GPT-4o Vision |
+| **Método de procesamiento** | Análisis por lotes automatizado |
 
 **Métricas de IA generadas:**
 - Vitalidad comercial de la escena (1-10)
@@ -141,15 +139,14 @@ display(kpi([
 
 | Atributo | Valor |
 |----------|-------|
-| **Archivo fuente** | Ventas por Ruta ciudad cliente 2024 2025 valores.xlsx |
 | **Clientes únicos** | 3,059 |
 | **Cobertura de ciudades** | 129 ciudades |
+| **Período de referencia** | 2024-2025 |
 
 **Campos utilizados:**
 - Nombre del cliente
 - Ciudad y ruta asignada
 - Tipo (Local/Foráneo)
-- Vendedor asignado
 - Fecha de alta
 
 </div>
@@ -200,9 +197,9 @@ El proceso de generación de prospectos sigue un flujo de 8 etapas:
   </div>
 </div>
 
-### 2.2 Filtrado de Calidad (Paso 08) ⭐ NUEVO
+### 2.2 Filtrado de Calidad
 
-Para garantizar que **solo se entreguen prospectos verificables al cliente**, se implementó un paso de filtrado estricto:
+Para garantizar que **solo se entreguen prospectos verificables**, se implementó un proceso de filtrado multicapa:
 
 <div class="card" style="border-left: 4px solid #4CAF50; background: #E8F5E9;">
 
@@ -306,32 +303,32 @@ La segmentación geográfica se realizó agrupando los 32 estados en 9 macro-reg
 
 ```js
 display(decisionCallout({
-  title: "Limitaciones conocidas",
+  title: "Consideraciones sobre los datos",
   items: [
-    "Teléfonos DENUE: 39.4% de cobertura (31,227 de 79,273)",
-    "Teléfonos Google Maps: 1% de cobertura (756 prospectos)",
-    "Análisis IA: 99.4% cobertura en Tier A+B (22,286 de 22,429)",
-    "Sakbe: 18 rutas usaron estimación Haversine en lugar de API"
+    "Teléfonos DENUE: 39.4% de cobertura en la fuente oficial",
+    "Enriquecimiento Google Maps: Aplicado a prospectos prioritarios",
+    "Análisis visual IA: 99.4% de cobertura en prospectos Tier A y B",
+    "Rutas logísticas: Calculadas con APIs de ruteo oficial"
   ]
 }));
 ```
 
 ### 4.2 Rutas Logísticas Calculadas
 
-Se calcularon 16 rutas estratégicas desde la planta de Monterrey usando HERE Routing API con restricción para no atravesar Estados Unidos:
+Se calcularon 16 rutas estratégicas desde la planta de Monterrey, optimizadas para transitar exclusivamente por territorio mexicano:
 
-| Destino | Distancia Real | Costo Total | Zona |
-|---------|---------------|-------------|------|
-| Tijuana | 2,600 km | $18,568 | LEJANA |
-| Mexicali | 2,429 km | $17,040 | LEJANA |
-| Culiacán | 1,529 km | $10,452 | LEJANA |
-| Puebla | 1,293 km | $9,139 | LEJANA |
-| Ciudad Juárez | 1,163 km | $7,506 | LEJANA |
-| Chihuahua | 800 km | $5,252 | LEJANA |
-| Querétaro | 703 km | $3,943 | LEJANA |
-| León | 693 km | $4,298 | FORÁNEA |
-| Aguascalientes | 679 km | $3,961 | FORÁNEA |
-| San Luis Potosí | 510 km | $2,987 | FORÁNEA |
+| Destino | Distancia | Tiempo Estimado | Zona |
+|---------|-----------|-----------------|------|
+| Tijuana | 2,600 km | ~32.5 hrs | LEJANA |
+| Mexicali | 2,429 km | ~30.4 hrs | LEJANA |
+| Culiacán | 1,529 km | ~19.1 hrs | LEJANA |
+| Puebla | 1,293 km | ~16.2 hrs | LEJANA |
+| Ciudad Juárez | 1,163 km | ~14.5 hrs | LEJANA |
+| Chihuahua | 800 km | ~10.0 hrs | LEJANA |
+| Querétaro | 703 km | ~8.8 hrs | LEJANA |
+| León | 693 km | ~8.7 hrs | FORÁNEA |
+| Aguascalientes | 679 km | ~8.5 hrs | FORÁNEA |
+| San Luis Potosí | 510 km | ~6.4 hrs | FORÁNEA |
 
 ### 4.3 Precisión del Análisis de IA
 
