@@ -1,0 +1,329 @@
+{
+  "type": "FeatureCollection",
+  "metadata": {
+    "generated": "2026-01-07T17:10:51.418409",
+    "total_nodes": 17
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -100.3161,
+          25.6866
+        ]
+      },
+      "properties": {
+        "name": "Planta FCarnes Monterrey",
+        "type": "planta_principal",
+        "icon": "🏭",
+        "color": "#C41E3A"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -117.0382,
+          32.5149
+        ]
+      },
+      "properties": {
+        "name": "Tijuana",
+        "type": "destino_lejano",
+        "zona_logistica": "LEJANA",
+        "distancia_km": 2600.19,
+        "costo_total": 18568.03543,
+        "icon": "📍",
+        "color": "#F44336"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -115.4523,
+          32.6245
+        ]
+      },
+      "properties": {
+        "name": "Mexicali",
+        "type": "destino_lejano",
+        "zona_logistica": "LEJANA",
+        "distancia_km": 2428.88,
+        "costo_total": 17039.78536,
+        "icon": "📍",
+        "color": "#F44336"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -107.394,
+          24.8049
+        ]
+      },
+      "properties": {
+        "name": "Culiacan",
+        "type": "destino_lejano",
+        "zona_logistica": "LEJANA",
+        "distancia_km": 1529.17,
+        "costo_total": 10451.76049,
+        "icon": "📍",
+        "color": "#F44336"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -98.2063,
+          19.0414
+        ]
+      },
+      "properties": {
+        "name": "Puebla",
+        "type": "destino_lejano",
+        "zona_logistica": "LEJANA",
+        "distancia_km": 1293.25,
+        "costo_total": 9139.42025,
+        "icon": "📍",
+        "color": "#F44336"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -106.4245,
+          31.6904
+        ]
+      },
+      "properties": {
+        "name": "Ciudad Juarez",
+        "type": "destino_lejano",
+        "zona_logistica": "LEJANA",
+        "distancia_km": 1163.09,
+        "costo_total": 7506.106729999999,
+        "icon": "📍",
+        "color": "#F44336"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -106.0889,
+          28.6353
+        ]
+      },
+      "properties": {
+        "name": "Chihuahua",
+        "type": "destino_lejano",
+        "zona_logistica": "LEJANA",
+        "distancia_km": 800.06,
+        "costo_total": 5251.8638200000005,
+        "icon": "📍",
+        "color": "#F44336"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -100.3899,
+          20.5888
+        ]
+      },
+      "properties": {
+        "name": "Queretaro",
+        "type": "destino_lejano",
+        "zona_logistica": "LEJANA",
+        "distancia_km": 702.8699999999999,
+        "costo_total": 3942.51939,
+        "icon": "📍",
+        "color": "#F44336"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -101.686,
+          21.1221
+        ]
+      },
+      "properties": {
+        "name": "Leon",
+        "type": "destino_foraneo",
+        "zona_logistica": "FORANEA",
+        "distancia_km": 692.99,
+        "costo_total": 4298.07703,
+        "icon": "📍",
+        "color": "#FF9800"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -102.2916,
+          21.8853
+        ]
+      },
+      "properties": {
+        "name": "Aguascalientes",
+        "type": "destino_foraneo",
+        "zona_logistica": "FORANEA",
+        "distancia_km": 678.53,
+        "costo_total": 3961.49641,
+        "icon": "📍",
+        "color": "#FF9800"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -100.9855,
+          22.1565
+        ]
+      },
+      "properties": {
+        "name": "San Luis Potosi",
+        "type": "destino_foraneo",
+        "zona_logistica": "FORANEA",
+        "distancia_km": 509.82,
+        "costo_total": 2986.67854,
+        "icon": "📍",
+        "color": "#FF9800"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -103.4068,
+          25.5428
+        ]
+      },
+      "properties": {
+        "name": "Torreon",
+        "type": "destino_foraneo",
+        "zona_logistica": "FORANEA",
+        "distancia_km": 331.31,
+        "costo_total": 2305.77007,
+        "icon": "📍",
+        "color": "#FF9800"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -97.5027,
+          25.8691
+        ]
+      },
+      "properties": {
+        "name": "Matamoros",
+        "type": "destino_foraneo",
+        "zona_logistica": "FORANEA",
+        "distancia_km": 310.35,
+        "costo_total": 2404.60895,
+        "icon": "📍",
+        "color": "#FF9800"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -98.2979,
+          26.0508
+        ]
+      },
+      "properties": {
+        "name": "Reynosa",
+        "type": "destino_foraneo",
+        "zona_logistica": "FORANEA",
+        "distancia_km": 217.94,
+        "costo_total": 1706.28218,
+        "icon": "📍",
+        "color": "#FF9800"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -99.5067,
+          27.4861
+        ]
+      },
+      "properties": {
+        "name": "Nuevo Laredo",
+        "type": "destino_foraneo",
+        "zona_logistica": "FORANEA",
+        "distancia_km": 217.72,
+        "costo_total": 1578.31484,
+        "icon": "📍",
+        "color": "#FF9800"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -100.4583,
+          25.6732
+        ]
+      },
+      "properties": {
+        "name": "Santa Catarina",
+        "type": "destino_local",
+        "zona_logistica": "LOCAL",
+        "distancia_km": 18.626201408803936,
+        "costo_total": 91.2125082989129,
+        "icon": "📍",
+        "color": "#4CAF50"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -100.2597,
+          25.6775
+        ]
+      },
+      "properties": {
+        "name": "Guadalupe",
+        "type": "destino_local",
+        "zona_logistica": "LOCAL",
+        "distancia_km": 7.13,
+        "costo_total": 31.35061,
+        "icon": "📍",
+        "color": "#4CAF50"
+      }
+    }
+  ]
+}

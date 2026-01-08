@@ -6,14 +6,25 @@ toc: false
 ```js
 import {kpi, formatNumber, formatPercent, tierBadge, regionBadge, zonaBadge} from "./components/ui.js";
 import {decisionCallout} from "./components/brand.js";
-import {createBaseMap, addGeoJsonLayer, createLegend, fitBounds, createProspectPopup, getColorForTier, getRadiusForTier, TIER_COLORS, L} from "./components/maps.js";
+import {
+  createBaseMap, addGeoJsonLayer, createLegend, fitBounds, 
+  createProspectPopup, getColorForTier, getRadiusForTier, 
+  TIER_COLORS, ROUTE_COLORS, L,
+  createRoutesLayer, createNodesLayer,
+  getRouteColor, filterProspectsInCorridor, getProximityColor
+} from "./components/maps.js";
 
 // CSS de Leaflet
 const leafletCss = html`<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css">`;
 
+
 // Cargar datos
 const prospectosRaw = await FileAttachment("data/prospectos_sample.json").json();
 const tamRegion = await FileAttachment("data/tam_por_macroregion.csv").csv({typed: true});
+
+// Cargar datos de red logística
+const rutasLogisticas = await FileAttachment("data/rutas_logisticas.json").json();
+const nodosLogisticos = await FileAttachment("data/nodos_logisticos.json").json();
 
 // Mapeo de regiones truncadas a nombres completos
 const REGION_EXPAND = {
@@ -28,6 +39,12 @@ function expandProps(p) {
   const lon = p.geometry?.coordinates?.[0] || 0;
   const rawRegion = p.properties?.r || p.properties?.macro_region || "N/A";
   const expandedRegion = REGION_EXPAND[rawRegion] || rawRegion;
+  
+  // Mapear tier abreviado a formato completo
+  const tierMap = {"A": "A_PREMIUM", "B": "B_ALTA", "C": "C_MEDIA", "D": "D_BAJA"};
+  const rawTier = p.properties?.t || p.properties?.tier || "B";
+  const tier = tierMap[rawTier] || rawTier;
+  
   return {
     nombre: p.properties?.n || p.properties?.nombre || "Sin nombre",
     ciudad: p.properties?.c || p.properties?.ciudad || "N/A",
@@ -35,10 +52,13 @@ function expandProps(p) {
     macro_region: expandedRegion,
     zona_logistica: p.properties?.z || p.properties?.zona_logistica || "N/A",
     categoria_fcarnes: p.properties?.cat || p.properties?.categoria_fcarnes || "N/A",
-    tier: p.properties?.t || p.properties?.tier || "C_MEDIA",
+    tier: tier,
     score_total: p.properties?.s || p.properties?.score_total || 50,
     distancia_planta_km: p.properties?.d || p.properties?.distancia_planta_km || 0,
     telefono: p.properties?.tel || p.properties?.telefono || "",
+    nivel_confianza: p.properties?.conf || p.properties?.nivel_confianza || "MEDIA",
+    reviews_google: p.properties?.rev || p.properties?.reviews_google || 0,
+    rating_google: p.properties?.rat || p.properties?.rating_google || 0,
     abre_sabado: p.properties?.sab === 1 || p.properties?.abre_sabado || false,
     ai_analizado: p.properties?.ai === 1 || p.properties?.ai_analizado || false,
     ai_confidence: p.properties?.aic || p.properties?.ai_confidence || 0,
@@ -47,6 +67,10 @@ function expandProps(p) {
     ai_target_facade: p.properties?.aif || p.properties?.ai_target_facade || 0,
     ai_score_promedio: p.properties?.ai_score_promedio || ((p.properties?.aiv || 0) + (p.properties?.aivis || 0) + (p.properties?.aif || 0)) / 3,
     url_streetview: `https://www.google.com/maps/@${lat},${lon},3a,90y,0h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192`,
+    // Datos de proximidad a rutas
+    dist_ruta_km: p.properties?.dist_ruta_km || null,
+    ruta_cercana: p.properties?.ruta_cercana || null,
+    en_corredor: p.properties?.en_corredor === 1 || p.properties?.en_corredor === true,
     lat, lon
   };
 }
@@ -72,23 +96,55 @@ const tiers = ["Todos", "A_PREMIUM", "B_ALTA", "C_MEDIA", "D_BAJA"];
 ```
 
 <h1 style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
-  <span style="font-size: 1.5rem;">🗺️</span> Explorador de Prospectos
+  <span style="font-size: 1.5rem;">🗺️</span> Explorador de Prospectos Verificados
 </h1>
 
 <p style="color: #666; margin-top: 0;">
-  Filtra, explora y valida prospectos visualmente. Cada punto incluye link a <strong>Street View</strong> para validación visual.
+  <strong>Solo prospectos de alta calidad</strong> — Filtrados por tier (A+B), score, completitud y contacto verificable. Cada punto incluye link a <strong>Street View</strong> para validación visual.
 </p>
+
+<div class="card" style="background: linear-gradient(135deg, #0c4a6e 0%, #075985 100%); color: white; border: none; margin: 1rem 0;">
+  <h3 style="margin-top: 0; color: #7dd3fc;">
+    🎯 ¿Cómo usar este explorador?
+  </h3>
+  <p style="margin: 0.5rem 0; font-size: 0.9rem; line-height: 1.6;">
+    Este mapa interactivo permite <strong>explorar, filtrar y validar</strong> prospectos de alto potencial. 
+    Cada punto representa un negocio verificado con información de contacto real.
+  </p>
+  <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.75rem; margin-top: 0.75rem;">
+    <div style="background: rgba(255,255,255,0.1); padding: 0.5rem; border-radius: 6px; text-align: center;">
+      <span style="font-size: 1.25rem;">1️⃣</span>
+      <div style="font-size: 0.75rem; margin-top: 0.25rem;">Filtra por región o zona logística</div>
+    </div>
+    <div style="background: rgba(255,255,255,0.1); padding: 0.5rem; border-radius: 6px; text-align: center;">
+      <span style="font-size: 1.25rem;">2️⃣</span>
+      <div style="font-size: 0.75rem; margin-top: 0.25rem;">Haz clic en un prospecto</div>
+    </div>
+    <div style="background: rgba(255,255,255,0.1); padding: 0.5rem; border-radius: 6px; text-align: center;">
+      <span style="font-size: 1.25rem;">3️⃣</span>
+      <div style="font-size: 0.75rem; margin-top: 0.25rem;">Abre Street View para validar</div>
+    </div>
+    <div style="background: rgba(255,255,255,0.1); padding: 0.5rem; border-radius: 6px; text-align: center;">
+      <span style="font-size: 1.25rem;">4️⃣</span>
+      <div style="font-size: 0.75rem; margin-top: 0.25rem;">Exporta o agenda visita</div>
+    </div>
+  </div>
+</div>
+
+<div class="note" style="background: #E8F5E9; border-left: 4px solid #4CAF50; padding: 0.75rem; margin: 0.5rem 0; font-size: 0.85rem;">
+  ✅ <strong>Filtro de Calidad Aplicado:</strong> Estos prospectos han pasado filtros estrictos: Tier A/B únicamente, score ≥50, datos de contacto verificables, y nombres identificables (sin genéricos como "CARNICERIA").
+</div>
 
 ---
 
 ```js
 display(decisionCallout({
-  title: "Cómo usar este explorador",
+  title: "Prospectos de Alta Calidad",
   items: [
-    "Usa los filtros para segmentar por región, zona logística, categoría o tier",
-    "Haz clic en cualquier punto del mapa para ver la ficha completa del prospecto",
-    "El botón 'Ver en Street View' te permite validar visualmente el establecimiento",
-    "La tabla inferior muestra los prospectos filtrados ordenados por score"
+    "Todos los prospectos tienen contacto verificable (teléfono, reviews o web)",
+    "Solo tier A (Premium) y B (Alta prioridad) — Sin tier C ni D",
+    "Nombres identificables — Excluidos genéricos sin identidad comercial",
+    "Haz clic en cualquier punto para ver ficha completa + Street View"
   ]
 }));
 ```
@@ -129,6 +185,41 @@ const tierFiltro = view(Inputs.select(tiers, {
 
 </div>
 
+### Capas del Mapa
+
+<div class="grid grid-cols-4" style="margin-top: 0.5rem;">
+
+```js
+const mostrarProspectos = view(Inputs.toggle({
+  label: "📍 Prospectos",
+  value: true
+}));
+```
+
+```js
+const mostrarRutas = view(Inputs.toggle({
+  label: "🚚 Red Logística",
+  value: true
+}));
+```
+
+```js
+const soloEnCorredor = view(Inputs.toggle({
+  label: "🛤️ Solo en Corredor",
+  value: false
+}));
+```
+
+```js
+const distanciaCorredor = view(Inputs.range([5, 50], {
+  label: "Dist. Corredor (km)",
+  value: 25,
+  step: 5
+}));
+```
+
+</div>
+
 ---
 
 ## Resultados
@@ -141,6 +232,13 @@ const prospectosFiltrados = features.filter(f => {
   if (zonaFiltro !== "Todas" && p.zona_logistica !== zonaFiltro) return false;
   if (categoriaFiltro !== "Todas" && p.categoria_fcarnes !== categoriaFiltro) return false;
   if (tierFiltro !== "Todos" && p.tier !== tierFiltro) return false;
+  
+  // Filtro de corredor logístico
+  if (soloEnCorredor) {
+    const distRuta = p.dist_ruta_km;
+    if (distRuta === null || distRuta === undefined || distRuta > distanciaCorredor) return false;
+  }
+  
   return true;
 });
 
@@ -152,6 +250,9 @@ const scorePromedio = totalFiltrados > 0
 
 const tierA = prospectosFiltrados.filter(f => f.properties?.tier === "A_PREMIUM").length;
 const tierB = prospectosFiltrados.filter(f => f.properties?.tier === "B_ALTA").length;
+
+// Stats del corredor
+const enCorredor = features.filter(f => f.properties?.en_corredor).length;
 ```
 
 ```js
@@ -159,7 +260,7 @@ display(kpi([
   { label: "Prospectos Filtrados", value: formatNumber(totalFiltrados), subtitle: `de ${formatNumber(totalProspectos)} totales` },
   { label: "Score Promedio", value: scorePromedio.toFixed(1), subtitle: "Puntuación 0-100" },
   { label: "Tier A + B", value: formatNumber(tierA + tierB), subtitle: "Alta prioridad" },
-  { label: "% del Total", value: formatPercent(totalProspectos > 0 ? (totalFiltrados / totalProspectos) * 100 : 0), subtitle: "Selección actual" }
+  { label: "En Corredor (<25km)", value: formatNumber(enCorredor), subtitle: `${formatPercent((enCorredor / totalProspectos) * 100)} cerca de ruta` }
 ]));
 ```
 
@@ -181,7 +282,7 @@ const geoJsonFiltrado = {
 
 ```js
 const mapContainer = display(document.createElement("div"));
-mapContainer.style.height = "550px";
+mapContainer.style.height = "600px";
 mapContainer.style.width = "100%";
 mapContainer.style.borderRadius = "8px";
 mapContainer.style.overflow = "hidden";
@@ -196,12 +297,44 @@ if (typeof L !== 'undefined' && L.map) {
     zoom: 5
   });
 
-  // Agregar capa de prospectos si hay datos
-  if (geoJsonFiltrado.features && geoJsonFiltrado.features.length > 0) {
-    const prospectosLayer = L.geoJSON(geoJsonFiltrado, {
+  // ============================================
+  // CAPA 1: Rutas Logísticas (abajo)
+  // ============================================
+  let rutasLayer = null;
+  let nodosLayer = null;
+  
+  if (mostrarRutas && rutasLogisticas?.features?.length > 0) {
+    rutasLayer = createRoutesLayer(rutasLogisticas, {
+      weight: 3,
+      opacity: 0.75,
+      highlightWeight: 5
+    }).addTo(map);
+    
+    // Nodos logísticos (planta + destinos)
+    if (nodosLogisticos?.features?.length > 0) {
+      nodosLayer = createNodesLayer(nodosLogisticos).addTo(map);
+    }
+  }
+
+  // ============================================
+  // CAPA 2: Prospectos
+  // ============================================
+  let prospectosLayer = null;
+  
+  if (mostrarProspectos && geoJsonFiltrado.features && geoJsonFiltrado.features.length > 0) {
+    prospectosLayer = L.geoJSON(geoJsonFiltrado, {
       pointToLayer: (feature, latlng) => {
-        const tier = feature.properties?.tier || "C_MEDIA";
-        const color = getColorForTier(tier);
+        const p = feature.properties;
+        const tier = p.tier || "C_MEDIA";
+        
+        // Color: si está en modo corredor, colorear por proximidad
+        let color;
+        if (soloEnCorredor && p.dist_ruta_km !== null) {
+          color = getProximityColor(p.dist_ruta_km);
+        } else {
+          color = getColorForTier(tier);
+        }
+        
         const radius = getRadiusForTier(tier);
         
         return L.circleMarker(latlng, {
@@ -214,35 +347,90 @@ if (typeof L !== 'undefined' && L.map) {
         });
       },
       onEachFeature: (feature, layer) => {
-        const popupContent = createProspectPopup(feature.properties || {});
-        layer.bindPopup(popupContent, { maxWidth: 350 });
+        const p = feature.properties;
+        // Agregar info de ruta al popup si está disponible
+        const rutaInfo = p.dist_ruta_km !== null 
+          ? `<tr>
+              <td style="padding: 4px 8px 4px 0; color: #666;"><strong>🚚 Ruta más cercana:</strong></td>
+              <td style="padding: 4px 0;">${p.ruta_cercana || "N/A"} (${p.dist_ruta_km?.toFixed(1)} km)</td>
+            </tr>`
+          : "";
+        
+        const popupContent = createProspectPopup(p);
+        // Insertar info de ruta en el popup
+        const enhancedPopup = popupContent.replace(
+          '<tr>\n          <td style="padding: 4px 8px 4px 0; color: #666;"><strong>Distancia:</strong></td>',
+          `${rutaInfo}<tr>\n          <td style="padding: 4px 8px 4px 0; color: #666;"><strong>Distancia:</strong></td>`
+        );
+        
+        layer.bindPopup(enhancedPopup, { maxWidth: 350 });
       }
     }).addTo(map);
 
-    // Ajustar vista
-    fitBounds(map, prospectosLayer, 40);
+    // Ajustar vista a prospectos si no hay rutas
+    if (prospectosLayer && (!mostrarRutas || !rutasLayer)) {
+      fitBounds(map, prospectosLayer, 40);
+    }
+  }
+  
+  // Ajustar a rutas si están visibles
+  if (rutasLayer) {
+    fitBounds(map, rutasLayer, 30);
+  } else if (!prospectosLayer) {
+    // Si no hay ninguna capa visible, centrar en México
+    map.setView([24.5, -102.5], 5);
   }
 
-  // Crear leyenda
-  createLegend(map, [
-    { type: "header", label: "Tier de Prioridad" },
-    { type: "circle", color: TIER_COLORS.A_PREMIUM, label: "A_PREMIUM (Máxima)" },
-    { type: "circle", color: TIER_COLORS.B_ALTA, label: "B_ALTA (Alta)" },
-    { type: "circle", color: TIER_COLORS.C_MEDIA, label: "C_MEDIA (Media)" },
-    { type: "circle", color: TIER_COLORS.D_BAJA, label: "D_BAJA (Baja)" }
-  ], { position: "bottomright", title: "Leyenda" });
+  // ============================================
+  // Leyenda dinámica
+  // ============================================
+  const legendItems = [];
+  
+  // Leyenda de prospectos (solo si están visibles)
+  if (mostrarProspectos) {
+    if (soloEnCorredor) {
+      legendItems.push({ type: "header", label: "📍 Proximidad a Ruta" });
+      legendItems.push({ type: "circle", color: "#22c55e", label: "< 5 km" });
+      legendItems.push({ type: "circle", color: "#84cc16", label: "5-15 km" });
+      legendItems.push({ type: "circle", color: "#eab308", label: "15-25 km" });
+      legendItems.push({ type: "circle", color: "#f97316", label: "25-50 km" });
+    } else {
+      legendItems.push({ type: "header", label: "📍 Tier de Prioridad" });
+      legendItems.push({ type: "circle", color: TIER_COLORS.A_PREMIUM, label: "A_PREMIUM (Máxima)" });
+      legendItems.push({ type: "circle", color: TIER_COLORS.B_ALTA, label: "B_ALTA (Alta)" });
+      legendItems.push({ type: "circle", color: TIER_COLORS.C_MEDIA, label: "C_MEDIA (Media)" });
+      legendItems.push({ type: "circle", color: TIER_COLORS.D_BAJA, label: "D_BAJA (Baja)" });
+    }
+  }
+  
+  
+  // Leyenda de rutas
+  if (mostrarRutas) {
+    if (legendItems.length > 0) legendItems.push({ type: "separator" });
+    legendItems.push({ type: "header", label: "🚚 Rutas Logísticas" });
+    legendItems.push({ type: "square", color: ROUTE_COLORS.LOCAL, label: "Local (< 50 km)" });
+    legendItems.push({ type: "square", color: ROUTE_COLORS.FORANEA, label: "Foránea (50-400 km)" });
+    legendItems.push({ type: "square", color: ROUTE_COLORS.LEJANA, label: "Lejana (> 400 km)" });
+  }
+  
+  if (legendItems.length > 0) {
+    createLegend(map, legendItems, { position: "bottomright", title: "Leyenda" });
+  }
+  
 } else {
   mapContainer.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 100%; background: #f5f5f5; color: #666;">⚠️ Error cargando el mapa. Recarga la página.</div>';
 }
 ```
 
-<div class="grid grid-cols-2" style="gap: 1rem; margin-bottom: 1rem;">
-  <div class="note" style="background: #E3F2FD; border-left: 4px solid #2196F3; padding: 1rem; margin: 0;">
-    <strong>💡 Tip:</strong> Haz clic en cualquier punto para ver la ficha completa con <strong>botón de Street View</strong> para validación visual antes de la visita comercial.
+<div class="grid grid-cols-3" style="gap: 0.75rem; margin-bottom: 1rem;">
+  <div class="note" style="background: #E3F2FD; border-left: 4px solid #2196F3; padding: 0.75rem; margin: 0; font-size: 0.85rem;">
+    <strong>💡 Tip:</strong> Haz clic en cualquier punto para ver la ficha completa con <strong>Street View</strong> para validación visual.
   </div>
-  <div class="note" style="background: #E8F5E9; border-left: 4px solid #4CAF50; padding: 1rem; margin: 0;">
-    <strong>🤖 Análisis IA:</strong> Cada prospecto fue analizado con visión por computadora. 
-    <strong>Vitalidad</strong> = actividad comercial | <strong>Visibilidad</strong> = exposición del negocio | <strong>Fachada</strong> = estado del local
+  <div class="note" style="background: #FFF3E0; border-left: 4px solid #FF9800; padding: 0.75rem; margin: 0; font-size: 0.85rem;">
+    <strong>🚚 Rutas:</strong> Muestra las <strong>rutas reales</strong> de distribución desde Monterrey. Clic en ruta = costos logísticos.
+  </div>
+  <div class="note" style="background: #E8F5E9; border-left: 4px solid #4CAF50; padding: 0.75rem; margin: 0; font-size: 0.85rem;">
+    <strong>🛤️ Corredor:</strong> Filtra prospectos <strong>cerca de rutas existentes</strong> para optimizar costos de distribución.
   </div>
 </div>
 
@@ -259,13 +447,12 @@ const tablaData = prospectosFiltrados
       ciudad: p.ciudad || "N/A",
       macro_region: p.macro_region || "N/A",
       zona_logistica: p.zona_logistica || "N/A",
-      categoria: p.categoria_fcarnes || "N/A",
       tier: p.tier || "N/A",
       score: typeof p.score_total === 'number' ? p.score_total : 0,
-      ai_score: typeof p.ai_score_promedio === 'number' ? p.ai_score_promedio : 0,
-      ai_conf: typeof p.ai_confidence === 'number' ? p.ai_confidence : 0,
-      distancia_km: typeof p.distancia_planta_km === 'number' ? p.distancia_planta_km : 0,
-      abre_sabado: p.abre_sabado ? "✅" : "—",
+      telefono: p.telefono || "—",
+      dist_planta: typeof p.distancia_planta_km === 'number' ? p.distancia_planta_km : 0,
+      dist_ruta: p.dist_ruta_km ?? null,
+      ruta_cercana: p.ruta_cercana || "—",
       lat: p.lat || 0,
       lon: p.lon || 0
     };
@@ -278,24 +465,21 @@ const tablaData = prospectosFiltrados
 const tablaLimitada = tablaData.slice(0, 500);
 
 display(Inputs.table(tablaLimitada, {
-  columns: ["nombre", "ciudad", "macro_region", "zona_logistica", "tier", "score", "ai_score", "ai_conf", "distancia_km", "abre_sabado"],
+  columns: ["nombre", "ciudad", "zona_logistica", "tier", "score", "dist_planta", "dist_ruta", "ruta_cercana"],
   header: {
     nombre: "Establecimiento",
     ciudad: "Ciudad",
-    macro_region: "Región",
     zona_logistica: "Zona",
     tier: "Tier",
     score: "Score",
-    ai_score: "🤖 IA",
-    ai_conf: "Conf. IA",
-    distancia_km: "Dist.",
-    abre_sabado: "Sáb"
+    dist_planta: "Dist. Planta",
+    dist_ruta: "Dist. Ruta",
+    ruta_cercana: "Ruta Cercana"
   },
   format: {
     score: d => typeof d === 'number' ? d.toFixed(1) : "—",
-    ai_score: d => d > 0 ? d.toFixed(1) : "—",
-    ai_conf: d => d > 0 ? `${(d * 100).toFixed(0)}%` : "—",
-    distancia_km: d => `${Math.round(d)} km`
+    dist_planta: d => `${Math.round(d)} km`,
+    dist_ruta: d => d !== null ? `${d.toFixed(1)} km` : "—"
   },
   sort: "score",
   reverse: true,
@@ -353,33 +537,71 @@ display(resize((width) => Plot.plot({
 
 ---
 
-## Próximos Pasos con la Selección
+## 🎯 Cómo Interpretar los Prospectos
 
-<div class="grid grid-cols-2">
-  <div class="card">
-    <h4 style="margin-top: 0;">📋 Para el Equipo Comercial</h4>
-    <ol style="margin: 0; padding-left: 1.25rem; font-size: 0.9rem; color: #555;">
-      <li>Filtra por <strong>Tier A + B</strong> para máxima prioridad</li>
-      <li>Filtra por <strong>zona LOCAL</strong> para menor costo de visita</li>
-      <li>Usa Street View para validar antes de agendar</li>
-      <li>Prioriza prospectos que <strong>abren sábado</strong> si hay disponibilidad</li>
-    </ol>
-  </div>
-  <div class="card">
-    <h4 style="margin-top: 0;">🚚 Para Operaciones/Logística</h4>
-    <ol style="margin: 0; padding-left: 1.25rem; font-size: 0.9rem; color: #555;">
-      <li>Agrupa prospectos por <strong>macro-región</strong></li>
-      <li>Planifica rutas por <strong>zona logística</strong></li>
-      <li>Considera horarios para optimizar entregas</li>
-      <li>Evalúa CEDIS regional para zonas FORÁNEAS</li>
-    </ol>
+<div class="card" style="background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%); border-left: 4px solid #d97706; margin-bottom: 1rem;">
+  <h4 style="margin-top: 0; color: #92400e;">📊 Qué Significa Cada Indicador</h4>
+  <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-top: 0.75rem; font-size: 0.9rem;">
+    <div>
+      <strong style="color: #b45309;">Score (0-100):</strong>
+      <p style="margin: 0.25rem 0 0; color: #78350f;">Puntuación compuesta basada en: canal (mayorista vs retail), tamaño del negocio, completitud de datos y presencia en Google Maps. <strong>&gt;70 = alta prioridad</strong>.</p>
+    </div>
+    <div>
+      <strong style="color: #b45309;">Tier (A/B/C/D):</strong>
+      <p style="margin: 0.25rem 0 0; color: #78350f;"><strong>A_PREMIUM:</strong> Mayoristas, alto volumen. <strong>B_ALTA:</strong> Carnicerías establecidas con potencial. Este explorador solo muestra A y B.</p>
+    </div>
+    <div>
+      <strong style="color: #b45309;">Dist. Ruta (km):</strong>
+      <p style="margin: 0.25rem 0 0; color: #78350f;">Distancia al corredor logístico más cercano. Prospectos <strong>&lt;10 km</strong> se pueden atender sin desvío significativo.</p>
+    </div>
+    <div>
+      <strong style="color: #b45309;">Nivel de Confianza:</strong>
+      <p style="margin: 0.25rem 0 0; color: #78350f;"><strong>ALTA:</strong> Validado con IA + teléfono + reseñas. <strong>MEDIA:</strong> Teléfono o reseñas. <strong>PENDIENTE:</strong> Solo datos básicos.</p>
+    </div>
   </div>
 </div>
 
 ---
 
+## Próximos Pasos con la Selección
+
+<div class="grid grid-cols-2">
+  <div class="card" style="border-left: 4px solid #3b82f6;">
+    <h4 style="margin-top: 0; color: #1d4ed8;">📋 Para el Equipo Comercial</h4>
+    <ol style="margin: 0; padding-left: 1.25rem; font-size: 0.9rem; color: #555; line-height: 1.6;">
+      <li>Filtra por <strong>Tier A_PREMIUM</strong> para mayoristas de alto volumen</li>
+      <li>Usa el filtro de <strong>Corredor</strong> para prospectos en rutas existentes</li>
+      <li><strong>Valida visualmente</strong> con Street View antes de agendar visita</li>
+      <li>Prioriza prospectos con <strong>reseñas en Google</strong> (negocio activo confirmado)</li>
+      <li>Exporta la tabla filtrada para tu CRM o agenda de visitas</li>
+    </ol>
+  </div>
+  <div class="card" style="border-left: 4px solid #16a34a;">
+    <h4 style="margin-top: 0; color: #15803d;">🚚 Para Operaciones/Logística</h4>
+    <ol style="margin: 0; padding-left: 1.25rem; font-size: 0.9rem; color: #555; line-height: 1.6;">
+      <li>Activa <strong>"🚚 Red Logística"</strong> para ver rutas actuales</li>
+      <li>Usa <strong>"🛤️ Solo en Corredor"</strong> para densificar rutas existentes</li>
+      <li>Agrupa prospectos en <strong>&lt;15 km</strong> del corredor para entregas eficientes</li>
+      <li>Identifica <strong>clusters de alta densidad</strong> para justificar nuevas rutas</li>
+      <li>Evalúa prospectos <strong>FORÁNEOS</strong> para CEDIS regional</li>
+    </ol>
+  </div>
+</div>
+
+<div class="card" style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-left: 4px solid #22c55e; margin-top: 1rem;">
+  <h4 style="margin-top: 0; color: #166534;">💡 Estrategia de Validación Recomendada</h4>
+  <p style="margin: 0; font-size: 0.9rem; color: #14532d; line-height: 1.6;">
+    <strong>Antes de visitar físicamente</strong>, valida cada prospecto con Street View para confirmar: (1) que el negocio existe físicamente, 
+    (2) que tiene una fachada visible de carnicería/obrador, (3) que el acceso es viable para entrega. 
+    Esta validación de 30 segundos puede ahorrarte horas de visitas fallidas.
+  </p>
+</div>
+
+---
+
 <small style="color: #999; display: block; text-align: center; margin-top: 2rem; padding-top: 1rem; border-top: 1px solid #eee;">
-  <strong>Base completa:</strong> ${formatNumber(totalProspectos)} prospectos a nivel nacional | Datos DENUE + Google Maps + Análisis IA<br>
-  <strong>STRTGY</strong> — Transformando complejidad en certeza | Proyecto FCarnes | Diciembre 2025
+  <strong>Prospectos verificados:</strong> ${formatNumber(totalProspectos)} (filtrados por calidad) | Datos DENUE + Google Maps + Validación IA<br>
+  <strong>Filtros aplicados:</strong> Tier A/B, Score ≥50, Contacto verificable, Sin nombres genéricos<br>
+  <strong>STRTGY</strong> — Transformando complejidad en certeza | Proyecto FCarnes | Enero 2026
 </small>
 

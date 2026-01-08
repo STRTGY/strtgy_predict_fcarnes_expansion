@@ -1,0 +1,793 @@
+{
+  "project": "observable_fcarnes_logistics_heatmap_integration",
+  "version": "1.1.0-roadmap",
+  "metadata": {
+    "author": "AI Data App Architect",
+    "created_at": "2026-01-07",
+    "client": "FCarnes",
+    "parent_project": "observable_fcarnes_censo_estrategico_nacional",
+    "stack_principal": ["Observable Framework", "Leaflet", "Leaflet.heat", "Plot", "JavaScript"],
+    "observable_features": ["data_loaders", "reactive_inputs", "leaflet_maps", "layer_controls"],
+    "deployment_target": "github-pages",
+    "enhancement_scope": {
+      "name": "Integración de Redes Logísticas y Mapas de Calor",
+      "description": "Agregar capas de visualización de corredores logísticos, mapa de calor de densidad de prospectos, y filtros de proximidad a rutas",
+      "deliverables": [
+        "Capa de red logística (Monterrey → destinos)",
+        "Mapa de calor de densidad de prospectos",
+        "Filtro de proximidad a rutas logísticas",
+        "Control de capas interactivo",
+        "Capa de plantas/CEDIS y clientes actuales"
+      ],
+      "business_value": {
+        "logistics_optimization": "Visualizar cobertura actual de red de distribución",
+        "prospect_prioritization": "Identificar prospectos estratégicos cerca de rutas existentes",
+        "density_analysis": "Detectar zonas de alta concentración para nuevas rutas o CEDIS",
+        "cost_reduction": "Priorizar prospectos que minimicen costos logísticos incrementales"
+      }
+    }
+  },
+  "modules": [
+    {
+      "id": "MOD-100",
+      "name": "Data Pipeline - Rutas y Geometrías",
+      "priority": "critical",
+      "status": "not_started",
+      "estimated_hours": 2.0,
+      "depends_on": [],
+      "context": {
+        "problem": "Datos de rutas están en CSV sin geometría de línea, solo puntos de destino",
+        "impact": "Sin GeoJSON de rutas, no se puede visualizar la red logística en el mapa",
+        "root_cause": "Rutas calculadas con Sakbe API devuelven solo distancias, no trazados"
+      },
+      "tasks": [
+        {
+          "id": "MOD-100-T01",
+          "title": "Generar GeoJSON de rutas logísticas con geometrías reales (Sakbe API)",
+          "type": "data_loader",
+          "description": "Usar geointelligence.apis.inegi.sakbe_routing para obtener geometrías de rutas REALES de carreteras mexicanas. Crear archivo GeoJSON con LineStrings que siguen la Red Nacional de Caminos.",
+          "status": "pending",
+          "hours": {"estimated": 1.5, "actual": 0},
+          "technical_meta": {
+            "loader_name": "rutas_logisticas.json",
+            "language": "python",
+            "output_format": "geojson",
+            "files_affected": ["src/data/rutas_logisticas.json"],
+            "source_files": ["src/data/rutas_sakbe_nuevas.csv"],
+            "geointelligence_module": "geointelligence.apis.inegi.sakbe_routing.INEGISakbeRoutingClient",
+            "method": "calculate_route_by_coordinates()",
+            "origin_point": {
+              "name": "Planta FCarnes Monterrey",
+              "lat": 25.6866,
+              "lon": -100.3161
+            },
+            "geometry_strategy": "real_roads_from_sakbe_api",
+            "note": "La API de Sakbe devuelve geometrías LineString que siguen carreteras reales. RouteResult.geometry contiene el trazado.",
+            "fallback": "Si Sakbe falla para alguna ruta, usar línea recta con advertencia",
+            "python_script_example": "notebooks/fcarnes/scripts/generate_routes_geojson.py",
+            "properties_per_route": [
+              "destino", "distancia_km", "costo_total", "costo_casetas", 
+              "costo_combustible", "zona_logistica", "tiempo_horas", "source"
+            ]
+          },
+          "acceptance_criteria": [
+            "GeoJSON válido con 17 features tipo LineString",
+            "Geometrías siguen carreteras reales (no líneas rectas)",
+            "Propiedades incluyen costos y zona logística",
+            "Campo 'source' indica si es 'sakbe' o 'estimation'",
+            "Archivo < 500KB (geometrías reales son más grandes)"
+          ]
+        },
+        {
+          "id": "MOD-100-T02",
+          "title": "Crear GeoJSON de nodos logísticos",
+          "type": "data_loader",
+          "description": "Crear archivo GeoJSON con puntos de Planta, posibles CEDIS y nodos de distribución",
+          "status": "pending",
+          "hours": {"estimated": 0.5, "actual": 0},
+          "technical_meta": {
+            "loader_name": "nodos_logisticos.json",
+            "language": "static",
+            "output_format": "geojson",
+            "files_affected": ["src/data/nodos_logisticos.json"],
+            "nodes": [
+              {
+                "name": "Planta FCarnes Monterrey",
+                "type": "planta_principal",
+                "lat": 25.68,
+                "lon": -100.31,
+                "icon": "factory"
+              },
+              {
+                "name": "Destino Tijuana",
+                "type": "destino_lejano",
+                "lat": 32.5149,
+                "lon": -117.0382
+              }
+            ],
+            "note": "Incluir todos los destinos de rutas como nodos"
+          },
+          "acceptance_criteria": [
+            "GeoJSON válido con puntos",
+            "Planta principal marcada como origen",
+            "Destinos incluidos con tipo (LOCAL, FORANEA, LEJANA)"
+          ]
+        },
+        {
+          "id": "MOD-100-T03",
+          "title": "Enriquecer prospectos con distancia a ruta más cercana (Python/Shapely)",
+          "type": "data_loader",
+          "description": "Pre-calcular distancia de cada prospecto al corredor logístico más cercano usando Shapely. Esto es más eficiente que calcular en el navegador.",
+          "status": "pending",
+          "hours": {"estimated": 0.75, "actual": 0},
+          "technical_meta": {
+            "language": "python",
+            "calculation": "shapely.distance() point to LineString",
+            "algorithm": "Project point to line, calculate geodesic distance",
+            "files_affected": ["src/data/prospectos_sample.json"],
+            "new_fields": {
+              "distancia_ruta_km": "Distancia en km al corredor más cercano",
+              "ruta_cercana": "Nombre del destino de la ruta más cercana",
+              "en_corredor": "Boolean: True si distancia < 25km"
+            },
+            "python_implementation": {
+              "library": "shapely",
+              "method": "LineString.distance(Point) en CRS proyectado (EPSG:6372)",
+              "crs_note": "Calcular distancias en metros con CRS proyectado, luego convertir a km"
+            },
+            "output": "Actualizar prospectos_sample.json con campos adicionales"
+          },
+          "acceptance_criteria": [
+            "Cada prospecto tiene campo distancia_ruta_km",
+            "Campo ruta_cercana indica qué ruta está más cerca",
+            "Campo en_corredor facilita filtrado rápido",
+            "Distancias calculadas correctamente (verificar con casos conocidos)"
+          ]
+        }
+      ],
+      "testing": {
+        "data_validation_tests": [
+          {"id": "DV-100-01", "description": "Todas las rutas tienen geometría válida"},
+          {"id": "DV-100-02", "description": "Distancias calculadas son consistentes con distancia_planta_km existente"}
+        ]
+      }
+    },
+    {
+      "id": "MOD-101",
+      "name": "Componente maps.js - Capas Avanzadas",
+      "priority": "critical",
+      "status": "not_started",
+      "estimated_hours": 3.0,
+      "depends_on": ["MOD-100"],
+      "context": {
+        "problem": "maps.js actual solo soporta puntos, no líneas, heatmaps ni layer controls",
+        "impact": "Sin estas funciones, no se pueden agregar las nuevas capas al mapa",
+        "root_cause": "Implementación inicial enfocada solo en prospectos como puntos"
+      },
+      "tasks": [
+        {
+          "id": "MOD-101-T01",
+          "title": "Agregar soporte para Leaflet.heat",
+          "type": "component",
+          "description": "Integrar plugin leaflet.heat para mapas de calor de densidad",
+          "status": "pending",
+          "hours": {"estimated": 1.0, "actual": 0},
+          "technical_meta": {
+            "component_name": "maps",
+            "component_type": "js",
+            "files_affected": ["src/components/maps.js", "observablehq.config.js"],
+            "new_exports": ["createHeatmapLayer", "HEATMAP_CONFIG"],
+            "dependencies": ["leaflet.heat"],
+            "cdn_url": "https://cdn.jsdelivr.net/npm/leaflet.heat@0.2.0/dist/leaflet-heat.js",
+            "config": {
+              "radius": 25,
+              "blur": 15,
+              "maxZoom": 10,
+              "gradient": {
+                "0.2": "#ffffb2",
+                "0.4": "#fecc5c", 
+                "0.6": "#fd8d3c",
+                "0.8": "#f03b20",
+                "1.0": "#bd0026"
+              }
+            }
+          },
+          "acceptance_criteria": [
+            "createHeatmapLayer() crea capa de calor funcional",
+            "Heatmap se renderiza con gradiente configurado",
+            "Intensidad basada en score_total o tier"
+          ]
+        },
+        {
+          "id": "MOD-101-T02",
+          "title": "Agregar función createRoutesLayer",
+          "type": "component",
+          "description": "Función para crear capa de polilíneas de rutas logísticas con estilos por zona",
+          "status": "pending",
+          "hours": {"estimated": 1.0, "actual": 0},
+          "technical_meta": {
+            "component_name": "maps",
+            "files_affected": ["src/components/maps.js"],
+            "new_exports": ["createRoutesLayer", "ROUTE_COLORS", "createRoutePopup"],
+            "route_styles": {
+              "LOCAL": {
+                "color": "#4CAF50",
+                "weight": 4,
+                "opacity": 0.8,
+                "dashArray": null
+              },
+              "FORANEA": {
+                "color": "#FF9800",
+                "weight": 3,
+                "opacity": 0.7,
+                "dashArray": "10, 5"
+              },
+              "LEJANA": {
+                "color": "#F44336",
+                "weight": 2,
+                "opacity": 0.6,
+                "dashArray": "5, 10"
+              }
+            },
+            "popup_content": ["destino", "distancia_km", "costo_total", "tiempo_horas"]
+          },
+          "acceptance_criteria": [
+            "Líneas renderizan desde origen a destinos",
+            "Colores correctos por zona logística",
+            "Popups muestran info de costo y distancia",
+            "Estilos diferenciados (sólido, dash)"
+          ]
+        },
+        {
+          "id": "MOD-101-T03",
+          "title": "Agregar función createNodeMarkers",
+          "type": "component",
+          "description": "Función para crear marcadores de nodos logísticos (Planta, destinos)",
+          "status": "pending",
+          "hours": {"estimated": 0.5, "actual": 0},
+          "technical_meta": {
+            "component_name": "maps",
+            "files_affected": ["src/components/maps.js"],
+            "new_exports": ["createNodeMarkers", "NODE_ICONS"],
+            "marker_types": {
+              "planta_principal": {
+                "icon": "🏭",
+                "size": 30,
+                "color": "#C41E3A"
+              },
+              "destino_local": {
+                "icon": "📍",
+                "size": 20,
+                "color": "#4CAF50"
+              },
+              "destino_foraneo": {
+                "icon": "📍",
+                "size": 18,
+                "color": "#FF9800"
+              },
+              "destino_lejano": {
+                "icon": "📍",
+                "size": 16,
+                "color": "#F44336"
+              }
+            }
+          },
+          "acceptance_criteria": [
+            "Planta MTY tiene marcador distintivo grande",
+            "Destinos tienen marcadores por tipo",
+            "Popups con información del nodo"
+          ]
+        },
+        {
+          "id": "MOD-101-T04",
+          "title": "Agregar Layer Control interactivo",
+          "type": "component",
+          "description": "Control de capas estilo Leaflet para toggle de visibilidad",
+          "status": "pending",
+          "hours": {"estimated": 0.5, "actual": 0},
+          "technical_meta": {
+            "component_name": "maps",
+            "files_affected": ["src/components/maps.js"],
+            "new_exports": ["createLayerControl"],
+            "layers": {
+              "base_maps": [
+                {"name": "Claro (CartoDB)", "default": true},
+                {"name": "Oscuro (CartoDB Dark)", "default": false}
+              ],
+              "overlay_layers": [
+                {"name": "Prospectos", "default": true},
+                {"name": "Mapa de Calor", "default": false},
+                {"name": "Red Logística", "default": false},
+                {"name": "Nodos (Plantas/Destinos)", "default": false}
+              ]
+            }
+          },
+          "acceptance_criteria": [
+            "Control aparece en esquina del mapa",
+            "Toggle funciona para cada capa",
+            "Capas exclusivas y superpuestas correctas",
+            "Estado inicial respeta defaults"
+          ]
+        }
+      ],
+      "testing": {
+        "visual_tests": [
+          {"id": "VT-101-01", "description": "Heatmap renderiza correctamente"},
+          {"id": "VT-101-02", "description": "Rutas dibujan líneas correctas"},
+          {"id": "VT-101-03", "description": "Layer control visible y funcional"}
+        ],
+        "interaction_tests": [
+          {"id": "IT-101-01", "description": "Toggle de capas actualiza mapa inmediatamente"},
+          {"id": "IT-101-02", "description": "Popups de rutas abren correctamente"}
+        ]
+      }
+    },
+    {
+      "id": "MOD-102",
+      "name": "Página Explorador - Integración de Capas",
+      "priority": "high",
+      "status": "not_started",
+      "estimated_hours": 3.5,
+      "depends_on": ["MOD-100", "MOD-101"],
+      "context": {
+        "problem": "Página explorador-prospectos.md solo muestra prospectos, sin capas logísticas ni heatmap",
+        "impact": "Equipo comercial no puede visualizar red logística ni identificar prospectos estratégicos",
+        "root_cause": "Alcance inicial limitado a visualización básica de prospectos"
+      },
+      "tasks": [
+        {
+          "id": "MOD-102-T01",
+          "title": "Integrar layer control en explorador-prospectos.md",
+          "type": "page",
+          "description": "Agregar control de capas y nuevas visualizaciones al mapa existente",
+          "status": "pending",
+          "hours": {"estimated": 1.5, "actual": 0},
+          "technical_meta": {
+            "page_path": "src/explorador-prospectos.md",
+            "route": "/explorador-prospectos",
+            "files_affected": ["src/explorador-prospectos.md"],
+            "new_data_dependencies": ["rutas_logisticas.json", "nodos_logisticos.json"],
+            "components_used": [
+              "createBaseMap", "addGeoJsonLayer", "createHeatmapLayer",
+              "createRoutesLayer", "createNodeMarkers", "createLayerControl"
+            ],
+            "sections_to_add": [
+              "Toggle switches para capas",
+              "Slider de distancia a ruta",
+              "KPIs de prospectos en corredor"
+            ]
+          },
+          "acceptance_criteria": [
+            "Mapa muestra layer control funcional",
+            "Todas las capas se pueden activar/desactivar",
+            "Rendimiento aceptable con todas las capas",
+            "Leyenda actualiza según capas activas"
+          ]
+        },
+        {
+          "id": "MOD-102-T02",
+          "title": "Agregar filtro de proximidad a ruta",
+          "type": "input",
+          "description": "Slider para filtrar prospectos por distancia máxima a corredor logístico más cercano",
+          "status": "pending",
+          "hours": {"estimated": 1.0, "actual": 0},
+          "technical_meta": {
+            "input_type": "range",
+            "variable_name": "distanciaRutaMax",
+            "files_affected": ["src/explorador-prospectos.md"],
+            "config": {
+              "min": 0,
+              "max": 100,
+              "step": 5,
+              "default": 100,
+              "label": "Distancia máxima a ruta (km)"
+            },
+            "reactive_dependents": ["prospectosFiltrados", "kpisCorredor"],
+            "calculation": "Filtrar prospectos donde distancia_ruta_km <= distanciaRutaMax"
+          },
+          "acceptance_criteria": [
+            "Slider funcional con valores 0-100km",
+            "Filtro actualiza mapa y tabla en tiempo real",
+            "KPI muestra cantidad de prospectos en corredor"
+          ]
+        },
+        {
+          "id": "MOD-102-T03",
+          "title": "Agregar toggle de vista heatmap",
+          "type": "input",
+          "description": "Checkbox para alternar entre vista de puntos y mapa de calor",
+          "status": "pending",
+          "hours": {"estimated": 0.5, "actual": 0},
+          "technical_meta": {
+            "input_type": "toggle",
+            "variable_name": "mostrarHeatmap",
+            "files_affected": ["src/explorador-prospectos.md"],
+            "config": {
+              "label": "Mostrar mapa de calor",
+              "default": false
+            },
+            "behavior": "Cuando activo, oculta puntos individuales y muestra heatmap"
+          },
+          "acceptance_criteria": [
+            "Toggle cambia vista inmediatamente",
+            "Heatmap usa score_total como intensidad",
+            "Rendimiento aceptable en modo heatmap"
+          ]
+        },
+        {
+          "id": "MOD-102-T04",
+          "title": "Agregar KPIs de análisis logístico",
+          "type": "visualization",
+          "description": "Métricas de prospectos cercanos a rutas y oportunidades en corredor",
+          "status": "pending",
+          "hours": {"estimated": 0.5, "actual": 0},
+          "technical_meta": {
+            "files_affected": ["src/explorador-prospectos.md"],
+            "kpis": [
+              {
+                "label": "En Corredor (<25km)",
+                "calculation": "count(prospectos WHERE distancia_ruta_km < 25)",
+                "subtitle": "Fácil incorporación a ruta"
+              },
+              {
+                "label": "Accesibles (<50km)",
+                "calculation": "count(prospectos WHERE distancia_ruta_km < 50)",
+                "subtitle": "Desviación menor"
+              },
+              {
+                "label": "Costo Ahorro Est.",
+                "calculation": "sum(ahorro por no abrir nueva ruta)",
+                "subtitle": "vs rutas nuevas"
+              }
+            ]
+          },
+          "acceptance_criteria": [
+            "KPIs calculan correctamente",
+            "Se actualizan con filtros",
+            "Valores formateados"
+          ]
+        }
+      ],
+      "testing": {
+        "visual_tests": [
+          {"id": "VT-102-01", "description": "Mapa integrado renderiza todas las capas"},
+          {"id": "VT-102-02", "description": "Heatmap se superpone correctamente a basemap"}
+        ],
+        "interaction_tests": [
+          {"id": "IT-102-01", "description": "Filtro de proximidad actualiza mapa"},
+          {"id": "IT-102-02", "description": "Toggle heatmap funciona sin errores"},
+          {"id": "IT-102-03", "description": "Layer control sincroniza con toggles"}
+        ],
+        "performance_tests": [
+          {"id": "PT-102-01", "description": "Mapa con 3 capas activas carga en <3s"},
+          {"id": "PT-102-02", "description": "Filtros responden en <500ms"}
+        ]
+      }
+    },
+    {
+      "id": "MOD-103",
+      "name": "Página Nueva - Análisis de Red Logística",
+      "priority": "medium",
+      "status": "not_started",
+      "estimated_hours": 2.5,
+      "depends_on": ["MOD-100", "MOD-101"],
+      "context": {
+        "problem": "No existe página dedicada al análisis de la red logística y oportunidades de expansión",
+        "impact": "Dirección no puede visualizar cobertura actual vs oportunidades de nuevas rutas",
+        "root_cause": "Alcance inicial no incluía análisis logístico dedicado"
+      },
+      "tasks": [
+        {
+          "id": "MOD-103-T01",
+          "title": "Crear página red-logistica.md",
+          "type": "page",
+          "description": "Nueva página dedicada al análisis de la red de distribución con mapa centrado en rutas",
+          "status": "pending",
+          "hours": {"estimated": 2.0, "actual": 0},
+          "technical_meta": {
+            "page_path": "src/red-logistica.md",
+            "route": "/red-logistica",
+            "front_matter": {
+              "title": "Red Logística de Distribución",
+              "toc": false
+            },
+            "files_affected": ["src/red-logistica.md", "observablehq.config.js"],
+            "data_dependencies": ["rutas_logisticas.json", "nodos_logisticos.json", "prospectos_sample.json", "costos_logisticos.json"],
+            "sections": [
+              "KPIs de cobertura actual",
+              "Mapa de red con rutas y nodos",
+              "Tabla de rutas ordenada por ROI potencial",
+              "Análisis de zonas sin cobertura (heatmap)",
+              "Recomendaciones de nuevas rutas"
+            ]
+          },
+          "acceptance_criteria": [
+            "Página accesible desde navegación",
+            "Mapa centrado en red logística",
+            "Análisis de cobertura claro",
+            "Insights accionables"
+          ]
+        },
+        {
+          "id": "MOD-103-T02",
+          "title": "Agregar página a navegación",
+          "type": "routing",
+          "description": "Actualizar observablehq.config.js para incluir nueva página en sidebar",
+          "status": "pending",
+          "hours": {"estimated": 0.25, "actual": 0},
+          "technical_meta": {
+            "files_affected": ["observablehq.config.js"],
+            "new_page": {
+              "name": "🚛 Red Logística",
+              "path": "/red-logistica"
+            },
+            "position": "after explorador-prospectos"
+          },
+          "acceptance_criteria": [
+            "Link visible en sidebar",
+            "Navegación funciona correctamente"
+          ]
+        },
+        {
+          "id": "MOD-103-T03",
+          "title": "Implementar análisis de ROI por ruta",
+          "type": "visualization",
+          "description": "Calcular y visualizar ROI potencial de cada ruta basado en prospectos cercanos vs costo",
+          "status": "pending",
+          "hours": {"estimated": 0.25, "actual": 0},
+          "technical_meta": {
+            "files_affected": ["src/red-logistica.md"],
+            "calculation": {
+              "prospectos_en_ruta": "count(prospectos WHERE distancia_ruta < 50km)",
+              "potencial_ventas": "sum(score_total) * factor_conversion",
+              "costo_ruta": "costo_total from rutas_logisticas",
+              "roi": "(potencial_ventas - costo_ruta) / costo_ruta"
+            },
+            "viz_type": "scatter",
+            "axes": {
+              "x": "costo_ruta",
+              "y": "prospectos_en_ruta",
+              "color": "zona_logistica",
+              "size": "roi"
+            }
+          },
+          "acceptance_criteria": [
+            "Gráfico muestra ROI por ruta",
+            "Rutas con mejor ROI destacadas",
+            "Tooltip con detalles"
+          ]
+        }
+      ],
+      "testing": {
+        "visual_tests": [
+          {"id": "VT-103-01", "description": "Página renderiza correctamente"},
+          {"id": "VT-103-02", "description": "Mapa de red muestra todas las rutas"}
+        ]
+      }
+    },
+    {
+      "id": "MOD-104",
+      "name": "Estilos y UX Enhancements",
+      "priority": "low",
+      "status": "not_started",
+      "estimated_hours": 1.0,
+      "depends_on": ["MOD-102"],
+      "context": {
+        "problem": "Nuevas capas requieren estilos coherentes y UX pulida",
+        "impact": "Experiencia de usuario fluida y profesional",
+        "root_cause": "Integraciones nuevas requieren ajustes de CSS"
+      },
+      "tasks": [
+        {
+          "id": "MOD-104-T01",
+          "title": "Actualizar custom.css con estilos de capas",
+          "type": "styling",
+          "description": "Agregar estilos para leyenda de rutas, layer control y heatmap legend",
+          "status": "pending",
+          "hours": {"estimated": 0.5, "actual": 0},
+          "technical_meta": {
+            "files_affected": ["src/custom.css"],
+            "new_styles": [
+              ".layer-control-custom",
+              ".route-legend",
+              ".heatmap-legend",
+              ".proximity-slider"
+            ]
+          },
+          "acceptance_criteria": [
+            "Estilos coherentes con branding FCarnes",
+            "Layer control tiene buen contraste",
+            "Responsive en mobile"
+          ]
+        },
+        {
+          "id": "MOD-104-T02",
+          "title": "Agregar tooltips explicativos",
+          "type": "component",
+          "description": "Agregar tooltips que expliquen cada capa y filtro",
+          "status": "pending",
+          "hours": {"estimated": 0.5, "actual": 0},
+          "technical_meta": {
+            "files_affected": ["src/explorador-prospectos.md", "src/components/ui.js"],
+            "tooltips": [
+              {
+                "target": "Mapa de Calor",
+                "text": "Muestra densidad de prospectos. Rojo = alta concentración."
+              },
+              {
+                "target": "Red Logística",
+                "text": "Corredores de distribución desde Planta MTY. Verde=LOCAL, Naranja=FORÁNEA, Rojo=LEJANA."
+              },
+              {
+                "target": "Distancia a Ruta",
+                "text": "Filtra prospectos por cercanía a rutas existentes. Menor distancia = menor costo incremental."
+              }
+            ]
+          },
+          "acceptance_criteria": [
+            "Tooltips aparecen al hover",
+            "Texto claro y conciso",
+            "No interfieren con interacción"
+          ]
+        }
+      ],
+      "testing": {
+        "visual_tests": [
+          {"id": "VT-104-01", "description": "Estilos aplicados correctamente"},
+          {"id": "VT-104-02", "description": "Tooltips visibles y legibles"}
+        ]
+      }
+    }
+  ],
+  "summary_metrics": {
+    "total_estimated_hours": 12.0,
+    "total_tasks": 16,
+    "total_modules": 5,
+    "percentage_completed": 0,
+    "hours_by_module": {
+      "MOD-100": 2.0,
+      "MOD-101": 3.0,
+      "MOD-102": 3.5,
+      "MOD-103": 2.5,
+      "MOD-104": 1.0
+    },
+    "critical_path": ["MOD-100", "MOD-101", "MOD-102"]
+  },
+  "execution_order": [
+    {
+      "phase": 1,
+      "modules": ["MOD-100"],
+      "estimated_hours": 2.0,
+      "description": "Preparación de datos de rutas y geometrías",
+      "parallel": false
+    },
+    {
+      "phase": 2,
+      "modules": ["MOD-101"],
+      "estimated_hours": 3.0,
+      "description": "Desarrollo de componentes de mapas avanzados",
+      "parallel": false
+    },
+    {
+      "phase": 3,
+      "modules": ["MOD-102", "MOD-103"],
+      "estimated_hours": 6.0,
+      "description": "Integración en páginas (paralelo)",
+      "parallel": true
+    },
+    {
+      "phase": 4,
+      "modules": ["MOD-104"],
+      "estimated_hours": 1.0,
+      "description": "Pulido de estilos y UX",
+      "parallel": false
+    }
+  ],
+  "dependencies_external": [
+    {
+      "name": "leaflet.heat",
+      "version": "0.2.0",
+      "url": "https://cdn.jsdelivr.net/npm/leaflet.heat@0.2.0/dist/leaflet-heat.js",
+      "purpose": "Mapa de calor de densidad de prospectos"
+    }
+  ],
+  "dependencies_python": [
+    {
+      "name": "geointelligence",
+      "module": "geointelligence.apis.inegi.sakbe_routing",
+      "class": "INEGISakbeRoutingClient",
+      "purpose": "Obtener geometrías de rutas reales de la Red Nacional de Caminos (INEGI)",
+      "method": "calculate_route_by_coordinates() → RouteResult con geometry: LineString"
+    },
+    {
+      "name": "shapely",
+      "purpose": "Cálculos geoespaciales: distancia punto a línea, buffers de rutas"
+    },
+    {
+      "name": "geopandas",
+      "purpose": "Exportar GeoJSON con rutas y prospectos enriquecidos"
+    }
+  ],
+  "risks": [
+    {
+      "id": "RISK-101",
+      "description": "Rendimiento degradado con heatmap + rutas + prospectos simultáneos",
+      "probability": "medium",
+      "impact": "medium",
+      "mitigation": "Limitar puntos visibles por zoom level, lazy-load capas"
+    },
+    {
+      "id": "RISK-102",
+      "description": "Rutas dibujadas como líneas rectas no reflejan carreteras reales",
+      "probability": "high",
+      "impact": "low",
+      "mitigation": "Documentar claramente que son rutas simplificadas. Futuro: integrar rutas Sakbe reales."
+    },
+    {
+      "id": "RISK-103",
+      "description": "Cálculo de distancia a ruta computacionalmente costoso en navegador",
+      "probability": "medium",
+      "impact": "medium",
+      "mitigation": "Pre-calcular distancias en data loader, no en runtime"
+    }
+  ],
+  "data_contracts": {
+    "rutas_logisticas.json": {
+      "type": "FeatureCollection",
+      "feature_type": "LineString",
+      "crs": "EPSG:4326",
+      "required_properties": ["destino", "distancia_km", "costo_total", "zona_logistica", "source"],
+      "sample": {
+        "type": "Feature",
+        "geometry": {
+          "type": "LineString",
+          "coordinates": "[[lon1, lat1], [lon2, lat2], ...] - Coordenadas reales de carretera desde Sakbe API"
+        },
+        "properties": {
+          "destino": "Tijuana",
+          "distancia_km": 2600.19,
+          "costo_casetas": 7135.0,
+          "costo_combustible": 11433.0,
+          "costo_total": 18568.0,
+          "tiempo_horas": 32.5,
+          "zona_logistica": "LEJANA",
+          "source": "sakbe | estimation"
+        }
+      },
+      "notes": "Geometrías son rutas reales de carreteras mexicanas obtenidas de INEGI Sakbe API"
+    },
+    "prospectos_sample.json_enhanced": {
+      "new_fields": [
+        {
+          "name": "distancia_ruta_km",
+          "type": "number",
+          "unit": "kilometers",
+          "description": "Distancia al corredor logístico más cercano"
+        },
+        {
+          "name": "ruta_cercana",
+          "type": "string",
+          "description": "Nombre del destino de la ruta más cercana (e.g., 'Tijuana', 'Guadalajara')"
+        },
+        {
+          "name": "en_corredor",
+          "type": "boolean",
+          "description": "True si distancia_ruta_km < 25km"
+        }
+      ]
+    }
+  },
+  "implementation_notes": {
+    "sakbe_api_usage": {
+      "client": "geointelligence.apis.inegi.sakbe_routing.INEGISakbeRoutingClient",
+      "method_for_geometry": "calculate_route_by_coordinates(origin, destination) → RouteResult",
+      "geometry_access": "route_result.geometry (shapely.LineString)",
+      "vehicle_type": "VehicleType.CAMION_2_EJES (camión de 2 ejes para FCarnes)",
+      "route_type": "optima (ruta óptima considerando casetas y tiempo)",
+      "token_required": "INEGI_SAKBE_TOKEN en .env"
+    },
+    "script_location": "notebooks/fcarnes/scripts/generate_routes_geojson.py (a crear)",
+    "execution_timing": "Pre-build (ejecutar una vez, resultado se guarda en src/data/)"
+  }
+}
+

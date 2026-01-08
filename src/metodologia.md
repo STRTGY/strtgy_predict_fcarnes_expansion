@@ -25,8 +25,8 @@ Este análisis de expansión nacional para FCarnes utiliza una metodología de *
 ```js
 display(kpi([
   { label: "Fuentes de Datos", value: "5", subtitle: "Integradas" },
-  { label: "Prospectos Analizados", value: "79,175", subtitle: "A nivel nacional" },
-  { label: "Variables por Prospecto", value: "45+", subtitle: "Campos de datos" },
+  { label: "TAM Bruto Analizado", value: "79,620", subtitle: "Prospectos totales" },
+  { label: "Prospectos Verificados", value: "8,761", subtitle: "Alta calidad (11%)" },
   { label: "Cobertura Geográfica", value: "32", subtitle: "Estados de México" }
 ]));
 ```
@@ -46,7 +46,7 @@ display(kpi([
 | **Fuente** | INEGI - Instituto Nacional de Estadística y Geografía |
 | **Fecha de extracción** | Diciembre 2024 |
 | **Códigos SCIAN utilizados** | 461121, 461122, 311611, 311612, 311615 |
-| **Registros extraídos** | 79,273 unidades económicas |
+| **Registros extraídos** | 79,175 unidades económicas |
 
 **Campos utilizados:**
 - Nombre del establecimiento y razón social
@@ -107,27 +107,28 @@ display(kpi([
 
 **Análisis visual con inteligencia artificial**
 
-| Tier | Analizados | Con IA | Cobertura |
-|------|------------|--------|-----------|
-| **A_PREMIUM** | 338 | 274 | 72.7% |
-| **B_ALTA** | 10,119 | 9,639 | 43.7% |
-| **Total** | 10,457 | 9,913 | — |
+| Tier | Total | Con IA | Cobertura |
+|------|------:|-------:|----------:|
+| **A_PREMIUM** | 377 | 274 | 72.7% |
+| **B_ALTA** | 22,052 | 22,012 | **99.8%** |
+| **Total Prioritarios** | 22,429 | 22,286 | **99.4%** |
 
 | Atributo | Valor |
 |----------|-------|
 | **Modelo utilizado** | GPT-4o-mini |
-| **Costo total** | ~$48 USD |
+| **Método de procesamiento** | OpenAI Batch API |
+| **Costo total** | ~$50 USD |
 
 **Métricas de IA generadas:**
 - Vitalidad comercial de la escena (1-10)
 - Visibilidad del negocio desde la calle (1-10)
 - Condición de la fachada (1-10)
 - Target encontrado (sí/no)
-- Elementos detectados en la imagen
+- Tipo de calle y densidad urbana
 
 **Prospectos sin análisis IA:**
-- A_PREMIUM sin IA (103): Sin cobertura Street View o errores de parsing
-- B_ALTA sin IA (12,413): No incluidos en el batch original
+- A_PREMIUM sin IA (103): Sin cobertura Street View en ubicaciones rurales
+- B_ALTA sin IA (40): Diferencias menores de coordenadas que impidieron match
 
 </div>
 
@@ -166,10 +167,43 @@ display(kpi([
                                               │
                                               ▼
 ┌─────────────┐    ┌─────────────┐    ┌─────────────┐    ┌─────────────┐
-│  Dashboard  │◀───│   Análisis  │◀───│   Sakbe     │◀───│  Matching   │
-│   Export    │    │     IA      │    │   Routing   │    │  Clientes   │
+│  Dashboard  │◀───│   FILTRADO  │◀───│   Análisis  │◀───│   Sakbe     │
+│   Export    │    │   CALIDAD   │    │     IA      │    │   Routing   │
 └─────────────┘    └─────────────┘    └─────────────┘    └─────────────┘
 ```
+
+### 2.2 Filtrado de Calidad (Paso 08) ⭐ NUEVO
+
+Para garantizar que **solo se entreguen prospectos verificables al cliente**, se implementó un paso de filtrado estricto:
+
+<div class="card" style="border-left: 4px solid #4CAF50; background: #E8F5E9;">
+
+**Criterios de Filtrado Aplicados:**
+
+| Filtro | Criterio | Impacto |
+|--------|----------|---------|
+| **Tier** | Solo A_PREMIUM y B_ALTA | Elimina ~71% del TAM (C y D) |
+| **Score mínimo** | ≥ 50 puntos | Elimina baja relevancia |
+| **Completitud** | ≥ 30% de campos | Elimina registros vacíos |
+| **Nombres** | Excluir genéricos | Elimina "CARNICERIA", "EXPENDIO", etc. |
+| **Contacto** | Requiere teléfono, reviews o web | Elimina sin forma de contacto |
+
+**Resultado del filtrado:**
+- TAM Bruto: 79,620 prospectos
+- **Prospectos Verificados: 8,761** (11% de alta calidad)
+- Cada prospecto tiene contacto verificable
+
+</div>
+
+#### Niveles de Confianza
+
+Cada prospecto filtrado recibe un nivel de confianza:
+
+| Nivel | Criterio | Acción Recomendada |
+|-------|----------|-------------------|
+| **ALTA** | Validado IA + teléfono + reviews | Contactar directamente |
+| **MEDIA** | Teléfono o reviews | Validar por teléfono |
+| **PENDIENTE** | Solo datos básicos | Validar con Street View |
 
 ### 2.2 Criterios de Clasificación
 
@@ -247,7 +281,7 @@ display(decisionCallout({
   items: [
     "Teléfonos DENUE: 39.4% de cobertura (31,227 de 79,273)",
     "Teléfonos Google Maps: 1% de cobertura (756 prospectos)",
-    "Análisis IA: Solo Tier A_PREMIUM (338 de 79,273)",
+    "Análisis IA: 99.4% cobertura en Tier A+B (22,286 de 22,429)",
     "Sakbe: 18 rutas usaron estimación Haversine en lugar de API"
   ]
 }));
@@ -272,28 +306,33 @@ Las siguientes rutas no pudieron ser calculadas con la API de Sakbe y utilizan e
 
 ### 4.3 Precisión del Análisis de IA
 
-- **Errores de validación**: 14.5% de los análisis de IA tuvieron errores de parsing
+- **Tasa de éxito**: 99.7% de parsing exitoso en el batch B_ALTA (12,411 de 12,411)
 - **Falsos negativos**: Algunos negocios no fueron identificados en Street View
-- **Cobertura Street View**: Algunas ubicaciones rurales no tienen imágenes disponibles
+- **Cobertura Street View**: 103 ubicaciones A_PREMIUM y 40 B_ALTA sin imágenes (zonas rurales)
 
 ---
 
-## 5. Actualizaciones Futuras
+## 5. Actualizaciones Completadas y Futuras
 
-### 5.1 Mejoras Planificadas
+### 5.1 Actualizaciones Completadas ✅
 
-1. **Enriquecimiento de teléfonos**: Integrar los 31,227 teléfonos DENUE disponibles
-2. **Análisis IA extendido**: Procesar Tier B_ALTA (10,119 prospectos) usando OpenAI Batch API
-3. **Sakbe pendientes**: Reintentar las 18 rutas con estimación
-4. **Actualización DENUE**: Incorporar datos del censo económico 2024
+1. **Análisis IA B_ALTA** — Procesados 12,411 prospectos via OpenAI Batch API (Enero 2026)
+2. **Enriquecimiento de teléfonos** — Integrados 31,227 teléfonos DENUE (cobertura 39.4%)
 
-### 5.2 Costos Estimados
+### 5.2 Mejoras Planificadas
 
-| Mejora | Costo Estimado | Tiempo |
-|--------|----------------|--------|
-| Análisis IA B_ALTA (Batch) | $45.53 USD | 24 horas |
-| Sakbe rutas pendientes | $0 (API gratuita) | 1 hora |
-| Enriquecimiento teléfonos | $0 (datos existentes) | 30 min |
+1. **Sakbe pendientes**: Reintentar las 18 rutas con estimación
+2. **Actualización DENUE**: Incorporar datos del censo económico 2024
+3. **Análisis C_MEDIA**: Procesar prospectos de media prioridad (56,372 pendientes)
+
+### 5.3 Costos Históricos y Estimados
+
+| Mejora | Costo | Estado |
+|--------|-------|--------|
+| Análisis IA A_PREMIUM | ~$15 USD | ✅ Completado |
+| Análisis IA B_ALTA | ~$35 USD | ✅ Completado |
+| Sakbe rutas pendientes | $0 (API gratuita) | Pendiente |
+| Análisis C_MEDIA (Batch) | ~$200 USD | Opcional |
 
 ---
 
@@ -305,19 +344,34 @@ Todo el análisis es reproducible mediante el pipeline de datos ubicado en:
 
 ```
 notebooks/FCarnes/pipeline/
-├── config.py           # Configuración centralizada
-├── step_01_extract_denue.py
-├── step_02_clean_denue.py
-├── step_03_integrate_google.py
-├── step_04_consolidate_tam.py
-├── step_04b_enrich_logistics.py
-├── step_05_streetview_urls.py
-├── step_06_export_dashboard.py
-├── step_07_final_database.py
-└── run_pipeline.py     # Orquestador CLI
+├── config.py                    # Configuración centralizada
+├── step_01_extract_denue.py     # Extracción DENUE
+├── step_02_clean_denue.py       # Limpieza y scoring
+├── step_03_integrate_google.py  # Integración Google Maps
+├── step_04_consolidate_tam.py   # Consolidación TAM
+├── step_04b_enrich_logistics.py # Enriquecimiento Sakbe
+├── step_05_streetview_urls.py   # URLs Street View
+├── step_06_export_dashboard.py  # Export prospectos
+├── step_07_final_database.py    # Base final
+├── step_08_filter_quality.py    # ⭐ FILTRADO DE CALIDAD
+└── run_pipeline.py              # Orquestador CLI
 ```
 
-### 6.2 Dependencias
+### 6.2 Ejecutar Filtrado de Calidad
+
+Para regenerar los prospectos verificados:
+
+```bash
+cd notebooks/FCarnes/pipeline
+python step_08_filter_quality.py
+```
+
+Esto genera:
+- `prospectos_verificados_alta_calidad_{fecha}.parquet`
+- `prospectos_verificados_alta_calidad_{fecha}.csv`
+- `reports/.../src/data/prospectos_sample.json`
+
+### 6.3 Dependencias
 
 - Python 3.10+
 - pandas, geopandas
@@ -330,6 +384,6 @@ notebooks/FCarnes/pipeline/
 
 <small style="color: #999; display: block; text-align: center; margin-top: 2rem; padding-top: 1rem; border-top: 1px solid #eee;">
   <strong>STRTGY</strong> — Transformando complejidad en certeza<br>
-  Proyecto FCarnes Expansión Nacional | Metodología v1.0 | Enero 2026
+  Proyecto FCarnes Expansión Nacional | Metodología v2.0 (con Filtrado de Calidad) | Enero 2026
 </small>
 

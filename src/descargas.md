@@ -28,7 +28,7 @@ import {note} from "./components/ui.js";
       Resumen ejecutivo del mercado total direccionable por región geográfica. Incluye TAM bruto, neto, clientes y penetración.
     </p>
     <p style="font-size: 0.85rem; color: #888; margin-bottom: 1rem;">
-      <strong>Formato:</strong> CSV | <strong>Filas:</strong> 7 | <strong>Columnas:</strong> 7
+      <strong>Formato:</strong> CSV | <strong>Filas:</strong> 9 | <strong>Columnas:</strong> 13
     </p>
     <a href="./data/tam_por_macroregion.csv" download 
        style="display: inline-block; background: #4CAF50; color: white; padding: 10px 20px; border-radius: 6px; text-decoration: none; font-weight: 600;">
@@ -64,10 +64,16 @@ import {note} from "./components/ui.js";
 | `macro_region` | texto | Nombre de la macro-región (NORESTE, BAJIO, etc.) |
 | `tam_bruto` | entero | Total de establecimientos en la región |
 | `clientes_fcarnes` | entero | Clientes actuales de FCarnes |
+| `clientes_local` | entero | Clientes locales de FCarnes |
 | `tam_neto` | entero | Prospectos nuevos (TAM bruto - clientes) |
 | `penetracion_pct` | decimal | Porcentaje de penetración actual |
-| `distancia_promedio` | decimal | Distancia promedio a planta (km) |
-| `con_google_match` | entero | Registros con validación Google Maps |
+| `tam_mayorista` | entero | Mayoristas en la región |
+| `tam_proceso` | entero | Negocios de proceso (obradores, empacadoras) |
+| `tam_retail` | entero | Carnicerías minoristas |
+| `distancia_sakbe_km` | decimal | Distancia Sakbe promedio a planta (km) |
+| `costo_logistico_mxn` | decimal | Costo logístico total por viaje (MXN) |
+| `casetas_mxn` | decimal | Costo de casetas por viaje (MXN) |
+| `combustible_mxn` | decimal | Costo de combustible por viaje (MXN) |
 
 ### Top 50 Ciudades (`tam_top50_ciudades.csv`)
 
@@ -91,7 +97,7 @@ import {note} from "./components/ui.js";
     <span>📋</span> Censo Nacional FCarnes (Base Completa)
   </h3>
   <p style="color: #555; margin-bottom: 1rem;">
-    La base de datos completa con <strong>78,670 prospectos</strong> se entrega en archivo separado por su tamaño. Incluye todos los campos del censo, coordenadas, y links a Street View.
+    La base de datos completa con <strong>76,116 prospectos</strong> (TAM Neto) se entrega en archivo separado por su tamaño. Incluye todos los campos del censo, coordenadas, y links a Street View.
   </p>
   
   <div style="background: white; padding: 1rem; border-radius: 6px; margin-bottom: 1rem;">

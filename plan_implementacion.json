@@ -823,7 +823,13 @@
       "MOD-006": 1.0,
       "MOD-007": 1.5
     },
-    "critical_path": ["MOD-000", "MOD-001", "MOD-002", "MOD-005", "MOD-007"]
+    "critical_path": ["MOD-000", "MOD-001", "MOD-002", "MOD-005", "MOD-007"],
+    "enhancements_planned": {
+      "total_hours": 12.0,
+      "total_tasks": 16,
+      "total_modules": 5
+    },
+    "combined_total_hours": 32.5
   },
   "execution_order": [
     {
@@ -876,6 +882,32 @@
       "probability": "medium",
       "impact": "low",
       "mitigation": "Generar URL estándar basada en coordenadas como fallback"
+    }
+  ],
+  "enhancements": [
+    {
+      "id": "ENH-001",
+      "name": "Integración de Redes Logísticas y Mapas de Calor",
+      "status": "planned",
+      "priority": "high",
+      "estimated_hours": 12.0,
+      "plan_file": "plan_logistics_heatmap.json",
+      "description": "Agregar capas de visualización de corredores logísticos, mapa de calor de densidad, y filtros de proximidad a rutas",
+      "modules": ["MOD-100", "MOD-101", "MOD-102", "MOD-103", "MOD-104"],
+      "deliverables": [
+        "Capa de red logística (Monterrey → destinos)",
+        "Mapa de calor de densidad de prospectos",
+        "Filtro de proximidad a rutas logísticas",
+        "Control de capas interactivo",
+        "Nueva página de análisis de red logística"
+      ],
+      "business_value": {
+        "logistics_optimization": "Visualizar cobertura actual de red de distribución",
+        "prospect_prioritization": "Identificar prospectos estratégicos cerca de rutas existentes",
+        "density_analysis": "Detectar zonas de alta concentración para nuevas rutas o CEDIS"
+      },
+      "depends_on": ["MOD-002", "MOD-005"],
+      "created_at": "2026-01-07"
     }
   ]
 }

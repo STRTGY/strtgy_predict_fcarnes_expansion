@@ -66,7 +66,7 @@ export function heroFCarnes(options = {}) {
   mainContent.style.cssText = "flex: 1; min-width: 280px;";
   
   mainContent.innerHTML = `
-    <h1 style="margin: 0; font-size: 1.85rem; font-weight: 700; text-shadow: 1px 1px 2px rgba(0,0,0,0.2);">
+    <h1 style="margin: 0; font-size: 1.85rem; font-weight: 700; color: white; text-shadow: 1px 1px 2px rgba(0,0,0,0.2);">
       ${title}
     </h1>
     <p style="margin: 0.35rem 0 0; font-size: 1rem; opacity: 0.9;">${subtitle}</p>
