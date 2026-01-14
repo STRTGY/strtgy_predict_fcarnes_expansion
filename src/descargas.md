@@ -101,7 +101,7 @@ import {note} from "./components/ui.js";
     <span>📋</span> Censo Nacional FCarnes (Base Completa)
   </h3>
   <p style="color: #555; margin-bottom: 1rem;">
-    La base de datos completa con <strong>79,620 prospectos</strong> (TAM Bruto) se entrega en archivo separado por su tamaño. Incluye todos los campos del censo, coordenadas, y links a Street View. De estos, <strong>28,690</strong> son prospectos verificados de alta calidad.
+    La base de datos completa con <strong>79,620 prospectos</strong> (TAM Bruto) se entrega en archivo separado por su tamaño. Incluye todos los campos del censo, coordenadas, y links a Street View. De estos, <strong>30,915</strong> son prospectos verificados de alta calidad.
   </p>
   
   <div style="background: white; padding: 1rem; border-radius: 6px; margin-bottom: 1rem;">

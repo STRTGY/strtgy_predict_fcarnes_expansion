@@ -127,7 +127,7 @@ Este proyecto incluye reglas específicas para Cursor AI en `.cursorrules`. Las 
 
 ### 🆕 Scoring Diferenciado (v2.0)
 
-- ✅ **Detección de Cadenas**: 3,690 negocios con 4+ sucursales detectadas
+- ✅ **Detección de Cadenas**: 574 cadenas con criterios estrictos (fuzzy matching)
 - ✅ **Priorización ZM Monterrey**: Bodegones y retailers (+15 pts), procesadoras excluidas
 - ✅ **Priorización Exterior**: Cadenas multi-ubicación (+20 pts)
 - ✅ **Filtros Nuevos**: "Solo Prioritarios" y "Solo Cadenas (4+ suc)"

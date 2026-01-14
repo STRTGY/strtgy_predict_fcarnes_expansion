@@ -26,7 +26,7 @@ Este análisis de expansión nacional para FCarnes utiliza una metodología de *
 display(kpi([
   { label: "Fuentes de Datos", value: "5", subtitle: "Integradas" },
   { label: "TAM Bruto Analizado", value: "79,620", subtitle: "Mercado Total" },
-  { label: "Prospectos Verificados", value: "28,690", subtitle: "36% pasó filtros" },
+  { label: "Prospectos Verificados", value: "30,915", subtitle: "38.8% pasó filtros" },
   { label: "Macro-Regiones", value: "9", subtitle: "Cobertura nacional" }
 ]));
 ```
@@ -52,7 +52,7 @@ display(kpi([
     <li><strong>Completitud ≥ 30%:</strong> Score mínimo de datos completos en el registro</li>
   </ol>
   <p style="margin: 0.75rem 0 0 0; font-size: 0.85rem; color: #92400e; background: white; padding: 0.5rem; border-radius: 4px;">
-    <strong>Resultado:</strong> De 79,620 registros iniciales → 28,690 prospectos verificados (36% de retención).
+    <strong>Resultado:</strong> De 79,620 registros iniciales → 30,915 prospectos verificados (38.8% de retención).
   </p>
 </div>
 
@@ -261,7 +261,7 @@ Prospecto → ¿Razón social compartida con 4+? → CONFIRMADA
 
 | Atributo | Valor |
 |----------|-------|
-| **Clientes únicos** | 3,059 |
+| **Clientes únicos** | 3,368 |
 | **Cobertura de ciudades** | 129 ciudades |
 | **Período de referencia** | 2024-2025 |
 
@@ -337,7 +337,7 @@ Para garantizar que **solo se entreguen prospectos verificables**, se implement�
 
 **Resultado del filtrado:**
 - TAM Bruto: 79,620 prospectos
-- **Prospectos Verificados: 28,690** (36% de alta calidad)
+- **Prospectos Verificados: 30,915** (38.8% de alta calidad)
 - Cada prospecto tiene contacto verificable
 
 </div>
@@ -470,7 +470,7 @@ Se calcularon 16 rutas estratégicas desde la planta de Monterrey, optimizadas p
 | Enriquecimiento Google Maps | ✅ Completado | 866 prospectos |
 | Análisis IA (Tier A+B) | ✅ Completado | 22,286 prospectos (99.4%) |
 | Cálculo de rutas logísticas | ✅ Completado | 16 destinos estratégicos |
-| Filtrado de calidad | ✅ Completado | 28,690 verificados |
+| Filtrado de calidad | ✅ Completado | 30,915 verificados |
 | Red logística visualizable | ✅ Completado | Rutas en mapa interactivo |
 
 ---
