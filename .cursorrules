@@ -1,0 +1,310 @@
+# STRTGY Predict | FCarnes Expansion Nacional
+# Reglas de Cursor para desarrollo de Dashboard Observable Framework
+
+Este proyecto es un **dashboard de inteligencia comercial** construido con Observable Framework para la expansión nacional de FCarnes.
+
+---
+
+## Contexto del Proyecto
+
+### Cliente: FCarnes
+- **Industria:** Producción y distribución de carne de res y cerdo (NO pollo, NO pescado)
+- **Canal objetivo:** Tradicional Consolidado (Carnicerías, Obradores, Mayoristas)
+- **Origen logístico:** Planta en Monterrey, Nuevo León (25.682°N, -100.257°W)
+- **Alcance:** Expansión nacional con énfasis en 8 macro-regiones
+
+### Colores de Marca FCarnes
+```javascript
+primary: "#C41E3A"      // Rojo cárnico - color principal
+primaryDark: "#8B0000"  // Rojo oscuro - acentos
+secondary: "#1565C0"    // Azul - información
+accent: "#FF9800"       // Naranja - advertencias y combustible
+success: "#2E7D32"      // Verde - validado/éxito
+```
+
+### Macro-Regiones y Colores
+```javascript
+NORESTE: "#C41E3A"        // Mercado principal
+CENTRO: "#1565C0"         // Megalópolis
+GOLFO_SURESTE: "#2E7D32"  // Emergente
+OCCIDENTE: "#7B1FA2"      // Occidente
+BAJIO: "#F57C00"          // Industrial
+PENINSULA: "#00838F"      // Yucatán
+FRONTERA_NORTE: "#5D4037" // Frontera
+NOROESTE: "#546E7A"       // Noroeste
+```
+
+---
+
+## Observable Framework: Convenciones
+
+### Estructura de Archivos
+```
+src/
+├── index.md                    # Página principal
+├── [pagina].md                 # Páginas del dashboard
+├── components/
+│   ├── ui.js                   # KPIs, formatters, badges
+│   ├── brand.js                # Hero, callouts STRTGY
+│   └── maps.js                 # Utilidades Leaflet
+├── data/
+│   ├── *.csv                   # Datos tabulares
+│   └── *.json                  # Datos estructurados/GeoJSON
+└── custom.css                  # Estilos personalizados
+```
+
+### Frontmatter de Páginas
+Todas las páginas `.md` deben comenzar con frontmatter YAML:
+```yaml
+---
+title: Título de la Página
+toc: false  # Preferir false para dashboards
+theme: ["cotton", "wide"]  # Tema por defecto del proyecto
+---
+```
+
+### Importación de Componentes
+Siempre importar desde paths relativos a `src/`:
+```javascript
+import {kpi, formatNumber, formatPercent} from "./components/ui.js";
+import {heroFCarnes, decisionCallout} from "./components/brand.js";
+import {createBaseMap, TIER_COLORS} from "./components/maps.js";
+import * as Plot from "npm:@observablehq/plot";
+```
+
+### Carga de Datos
+Usar `FileAttachment` para cargar datos locales:
+```javascript
+const datos = await FileAttachment("data/archivo.csv").csv({typed: true});
+const geojson = await FileAttachment("data/prospectos.json").json();
+```
+
+---
+
+## Patrones de Código Establecidos
+
+### KPIs con Semántica de Color
+```javascript
+display(kpi([
+  { label: "Etiqueta", value: formatNumber(valor), color: "primary", icon: "🎯" },
+  { label: "Verificados", value: formatNumber(n), color: "success", icon: "✅" },
+  { label: "Clientes", value: formatNumber(c), color: "info", icon: "👥" },
+  { label: "Advertencia", value: "...", color: "warning", icon: "⚠️" }
+]));
+```
+- **primary:** Métricas clave de negocio
+- **success:** Datos verificados/validados
+- **info:** Información contextual
+- **warning:** Alertas o precauciones
+
+### Hero del Dashboard
+```javascript
+display(heroFCarnes({
+  title: "Título Principal",
+  subtitle: "Subtítulo descriptivo",
+  context: "Contexto adicional opcional",
+  metrics: [
+    { value: formatCompact(total), label: "TOTAL" },
+    { value: formatCompact(verificados), label: "VERIFICADOS" }
+  ]
+}));
+```
+
+### Callouts Informativos
+```javascript
+// Decisiones estratégicas
+display(decisionCallout({
+  title: "¿Qué decidir con este análisis?",
+  items: ["Decisión 1", "Decisión 2", "Decisión 3"]
+}));
+
+// Insights destacados
+display(insightCallout({
+  title: "Hallazgo Clave",
+  content: "Descripción del insight...",
+  type: "highlight"  // highlight | warning | success | info
+}));
+```
+
+### Gráficas con Observable Plot
+```javascript
+display(resize((width) => Plot.plot({
+  width,
+  height: 400,
+  marginLeft: 100,
+  x: { label: "Eje X →", grid: true, tickFormat: d => formatNumber(d) },
+  y: { label: null },
+  color: { legend: true },
+  marks: [
+    Plot.barX(datos, {
+      y: "categoria",
+      x: "valor",
+      fill: d => REGION_COLORS[d.region],
+      tip: true
+    }),
+    Plot.ruleX([0])
+  ]
+})));
+```
+
+### Mapas Interactivos con Leaflet
+```javascript
+const container = document.createElement("div");
+container.style.cssText = "height: 500px; width: 100%; border-radius: 8px;";
+
+const map = createBaseMap(container, {
+  center: [23.6345, -102.5528],  // Centro de México
+  zoom: 5
+});
+
+// Agregar capa GeoJSON
+addGeoJsonLayer(map, geojsonData, {
+  pointToLayer: (feature, latlng) => createCircleMarker(latlng, {
+    fillColor: getColorForTier(feature.properties.tier)
+  }),
+  popupContent: (props) => createProspectPopup(props)
+});
+
+display(container);
+```
+
+---
+
+## Formatters Estándar
+
+```javascript
+formatNumber(12345)      // "12,345" (locale es-MX)
+formatPercent(45.5)      // "45.5%"
+formatDistance(150)      // "150 km"
+formatCompact(79000)     // "79K"
+```
+
+---
+
+## Estructura de Datos
+
+### Prospectos (GeoJSON)
+```javascript
+{
+  type: "FeatureCollection",
+  features: [{
+    type: "Feature",
+    geometry: { type: "Point", coordinates: [lon, lat] },
+    properties: {
+      nombre: "Carnicería López",
+      categoria_fcarnes: "RETAIL",     // MAYOREO | RETAIL | PROCESO
+      tier: "A_PREMIUM",                // A_PREMIUM | B_ALTA | C_MEDIA | D_BAJA
+      score_total: 85.5,
+      macro_region: "NORESTE",
+      zona_logistica: "LOCAL",          // LOCAL | REGIONAL | FORANEA | LEJANA
+      distancia_planta_km: 45,
+      telefono: "8112345678",
+      url_streetview: "https://...",
+      ai_analizado: true,
+      ai_scene_vitality: 8.5,
+      ai_target_visibility: 7.2
+    }
+  }]
+}
+```
+
+### TAM por Región (CSV)
+```csv
+macro_region,tam_bruto,tam_neto,clientes_fcarnes,penetracion_pct,distancia_sakbe_km,costo_logistico_mxn
+NORESTE,15000,12000,3000,20.0,0,0
+CENTRO,25000,24900,100,0.4,980,8500
+...
+```
+
+---
+
+## Estilos CSS Personalizados
+
+Usar clases de Observable Framework cuando sea posible:
+```html
+<div class="grid grid-cols-2">  <!-- Grid de 2 columnas -->
+<div class="grid grid-cols-3">  <!-- Grid de 3 columnas -->
+<div class="card">              <!-- Tarjeta con sombra -->
+<div class="note">              <!-- Nota informativa -->
+```
+
+Para estilos inline, mantener consistencia:
+```html
+<div style="border-left: 4px solid #C41E3A; background: linear-gradient(...)">
+```
+
+---
+
+## Buenas Prácticas
+
+### 1. Reproducibilidad
+- Todas las transformaciones de datos deben ser determinísticas
+- Evitar dependencias externas que puedan cambiar
+
+### 2. Rendimiento
+- Precalcular métricas agregadas al inicio del archivo
+- Usar `resize((width) => ...)` para gráficas responsivas
+- Limitar datos en tablas con `rows: 10`
+
+### 3. Accesibilidad
+- Incluir `title` o `tip` en todas las gráficas
+- Usar colores con buen contraste
+- Proporcionar alternativas textuales para información crítica
+
+### 4. Narrativa
+- Cada página debe contar una historia clara
+- Usar callouts para destacar insights clave
+- Incluir contexto de "¿Qué hacer con esto?"
+
+### 5. Consistencia de Marca
+- Usar siempre colores de `BRAND_COLORS` y `REGION_COLORS`
+- Mantener el tono ejecutivo y orientado a decisiones
+- Incluir footer de STRTGY con `strtgyFooter()`
+
+---
+
+## NO Hacer
+
+❌ **No hardcodear colores** - Usar constantes de `brand.js` o `ui.js`
+❌ **No cargar datos de URLs externas** - Todo debe estar en `src/data/`
+❌ **No usar estilos globales invasivos** - Preferir estilos inline o clases Observable
+❌ **No crear páginas sin frontmatter** - Siempre incluir título
+❌ **No mostrar datos sin contexto** - Agregar labels, subtítulos, tooltips
+❌ **No mezclar español e inglés en UI** - Todo el dashboard es en español
+❌ **No incluir información de pollo/pescado** - FCarnes solo vende carne roja
+
+---
+
+## Despliegue
+
+El proyecto se despliega automáticamente a GitHub Pages via `.github/workflows/deploy.yml`:
+```bash
+npm run build    # Genera dist/
+npm run dev      # Servidor de desarrollo
+```
+
+---
+
+## Referencias Rápidas
+
+| Componente | Import | Uso |
+|------------|--------|-----|
+| `kpi()` | `ui.js` | Tarjetas de KPI |
+| `bigNumber()` | `ui.js` | Número prominente |
+| `tierBadge()` | `ui.js` | Badge de tier |
+| `regionBadge()` | `ui.js` | Badge de región |
+| `note()` | `ui.js` | Callout informativo |
+| `heroFCarnes()` | `brand.js` | Hero del dashboard |
+| `decisionCallout()` | `brand.js` | Lista de decisiones |
+| `insightCallout()` | `brand.js` | Insight destacado |
+| `navigationCards()` | `brand.js` | Navegación visual |
+| `strtgyFooter()` | `brand.js` | Footer STRTGY |
+| `createBaseMap()` | `maps.js` | Mapa Leaflet base |
+| `createProspectPopup()` | `maps.js` | Popup de prospecto |
+| `TIER_COLORS` | `maps.js` | Colores por tier |
+| `REGION_COLORS` | `maps.js` | Colores por región |
+
+---
+
+*STRTGY — Transformando complejidad en certeza*
+

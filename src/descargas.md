@@ -28,7 +28,7 @@ import {note} from "./components/ui.js";
       Resumen ejecutivo del mercado total direccionable por región geográfica. Incluye TAM bruto, neto, clientes y penetración.
     </p>
     <p style="font-size: 0.85rem; color: #888; margin-bottom: 1rem;">
-      <strong>Formato:</strong> CSV | <strong>Filas:</strong> 9 | <strong>Columnas:</strong> 13
+      <strong>Formato:</strong> CSV | <strong>Filas:</strong> 9 | <strong>Columnas:</strong> 17
     </p>
     <a href="./data/tam_por_macroregion.csv" download 
        style="display: inline-block; background: #4CAF50; color: white; padding: 10px 20px; border-radius: 6px; text-decoration: none; font-weight: 600;">
@@ -70,7 +70,11 @@ import {note} from "./components/ui.js";
 | `tam_mayorista` | entero | Mayoristas en la región |
 | `tam_proceso` | entero | Negocios de proceso (obradores, empacadoras) |
 | `tam_retail` | entero | Carnicerías minoristas |
-| `distancia_sakbe_km` | decimal | Distancia Sakbe promedio a planta (km) |
+| `verificados_total` | entero | Prospectos verificados de alta calidad |
+| `verificados_a_b` | entero | Verificados en Tier A y B (prioritarios) |
+| `verificados_confianza_alta` | entero | Verificados con confianza alta |
+| `pct_verificados` | decimal | Porcentaje de verificados vs TAM bruto |
+| `distancia_sakbe_km` | decimal | Distancia promedio a planta (km) |
 | `costo_logistico_mxn` | decimal | Costo logístico total por viaje (MXN) |
 | `casetas_mxn` | decimal | Costo de casetas por viaje (MXN) |
 | `combustible_mxn` | decimal | Costo de combustible por viaje (MXN) |
@@ -79,14 +83,14 @@ import {note} from "./components/ui.js";
 
 | Campo | Tipo | Descripción |
 |-------|------|-------------|
-| `ciudad_estado` | texto | Ciudad y estado (ej. "Monterrey, Nuevo León") |
+| `municipio` | texto | Nombre del municipio/ciudad |
 | `macro_region` | texto | Macro-región a la que pertenece |
 | `tam_bruto` | entero | Total de establecimientos en la ciudad |
-| `tam_neto` | entero | Prospectos nuevos en la ciudad |
-| `clientes_fcarnes` | entero | Clientes actuales en la ciudad |
-| `penetracion_pct` | decimal | Porcentaje de penetración |
+| `score_promedio` | decimal | Score de relevancia promedio (0-100) |
 | `distancia_promedio` | decimal | Distancia a planta (km) |
-| `con_google_match` | entero | Registros validados con Google Maps |
+| `clientes_fcarnes` | entero | Clientes actuales en la ciudad |
+| `tam_neto` | entero | Prospectos nuevos en la ciudad |
+| `penetracion_pct` | decimal | Porcentaje de penetración actual |
 
 ---
 
@@ -97,7 +101,7 @@ import {note} from "./components/ui.js";
     <span>📋</span> Censo Nacional FCarnes (Base Completa)
   </h3>
   <p style="color: #555; margin-bottom: 1rem;">
-    La base de datos completa con <strong>76,116 prospectos</strong> (TAM Neto) se entrega en archivo separado por su tamaño. Incluye todos los campos del censo, coordenadas, y links a Street View.
+    La base de datos completa con <strong>79,620 prospectos</strong> (TAM Bruto) se entrega en archivo separado por su tamaño. Incluye todos los campos del censo, coordenadas, y links a Street View. De estos, <strong>28,690</strong> son prospectos verificados de alta calidad.
   </p>
   
   <div style="background: white; padding: 1rem; border-radius: 6px; margin-bottom: 1rem;">
@@ -164,6 +168,19 @@ La base de datos completa incluye los siguientes campos:
       <li><code>categoria_fcarnes</code> - MAYOREO/RETAIL/PROCESO</li>
       <li><code>tier</code> - A/B/C/D</li>
       <li><code>score_total</code> - Puntuación 0-100</li>
+      <li><code>score_ajustado</code> - Score con bonus Scoring v2</li>
+    </ul>
+  </div>
+  
+  <div class="card" style="font-size: 0.85rem;">
+    <h4 style="margin-top: 0; color: #C41E3A;">Scoring v2 (Nuevo)</h4>
+    <ul style="margin: 0; padding-left: 1.2rem; color: #555;">
+      <li><code>es_prioritario</code> - 1 si cumple reglas v2</li>
+      <li><code>razon_prioridad</code> - Razón de priorización</li>
+      <li><code>es_cadena</code> - 1 si es cadena (4+ suc)</li>
+      <li><code>nombre_cadena</code> - Nombre de la cadena</li>
+      <li><code>num_sucursales</code> - Sucursales detectadas</li>
+      <li><code>zona_scoring</code> - ZM_MTY/EXTERIOR/RESTO_NL</li>
     </ul>
   </div>
   

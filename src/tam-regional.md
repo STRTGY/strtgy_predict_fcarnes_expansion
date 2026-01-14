@@ -48,6 +48,45 @@ const pctVerificados = totalTamBruto > 0 ? (totalVerificados / totalTamBruto * 1
 
 ---
 
+## 💎 Síntesis Estratégica
+
+<div class="card" style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: white; border: none; margin: 1rem 0;">
+  <h3 style="margin-top: 0; color: #fbbf24; display: flex; align-items: center; gap: 0.5rem;">
+    <span>🎯</span> El Panorama en Una Mirada
+  </h3>
+  
+  <p style="margin: 0.75rem 0; font-size: 0.95rem; line-height: 1.7;">
+    FCarnes tiene una <strong>posición de fuerza en NORESTE</strong> (>50% de penetración) 
+    pero <strong>prácticamente ninguna presencia en el 95% del territorio nacional</strong>. Esta asimetría representa 
+    una <strong>oportunidad masiva de crecimiento</strong>.
+  </p>
+  
+  <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin: 1rem 0; padding: 1rem; background: rgba(255,255,255,0.1); border-radius: 8px;">
+    <div style="text-align: center;">
+      <div style="font-size: 1.75rem; font-weight: 700; color: #22c55e;">79.6K</div>
+      <div style="font-size: 0.75rem; color: #94a3b8;">TAM Bruto<br>Nacional</div>
+    </div>
+    <div style="text-align: center;">
+      <div style="font-size: 1.75rem; font-weight: 700; color: #3b82f6;">30.9K</div>
+      <div style="font-size: 0.75rem; color: #94a3b8;">Prospectos<br>Verificados</div>
+    </div>
+    <div style="text-align: center;">
+      <div style="font-size: 1.75rem; font-weight: 700; color: #f59e0b;">$3-7K</div>
+      <div style="font-size: 0.75rem; color: #94a3b8;">Costo por Viaje<br>Zonas Prioritarias</div>
+    </div>
+    <div style="text-align: center;">
+      <div style="font-size: 1.75rem; font-weight: 700; color: #ec4899;">4 Fases</div>
+      <div style="font-size: 0.75rem; color: #94a3b8;">Plan de<br>Expansión</div>
+    </div>
+  </div>
+  
+  <p style="margin: 0; font-size: 0.9rem; color: #cbd5e1; border-top: 1px solid rgba(255,255,255,0.2); padding-top: 0.75rem;">
+    <strong>Recomendación:</strong> 1° BAJÍO (alto ROI), 2° NORESTE (consolidar), 3° CENTRO (evaluar CEDIS), 4° GOLFO/PENÍNSULA (alianzas).
+  </p>
+</div>
+
+---
+
 ## TAM Total vs Prospectos Verificados
 
 ```js
@@ -75,7 +114,7 @@ display(kpi([
       <strong>${formatNumber(totalVerificados)}</strong> prospectos de alta calidad después del proceso de filtrado y verificación multicapa.
     </p>
     <p style="margin-top: 0.5rem; font-size: 0.8rem; color: #777;">
-      Solo incluye: Tier A/B, score &gt;50, datos de contacto, coordenadas precisas, negocios activos.
+      Incluye todos los tiers, score &gt;50, datos de contacto, coordenadas precisas, negocios activos. Priorización via Scoring v2.
     </p>
   </div>
 </div>
@@ -93,11 +132,11 @@ display(kpi([
 
 <div class="grid grid-cols-4" style="margin-top: 0.5rem; font-size: 0.85rem;">
   <div style="background: #fff; padding: 0.75rem; border-radius: 6px; border: 1px solid #E0E0E0;">
-    <span style="color: #C41E3A; font-weight: 600;">1. Tier A/B</span><br>
-    <span style="color: #666;">Solo prospectos con score de relevancia alto (A_PREMIUM, B_ALTA, A, B)</span>
+    <span style="color: #C41E3A; font-weight: 600;">1. Todos los Tiers</span><br>
+    <span style="color: #666;">Incluye A, B, C, D — Priorización via Scoring v2 (cadenas, bodegones)</span>
   </div>
   <div style="background: #fff; padding: 0.75rem; border-radius: 6px; border: 1px solid #E0E0E0;">
-    <span style="color: #C41E3A; font-weight: 600;">2. Score ≥ 50</span><br>
+    <span style="color: #C41E3A; font-weight: 600;">2. Score ≥ 35</span><br>
     <span style="color: #666;">Puntuación mínima de relevancia basada en SCIAN, tamaño y ubicación</span>
   </div>
   <div style="background: #fff; padding: 0.75rem; border-radius: 6px; border: 1px solid #E0E0E0;">
@@ -292,8 +331,10 @@ const mayNoroeste = getMayorista("NOROESTE");
 </div>
 
 <div class="note" style="background: #E8F5E9; border-left: 4px solid #4CAF50; padding: 0.75rem; margin: 1rem 0; font-size: 0.85rem;">
-  <strong>✓ Metodología Sakbe:</strong> Distancias y costos calculados con <strong>ruteo segmentado</strong> usando INEGI Sakbe API.
-  Rutas largas divididas en tramos de ~350km para mayor precisión. Costos: casetas reales + diesel ($23.5/L, 6 km/L).
+  <strong>✓ ¿Qué es Sakbe?</strong> Sistema de ruteo de INEGI que calcula <strong>distancias reales por carretera</strong> en México.
+  El nombre proviene de "sacbé" (camino blanco en maya). Incluye casetas de peaje reales y permite calcular costos logísticos precisos.
+  <br><br>
+  <strong>Metodología:</strong> Rutas largas divididas en tramos de ~350km para mayor precisión. Costos: casetas reales + diesel ($23.5/L, 6 km/L camión 2 ejes).
 </div>
 
 ---
@@ -301,7 +342,7 @@ const mayNoroeste = getMayorista("NOROESTE");
 ## TAM Neto por Macro-Región (Total)
 
 ```js
-// Colores por región (9 regiones incluyendo OTRA)
+// Colores por región (9 regiones incluyendo SIN_REGION)
 const regionColors = {
   "NORESTE": "#C41E3A",        // Rojo FCarnes - mercado principal
   "CENTRO": "#1565C0",         // Azul - megalópolis
@@ -311,9 +352,14 @@ const regionColors = {
   "PENINSULA": "#00838F",      // Teal - presencia (32 cli)
   "FRONTERA_NORTE": "#5D4037", // Café
   "NOROESTE": "#546E7A",       // Gris azul
-  "OTRA": "#9E9E9E"            // Gris - sin clasificar
+  "OTRA": "#9E9E9E",           // Gris - registros pendientes de clasificación
+  "SIN_REGION": "#9E9E9E"      // Alias para registros sin clasificar
 };
 ```
+
+<div class="note" style="background: #f1f5f9; border-left: 4px solid #64748b; padding: 0.75rem; margin: 0.5rem 0; font-size: 0.85rem;">
+  <strong>📌 Nota:</strong> "OTRA" o "Sin Región" incluye registros que no pudieron ser asignados a una macro-región por datos incompletos de ubicación. Representan una minoría del total.
+</div>
 
 ```js
 display(resize((width) => Plot.plot({
@@ -573,7 +619,8 @@ display(Inputs.table(top20, {
   },
   sort: "tam_neto",
   reverse: true,
-  rows: 20
+  rows: 20,
+  select: false
 }));
 ```
 
@@ -601,7 +648,8 @@ display(Inputs.table(regionesOrdenadas, {
     penetracion_pct: d => d ? `${d.toFixed(1)}%` : "0%",
     distancia_sakbe_km: d => d ? `${Math.round(d)} km` : "-",
     costo_logistico_mxn: d => d ? `$${formatNumber(Math.round(d))}` : "-"
-  }
+  },
+  select: false
 }));
 ```
 
@@ -611,42 +659,6 @@ display(Inputs.table(regionesOrdenadas, {
   <strong>Verificados</strong> = Prospectos de alta calidad entregables | 
   <strong>% Verif.</strong> = Tasa de verificación | 
   <strong>Penetración</strong> = Clientes actuales / TAM Total
-</div>
-
----
-
-## 🎯 Síntesis Estratégica
-
-<div class="card" style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: white; border: none; margin: 1rem 0;">
-  <h3 style="margin-top: 0; color: #fbbf24; display: flex; align-items: center; gap: 0.5rem;">
-    <span>💎</span> El Panorama en Una Mirada
-  </h3>
-  
-  <p style="margin: 0.75rem 0; font-size: 0.95rem; line-height: 1.7;">
-    El análisis regional revela que FCarnes tiene una <strong>posición de fuerza en su mercado de origen</strong> (NORESTE con >50% de penetración) 
-    pero prácticamente <strong>ninguna presencia en el 95% del territorio nacional</strong>. Esta asimetría representa tanto un riesgo 
-    (dependencia de un mercado) como una <strong>oportunidad masiva de crecimiento</strong>.
-  </p>
-  
-  <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 1rem 0; padding: 1rem; background: rgba(255,255,255,0.1); border-radius: 8px;">
-    <div style="text-align: center;">
-      <div style="font-size: 2rem; font-weight: 700; color: #22c55e;">76K+</div>
-      <div style="font-size: 0.8rem; color: #94a3b8;">Mercado Nacional<br>Inexplorado</div>
-    </div>
-    <div style="text-align: center;">
-      <div style="font-size: 2rem; font-weight: 700; color: #3b82f6;">8.7K</div>
-      <div style="font-size: 0.8rem; color: #94a3b8;">Prospectos<br>Verificados</div>
-    </div>
-    <div style="text-align: center;">
-      <div style="font-size: 2rem; font-weight: 700; color: #f59e0b;">$3-7K</div>
-      <div style="font-size: 0.8rem; color: #94a3b8;">Costo por Viaje<br>Zonas Prioritarias</div>
-    </div>
-  </div>
-  
-  <p style="margin: 0; font-size: 0.9rem; color: #cbd5e1; border-top: 1px solid rgba(255,255,255,0.2); padding-top: 0.75rem;">
-    <strong>Recomendación Principal:</strong> Ejecutar expansión en 4 fases, priorizando regiones con 
-    mejor ratio TAM/Costo. Iniciar consolidación en NORESTE mientras se pilotea BAJÍO y evalúa CEDIS para CENTRO.
-  </p>
 </div>
 
 ---

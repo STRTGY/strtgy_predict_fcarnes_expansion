@@ -1,0 +1,655 @@
+{
+  "project": "fcarnes_scoring_diferenciado_cadenas",
+  "version": "1.0.0-implemented",
+  "status": "COMPLETED",
+  "metadata": {
+    "author": "AI Data App Architect",
+    "stack_principal": ["Python", "Pandas", "GeoPandas", "Observable Framework"],
+    "observable_features": ["data_loaders", "reactive_inputs", "filters"],
+    "deployment_target": "github-pages",
+    "created_at": "2026-01-12",
+    "completed_at": "2026-01-12",
+    "client_request": "Scoring diferenciado por zona: ZM Monterrey prioriza bodegones/retailers (excluye procesadoras), fuera de ZM NL prioriza cadenas con 4+ sucursales"
+  },
+  "implementation_results": {
+    "total_records": 8761,
+    "chains_detected": 3690,
+    "prioritized_prospects": 4001,
+    "zm_monterrey_prioritized": 504,
+    "exterior_prioritized": 3497,
+    "files_created": [
+      "notebooks/fcarnes/pipeline/config_cadenas.py",
+      "notebooks/fcarnes/pipeline/step_09_detect_chains.py",
+      "notebooks/fcarnes/pipeline/step_10_scoring_diferenciado.py"
+    ]
+  },
+  "research_findings": {
+    "description": "Cadenas regionales identificadas mediante investigación Perplexity",
+    "cadenas_identificadas": [
+      {
+        "nombre": "El Florido",
+        "patron_regex": "(?:el\\s+)?florido",
+        "tipo": "SUPERMERCADO_REGIONAL",
+        "estados": ["Baja California"],
+        "municipios": ["Tijuana", "Tecate", "Rosarito", "Ensenada", "Mexicali", "San Quintín"],
+        "sucursales_estimadas": "6+",
+        "fuente": "elflorido.com.mx"
+      },
+      {
+        "nombre": "Las Nenas / Fruterías Nenas",
+        "patron_regex": "(?:las\\s+)?nenas|fruteria(?:s)?\\s+nenas",
+        "tipo": "FRUTERIA_CON_CARNES",
+        "estados": ["Baja California"],
+        "municipios": ["Mexicali"],
+        "sucursales_estimadas": "4+",
+        "fuente": "speedbynenas.com"
+      },
+      {
+        "nombre": "Carnes Finas San Juan",
+        "patron_regex": "(?:carnes\\s+)?(?:finas\\s+)?san\\s+juan",
+        "tipo": "CARNICERIA_PREMIUM",
+        "estados": ["Nuevo León"],
+        "municipios": ["Monterrey", "San Nicolás de los Garza", "Guadalupe", "Apodaca"],
+        "sucursales_estimadas": 14,
+        "fuente": "carnessanjuan.com"
+      },
+      {
+        "nombre": "Carnes JC",
+        "patron_regex": "carnes\\s+jc",
+        "tipo": "CARNICERIA_PREMIUM",
+        "estados": ["Sonora"],
+        "municipios": ["Hermosillo"],
+        "sucursales_estimadas": "3+",
+        "fuente": "carnesjc.com"
+      },
+      {
+        "nombre": "Mi Granja San Agustín",
+        "patron_regex": "mi\\s+granja(?:\\s+san\\s+agust[ií]n)?",
+        "tipo": "DISTRIBUIDOR_TROMPO",
+        "estados": ["Nuevo León", "Coahuila", "Tamaulipas", "San Luis Potosí", "Durango", "Chihuahua"],
+        "sucursales_estimadas": "10+",
+        "fuente": "migranjasanagustin.com"
+      },
+      {
+        "nombre": "Supermercado La Cabaña",
+        "patron_regex": "(?:supermercado\\s+)?la\\s+caba[ñn]a",
+        "tipo": "SUPERMERCADO_REGIONAL",
+        "estados": ["Coahuila"],
+        "municipios": ["Saltillo"],
+        "sucursales_estimadas": "4+",
+        "fuente": "Indeed employment records"
+      },
+      {
+        "nombre": "Bodegas Omerca",
+        "patron_regex": "(?:bodegas?\\s+)?omerca",
+        "tipo": "BODEGA_MAYORISTA",
+        "estados": ["Coahuila"],
+        "municipios": ["Torreón", "Saltillo"],
+        "sucursales_estimadas": "4+",
+        "fuente": "Regional market research"
+      },
+      {
+        "nombre": "El Tío",
+        "patron_regex": "(?:carnes\\s+)?el\\s+t[ií]o",
+        "tipo": "CARNICERIA_CADENA",
+        "estados": ["Baja California"],
+        "municipios": ["Tijuana", "Mexicali"],
+        "sucursales_estimadas": "4+",
+        "fuente": "Client reference"
+      },
+      {
+        "nombre": "Las Dos Marías",
+        "patron_regex": "(?:las\\s+)?dos\\s+mar[ií]as",
+        "tipo": "OBRADOR_CARNICERIA",
+        "estados": ["San Luis Potosí"],
+        "municipios": ["San Luis Potosí"],
+        "sucursales_estimadas": "2+",
+        "fuente": "carnicerialasdosmariasslp.com"
+      },
+      {
+        "nombre": "Alicarnes",
+        "patron_regex": "alicarnes",
+        "tipo": "CARNICERIA_CADENA",
+        "estados": ["Querétaro"],
+        "municipios": ["Santiago de Querétaro"],
+        "sucursales_estimadas": "4+",
+        "fuente": "alicarnes-queretaro.ueniweb.com"
+      },
+      {
+        "nombre": "Carnes D'E. Río Sonora",
+        "patron_regex": "(?:carnes\\s+)?(?:d'?e\\.?\\s+)?r[ií]o\\s+sonora",
+        "tipo": "DISTRIBUIDOR_MAYORISTA",
+        "estados": ["Sonora"],
+        "municipios": ["Hermosillo"],
+        "sucursales_estimadas": "3+",
+        "fuente": "carnesderiosonora.com.mx"
+      },
+      {
+        "nombre": "Carnes Finas del Norte",
+        "patron_regex": "carnes\\s+finas\\s+del\\s+norte",
+        "tipo": "DISTRIBUIDOR_MAYORISTA",
+        "estados": ["Coahuila", "Nuevo León", "Chihuahua"],
+        "sucursales_estimadas": "5+",
+        "fuente": "cafinte.com.mx"
+      },
+      {
+        "nombre": "Los Corrales",
+        "patron_regex": "(?:carnes\\s+)?los\\s+corrales",
+        "tipo": "CARNICERIA_CADENA",
+        "estados": ["Durango"],
+        "municipios": ["Victoria de Durango"],
+        "sucursales_estimadas": "2+",
+        "fuente": "store.loscorrales.com.mx"
+      },
+      {
+        "nombre": "Soles",
+        "patron_regex": "\\bsoles\\b",
+        "tipo": "PRODUCTOR_DISTRIBUIDOR",
+        "estados": ["Sonora", "Sinaloa", "Baja California"],
+        "municipios": ["Ciudad Obregón", "Hermosillo", "Tijuana", "Mexicali"],
+        "sucursales_estimadas": "12+",
+        "fuente": "soles.com.mx"
+      },
+      {
+        "nombre": "DCA Carnes",
+        "patron_regex": "dca\\s+carnes",
+        "tipo": "CARNICERIA_FAMILIAR",
+        "estados": ["Nuevo León"],
+        "municipios": ["Guadalupe"],
+        "sucursales_estimadas": "2+",
+        "fuente": "dcacarnes.com"
+      }
+    ],
+    "cadenas_nacionales_excluidas": [
+      "Soriana", "Walmart", "Bodega Aurrera", "Chedraui", "OXXO", 
+      "HEB", "La Comer", "Costco", "Sam's Club", "City Club"
+    ]
+  },
+  "modules": [
+    {
+      "id": "MOD-000",
+      "name": "Configuración de Cadenas y Reglas de Scoring",
+      "priority": "critical",
+      "status": "not_started",
+      "context": {
+        "problem": "No existe una configuración centralizada de cadenas regionales ni reglas de scoring por zona en el pipeline de datos",
+        "root_cause": "El scoring actual solo considera tier/score genérico, no diferencia por zona geográfica ni detecta cadenas multi-ubicación"
+      },
+      "tasks": [
+        {
+          "id": "MOD-000-T01",
+          "title": "Crear módulo de configuración de cadenas regionales",
+          "type": "data_loader",
+          "description": "Crear archivo de configuración YAML con patrones regex de cadenas, ZM Monterrey, y reglas de exclusión",
+          "status": "pending",
+          "hours": {"estimated": 2, "actual": 0},
+          "technical_meta": {
+            "loader_name": "config_cadenas_fcarnes.py",
+            "language": "python",
+            "output_format": "python_module",
+            "files_affected": [
+              "notebooks/fcarnes/pipeline/config_cadenas.py",
+              "configs/clientes/fcarnes.yaml"
+            ],
+            "data_sources": ["Perplexity research", "Client input"],
+            "dependencies": ["pyyaml", "re"]
+          },
+          "acceptance_criteria": [
+            "Archivo config_cadenas.py con constantes de ZM_MONTERREY_MUNICIPIOS",
+            "Lista de 15+ patrones regex de cadenas regionales",
+            "Categorías prioritarias y excluidas por zona",
+            "Función is_zm_monterrey(ciudad, estado) funcionando",
+            "Tests unitarios para validación de patrones"
+          ],
+          "code_spec": {
+            "constants": {
+              "ZM_MONTERREY_MUNICIPIOS": [
+                "Monterrey", "San Nicolás de los Garza", "Guadalupe", "Apodaca",
+                "San Pedro Garza García", "Santa Catarina", "General Escobedo",
+                "Juárez", "García", "Cadereyta Jiménez", "Santiago", "Salinas Victoria",
+                "Ciénega de Flores", "General Zuazua", "Pesquería", "El Carmen"
+              ],
+              "CATEGORIAS_PRIORITARIAS_ZM_MTY": [
+                "BODEGON", "RETAIL_GRANDE", "RETAIL_MEDIANO", "RETAIL_CONSOLIDADO", 
+                "MAYORISTA", "MAYOREO"
+              ],
+              "CATEGORIAS_EXCLUIDAS_ZM_MTY": [
+                "PROCESADORA_CARNE", "PROCESADORA", "RASTRO", "MATANZA", "FRIGORIFICO"
+              ],
+              "MIN_SUCURSALES_CADENA": 4
+            }
+          }
+        },
+        {
+          "id": "MOD-000-T02",
+          "title": "Definir patrones regex de cadenas regionales",
+          "type": "data_loader",
+          "description": "Compilar y validar patrones regex para todas las cadenas identificadas en la investigación",
+          "status": "pending",
+          "hours": {"estimated": 1.5, "actual": 0},
+          "technical_meta": {
+            "files_affected": ["notebooks/fcarnes/pipeline/config_cadenas.py"],
+            "dependencies": ["re"]
+          },
+          "acceptance_criteria": [
+            "15+ patrones regex compilados y validados",
+            "Función match_cadena(nombre) que retorna (es_cadena, nombre_cadena, confianza)",
+            "Tests con casos positivos y negativos",
+            "Evitar falsos positivos con palabras genéricas"
+          ]
+        }
+      ],
+      "testing": {
+        "build_tests": [
+          {"id": "BT-001", "description": "Importación del módulo config_cadenas sin errores"},
+          {"id": "BT-002", "description": "Todos los patrones regex compilan correctamente"}
+        ],
+        "visual_tests": [],
+        "interaction_tests": []
+      }
+    },
+    {
+      "id": "MOD-001",
+      "name": "Detección de Cadenas por Conteo de Sucursales",
+      "priority": "critical",
+      "status": "not_started",
+      "context": {
+        "problem": "El cliente requiere priorizar 'varias sucursales de la misma marca, 4 o más carnicerías' pero actualmente solo se busca por nombre",
+        "root_cause": "No existe lógica de agrupación y conteo de sucursales por marca/nombre normalizado"
+      },
+      "tasks": [
+        {
+          "id": "MOD-001-T01",
+          "title": "Crear función de detección de cadenas por conteo",
+          "type": "data_loader",
+          "description": "Implementar algoritmo que agrupe prospectos por nombre normalizado y detecte cadenas con 4+ ubicaciones",
+          "status": "pending",
+          "hours": {"estimated": 3, "actual": 0},
+          "technical_meta": {
+            "loader_name": "step_09_detect_chains.py",
+            "language": "python",
+            "files_affected": ["notebooks/fcarnes/pipeline/step_09_detect_chains.py"],
+            "dependencies": ["pandas", "rapidfuzz", "unidecode"]
+          },
+          "acceptance_criteria": [
+            "Función normalizar_nombre_marca(nombre) que extrae marca base",
+            "Agrupación por nombre normalizado con threshold fuzzy ≥85",
+            "Conteo de ubicaciones únicas por marca (usando coordenadas)",
+            "Campo 'num_sucursales' en cada prospecto",
+            "Campo 'nombre_marca_normalizado' para la marca detectada",
+            "Campo 'es_cadena_detectada' (True si num_sucursales ≥ 4)"
+          ],
+          "algorithm": {
+            "step1": "Normalizar todos los nombres (lowercase, sin acentos, sin SA/SAPI/SA DE CV)",
+            "step2": "Extraer tokens clave del nombre (ignorar CARNICERIA, SUPER, etc.)",
+            "step3": "Agrupar por similitud fuzzy (rapidfuzz.fuzz.token_sort_ratio ≥ 85)",
+            "step4": "Contar ubicaciones únicas por grupo (coordenadas con tolerancia 100m)",
+            "step5": "Asignar es_cadena = True si count ≥ 4"
+          }
+        },
+        {
+          "id": "MOD-001-T02",
+          "title": "Crear función de match con patrones conocidos",
+          "type": "data_loader",
+          "description": "Combinar detección por conteo con match de patrones regex de cadenas conocidas",
+          "status": "pending",
+          "hours": {"estimated": 2, "actual": 0},
+          "technical_meta": {
+            "files_affected": ["notebooks/fcarnes/pipeline/step_09_detect_chains.py"],
+            "dependencies": ["re"]
+          },
+          "acceptance_criteria": [
+            "Match con patrones de MOD-000-T02",
+            "Campo 'cadena_conocida' (nombre de la cadena si match)",
+            "Campo 'metodo_deteccion' (PATRON | CONTEO | AMBOS)",
+            "Priorización: si match patrón conocido → es_cadena = True siempre"
+          ]
+        }
+      ],
+      "testing": {
+        "build_tests": [
+          {"id": "BT-003", "description": "Step 09 ejecuta sin errores"},
+          {"id": "BT-004", "description": "Genera campos es_cadena_detectada correctamente"}
+        ],
+        "visual_tests": [],
+        "interaction_tests": []
+      }
+    },
+    {
+      "id": "MOD-002",
+      "name": "Scoring Diferenciado por Zona",
+      "priority": "critical",
+      "status": "not_started",
+      "context": {
+        "problem": "El scoring actual es uniforme, no considera la estrategia diferenciada ZM MTY vs resto del país",
+        "root_cause": "Falta implementación de reglas de negocio del cliente en el pipeline"
+      },
+      "tasks": [
+        {
+          "id": "MOD-002-T01",
+          "title": "Implementar scoring diferenciado en pipeline",
+          "type": "data_loader",
+          "description": "Crear step_10_scoring_diferenciado.py con lógica de priorización por zona",
+          "status": "pending",
+          "hours": {"estimated": 3, "actual": 0},
+          "technical_meta": {
+            "loader_name": "step_10_scoring_diferenciado.py",
+            "language": "python",
+            "files_affected": [
+              "notebooks/fcarnes/pipeline/step_10_scoring_diferenciado.py"
+            ],
+            "dependencies": ["pandas", "geopandas"]
+          },
+          "acceptance_criteria": [
+            "Campo 'es_prioritario' booleano en output",
+            "Campo 'razon_prioridad' con explicación",
+            "Campo 'score_ajustado' con bonus por prioridad",
+            "Campo 'zona_scoring' (ZM_MONTERREY | RESTO_NL | EXTERIOR)",
+            "Excluye procesadoras en ZM MTY",
+            "Prioriza cadenas fuera de NL"
+          ],
+          "business_rules": {
+            "ZM_MONTERREY": {
+              "regla": "Priorizar bodegones y retailers medianos/grandes, EXCLUIR procesadoras",
+              "categorias_prioritarias": ["BODEGON", "RETAIL_GRANDE", "RETAIL_MEDIANO", "MAYORISTA"],
+              "categorias_excluidas": ["PROCESADORA", "RASTRO", "MATANZA"],
+              "bonus_score": 15
+            },
+            "RESTO_NUEVO_LEON": {
+              "regla": "Sin priorización especial, scoring estándar",
+              "bonus_score": 0
+            },
+            "EXTERIOR_NL": {
+              "regla": "Priorizar cadenas con 4+ sucursales o match de patrón conocido",
+              "condicion": "es_cadena_detectada == True OR cadena_conocida IS NOT NULL",
+              "bonus_score": 20
+            }
+          }
+        },
+        {
+          "id": "MOD-002-T02",
+          "title": "Integrar scoring en step_08_filter_quality.py existente",
+          "type": "data_loader",
+          "description": "Modificar el filtrado de calidad para incluir el campo es_prioritario en el output",
+          "status": "pending",
+          "hours": {"estimated": 1.5, "actual": 0},
+          "technical_meta": {
+            "files_affected": ["notebooks/fcarnes/pipeline/step_08_filter_quality.py"],
+            "dependencies": []
+          },
+          "acceptance_criteria": [
+            "Llamar a step_09 y step_10 antes del filtrado final",
+            "Incluir campos de cadena y prioridad en output",
+            "Actualizar prospectos_sample.json con nuevos campos"
+          ]
+        }
+      ],
+      "testing": {
+        "build_tests": [
+          {"id": "BT-005", "description": "Step 10 genera campo es_prioritario"},
+          {"id": "BT-006", "description": "Procesadoras excluidas en ZM MTY"}
+        ],
+        "visual_tests": [],
+        "interaction_tests": []
+      }
+    },
+    {
+      "id": "MOD-003",
+      "name": "Actualización de Data Loader para Dashboard",
+      "priority": "high",
+      "status": "not_started",
+      "context": {
+        "problem": "El JSON de prospectos para el dashboard no incluye los campos de cadena y scoring diferenciado",
+        "root_cause": "El step_04c_export_tam_dashboard.py no procesa los nuevos campos"
+      },
+      "tasks": [
+        {
+          "id": "MOD-003-T01",
+          "title": "Actualizar export de prospectos_sample.json",
+          "type": "data_loader",
+          "description": "Modificar el script de exportación para incluir campos de cadena y prioridad",
+          "status": "pending",
+          "hours": {"estimated": 2, "actual": 0},
+          "technical_meta": {
+            "loader_name": "step_04c_export_tam_dashboard.py",
+            "language": "python",
+            "files_affected": [
+              "notebooks/fcarnes/pipeline/step_04c_export_tam_dashboard.py",
+              "reports/strtgy_predict_fcarnes_expansion_nacional/src/data/prospectos_sample.json"
+            ],
+            "output_format": "json"
+          },
+          "acceptance_criteria": [
+            "Campo 'es_prioritario' en cada feature",
+            "Campo 'razon_prioridad' en cada feature",
+            "Campo 'es_cadena' en cada feature",
+            "Campo 'nombre_cadena' si aplica",
+            "Campo 'num_sucursales' si es cadena",
+            "Campo 'zona_scoring' en cada feature"
+          ],
+          "json_schema_additions": {
+            "properties": {
+              "es_prioritario": "boolean",
+              "razon_prioridad": "string|null",
+              "es_cadena": "boolean",
+              "nombre_cadena": "string|null",
+              "num_sucursales": "integer|null",
+              "zona_scoring": "enum[ZM_MONTERREY, RESTO_NL, EXTERIOR]"
+            }
+          }
+        }
+      ],
+      "testing": {
+        "build_tests": [
+          {"id": "BT-007", "description": "prospectos_sample.json válido con nuevos campos"}
+        ],
+        "visual_tests": [],
+        "interaction_tests": []
+      }
+    },
+    {
+      "id": "MOD-004",
+      "name": "Actualización del Dashboard Observable",
+      "priority": "high",
+      "status": "not_started",
+      "context": {
+        "problem": "El dashboard tiene lógica de scoring en JS pero debería consumir datos pre-procesados",
+        "root_cause": "La lógica actual en explorador-prospectos.md usa patrones genéricos y no consume datos del pipeline"
+      },
+      "tasks": [
+        {
+          "id": "MOD-004-T01",
+          "title": "Refactorizar explorador-prospectos.md para consumir datos pre-procesados",
+          "type": "page",
+          "description": "Eliminar lógica de scoring en JS y consumir campos es_prioritario del JSON",
+          "status": "pending",
+          "hours": {"estimated": 2, "actual": 0},
+          "technical_meta": {
+            "page_path": "src/explorador-prospectos.md",
+            "route": "/explorador-prospectos",
+            "files_affected": ["reports/strtgy_predict_fcarnes_expansion_nacional/src/explorador-prospectos.md"]
+          },
+          "acceptance_criteria": [
+            "Eliminar función esPrioritario() de JS",
+            "Leer campo es_prioritario del JSON",
+            "Mantener toggle 'Solo Prioritarios'",
+            "Mostrar razon_prioridad en popup/tabla",
+            "Añadir badge de 'Cadena' en prospectos detectados"
+          ],
+          "changes": {
+            "remove": [
+              "const MUNICIPIOS_ZM_MONTERREY = [...]",
+              "const CATEGORIAS_PRIORITARIAS_ZM_MTY = [...]",
+              "const PATRONES_CADENAS = [...]",
+              "function esPrioritario(prospecto) {...}"
+            ],
+            "add": [
+              "Lectura de f.properties.es_prioritario",
+              "Lectura de f.properties.razon_prioridad",
+              "Lectura de f.properties.es_cadena",
+              "Badge visual para cadenas"
+            ]
+          }
+        },
+        {
+          "id": "MOD-004-T02",
+          "title": "Añadir filtro de cadenas en explorador",
+          "type": "input",
+          "description": "Agregar toggle para filtrar solo prospectos de cadenas multi-ubicación",
+          "status": "pending",
+          "hours": {"estimated": 1, "actual": 0},
+          "technical_meta": {
+            "input_type": "checkbox",
+            "variable_name": "soloCadenas",
+            "files_affected": ["reports/strtgy_predict_fcarnes_expansion_nacional/src/explorador-prospectos.md"]
+          },
+          "acceptance_criteria": [
+            "Toggle 'Solo Cadenas (4+ sucursales)'",
+            "Filtra prospectos donde es_cadena == true",
+            "Muestra contador de cadenas en KPIs"
+          ]
+        },
+        {
+          "id": "MOD-004-T03",
+          "title": "Documentar criterios en metodología",
+          "type": "page",
+          "description": "Añadir sección explicando los criterios de priorización por zona",
+          "status": "pending",
+          "hours": {"estimated": 1, "actual": 0},
+          "technical_meta": {
+            "page_path": "src/metodologia.md",
+            "files_affected": ["reports/strtgy_predict_fcarnes_expansion_nacional/src/metodologia.md"]
+          },
+          "acceptance_criteria": [
+            "Sección 'Priorización por Zona Geográfica'",
+            "Explicación de ZM Monterrey vs Exterior",
+            "Lista de cadenas regionales conocidas",
+            "Explicación del algoritmo de detección de cadenas"
+          ]
+        }
+      ],
+      "testing": {
+        "build_tests": [
+          {"id": "BT-008", "description": "Dashboard build sin errores"}
+        ],
+        "visual_tests": [
+          {"id": "VT-001", "description": "Toggle de prioritarios funciona"},
+          {"id": "VT-002", "description": "Badge de cadena visible en tabla"}
+        ],
+        "interaction_tests": [
+          {"id": "IT-001", "description": "Filtro de cadenas filtra correctamente"}
+        ]
+      }
+    },
+    {
+      "id": "MOD-005",
+      "name": "Testing y Validación End-to-End",
+      "priority": "medium",
+      "status": "not_started",
+      "context": {
+        "problem": "Necesidad de validar que toda la cadena de datos funciona correctamente",
+        "root_cause": "Cambios en pipeline requieren validación end-to-end"
+      },
+      "tasks": [
+        {
+          "id": "MOD-005-T01",
+          "title": "Crear tests unitarios para detección de cadenas",
+          "type": "qa",
+          "description": "Tests con casos conocidos de cadenas del cliente",
+          "status": "pending",
+          "hours": {"estimated": 2, "actual": 0},
+          "technical_meta": {
+            "files_affected": ["tests/test_fcarnes_cadenas.py"],
+            "dependencies": ["pytest"]
+          },
+          "acceptance_criteria": [
+            "Test: El Florido detectado como cadena",
+            "Test: Las Nenas detectado como cadena",
+            "Test: Omerca detectado como cadena",
+            "Test: La Cabaña detectado como cadena",
+            "Test: Carnicería genérica NO detectada como cadena",
+            "Test: Procesadora en ZM MTY marcada como NO prioritaria"
+          ],
+          "test_cases": [
+            {"input": "SUPERMERCADO EL FLORIDO SUC 3", "expected": {"es_cadena": true, "nombre_cadena": "El Florido"}},
+            {"input": "FRUTERIA NENAS MEXICALI", "expected": {"es_cadena": true, "nombre_cadena": "Las Nenas"}},
+            {"input": "BODEGAS OMERCA", "expected": {"es_cadena": true, "nombre_cadena": "Bodegas Omerca"}},
+            {"input": "PROCESADORA DE CARNES DEL NORTE", "zona": "ZM_MONTERREY", "expected": {"es_prioritario": false, "razon": "Procesadora excluida en ZM MTY"}},
+            {"input": "BODEGON LA ESQUINA", "zona": "ZM_MONTERREY", "expected": {"es_prioritario": true, "razon": "Bodegón/Retailer en ZM Monterrey"}}
+          ]
+        },
+        {
+          "id": "MOD-005-T02",
+          "title": "Ejecutar pipeline completo y validar outputs",
+          "type": "qa",
+          "description": "Correr todo el pipeline y verificar que los datos lleguen correctamente al dashboard",
+          "status": "pending",
+          "hours": {"estimated": 1.5, "actual": 0},
+          "technical_meta": {
+            "files_affected": [],
+            "commands": [
+              "cd notebooks/fcarnes/pipeline && python run_pipeline.py --steps quality",
+              "cd reports/strtgy_predict_fcarnes_expansion_nacional && npm run build"
+            ]
+          },
+          "acceptance_criteria": [
+            "prospectos_sample.json generado con campos nuevos",
+            "Dashboard build exitoso",
+            "Filtro de prioritarios funciona en preview"
+          ]
+        }
+      ],
+      "testing": {
+        "build_tests": [
+          {"id": "BT-009", "description": "Todos los tests de pytest pasan"}
+        ],
+        "visual_tests": [],
+        "interaction_tests": []
+      }
+    }
+  ],
+  "execution_order": [
+    "MOD-000-T01",
+    "MOD-000-T02",
+    "MOD-001-T01",
+    "MOD-001-T02",
+    "MOD-002-T01",
+    "MOD-002-T02",
+    "MOD-003-T01",
+    "MOD-004-T01",
+    "MOD-004-T02",
+    "MOD-004-T03",
+    "MOD-005-T01",
+    "MOD-005-T02"
+  ],
+  "summary_metrics": {
+    "total_estimated_hours": 22.5,
+    "total_tasks": 12,
+    "percentage_completed": 0,
+    "modules_count": 6
+  },
+  "dependencies_graph": {
+    "MOD-001": ["MOD-000"],
+    "MOD-002": ["MOD-001"],
+    "MOD-003": ["MOD-002"],
+    "MOD-004": ["MOD-003"],
+    "MOD-005": ["MOD-004"]
+  },
+  "risks_and_mitigations": [
+    {
+      "risk": "Falsos positivos en detección de cadenas",
+      "impact": "Prospectos individuales marcados como cadenas",
+      "mitigation": "Usar threshold alto (85) en fuzzy matching y validar con coordenadas únicas"
+    },
+    {
+      "risk": "Patrones regex demasiado genéricos",
+      "impact": "Match incorrecto con negocios no relacionados",
+      "mitigation": "Usar word boundaries y excluir matches parciales"
+    },
+    {
+      "risk": "Datos faltantes de categoría en DENUE",
+      "impact": "No se puede aplicar exclusión de procesadoras",
+      "mitigation": "Usar código SCIAN 311611/311612 como fallback para identificar procesadoras"
+    }
+  ]
+}

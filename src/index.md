@@ -23,59 +23,87 @@ const penetracion = (clientesActuales / tamBruto * 100);
 const regionesOrdenadas = [...tamRegion].sort((a, b) => b.tam_neto - a.tam_neto);
 const topCiudad = topCiudades.sort((a, b) => b.tam_neto - a.tam_neto)[0];
 
-// Calcular prospectos por tier (solo A y B para oportunidades prioritarias)
+// Calcular prospectos prioritarios (Scoring v2: cadenas, bodegones, mayoristas)
 const allFeatures = prospectosData?.features || [];
-const prospectosAPremium = allFeatures.filter(f => f.properties?.t === "A_PREMIUM").length;
-const prospectosBAlta = allFeatures.filter(f => f.properties?.t === "B_ALTA").length;
-const oportunidadesPrioritarias = prospectosAPremium + prospectosBAlta;
+// Scoring v2: usa el campo es_prioritario calculado en el pipeline
+const oportunidadesPrioritarias = allFeatures.filter(f => f.properties?.prio === 1 || f.properties?.es_prioritario).length;
+const totalCadenas = allFeatures.filter(f => f.properties?.cad === 1 || f.properties?.es_cadena).length;
 ```
 
 ```js
 // Total de prospectos verificados (del archivo filtrado)
 const prospectosVerificados = allFeatures.length;
+const pctVerificados = (prospectosVerificados / tamBruto * 100).toFixed(1);
 
 // Hero compacto con métricas integradas
 display(heroFCarnes({
   title: "Censo Estratégico Nacional",
   subtitle: "Canal Tradicional (Carnicerías y Obradores)",
-  context: "Inteligencia geoestadística para identificar y priorizar prospectos en el mercado nacional de carnes. Los datos han sido filtrados por calidad para garantizar prospectos verificables.",
+  context: `Este dashboard identifica y prioriza prospectos de alto potencial para la expansión de FCarnes en el mercado nacional de carnes. De ${formatCompact(tamBruto)} establecimientos identificados, solo ${formatCompact(prospectosVerificados)} (${pctVerificados}%) pasaron los filtros de verificación.`,
   metrics: [
-    { value: formatCompact(tamBruto), label: "TAM Total" },
+    { value: formatCompact(tamBruto), label: "Mercado Total" },
     { value: formatCompact(prospectosVerificados), label: "Verificados" },
-    { value: formatCompact(clientesActuales), label: "Clientes" }
+    { value: formatCompact(clientesActuales), label: "Clientes Actuales" }
   ]
 }));
 ```
 
+<div class="card" style="background: linear-gradient(135deg, #fef3c7 0%, #fef9c3 100%); border-left: 4px solid #f59e0b; margin: 1rem 0; padding: 1rem;">
+  <h4 style="margin: 0 0 0.5rem 0; color: #92400e; display: flex; align-items: center; gap: 0.5rem;">
+    <span>📖</span> ¿Cómo leer este dashboard?
+  </h4>
+  <p style="margin: 0; font-size: 0.9rem; color: #78350f; line-height: 1.6;">
+    <strong>Mercado Total (TAM)</strong> = Todos los establecimientos de carnes en México según DENUE + Google Maps.<br>
+    <strong>Prospectos Verificados</strong> = Cumplen criterios de calidad: score ≥35, contacto verificable, coordenadas precisas, nombre específico, negocio activo.<br>
+    <strong>⭐ Prioritarios (Scoring v2)</strong> = Cadenas con 4+ sucursales, bodegones en ZM Monterrey, mayoristas fuera de NL.<br>
+    <strong>Clientes Actuales</strong> = Base instalada de FCarnes que se excluye del mercado objetivo.
+  </p>
+</div>
+
 ## Resumen Ejecutivo
 
+<details style="margin-bottom: 1rem; background: #f8fafc; border-radius: 8px; padding: 0.5rem 1rem;">
+  <summary style="cursor: pointer; font-weight: 600; color: #1e40af;">📘 Glosario de Términos</summary>
+  <div style="margin-top: 0.75rem; font-size: 0.85rem; color: #475569; line-height: 1.6;">
+    <p><strong>TAM (Total Addressable Market)</strong> = Mercado Total Direccionable. Todos los establecimientos de carnes en México que podrían ser clientes potenciales.</p>
+    <p><strong>Sakbe</strong> = Sistema de ruteo de INEGI que calcula distancias reales por carretera, incluyendo casetas y tiempos estimados. El nombre proviene de "sacbé" (camino blanco en maya).</p>
+    <p><strong>Tier</strong> = Nivel de prioridad del prospecto (A_PREMIUM = máxima, B_ALTA = alta, C_MEDIA, D_BAJA).</p>
+    <p><strong>Penetración</strong> = Porcentaje de clientes actuales respecto al mercado total de esa región.</p>
+  </div>
+</details>
+
 ```js
+// Calcular % verificados de top ciudad
+const topCiudadPctVerif = topCiudad?.tam_bruto > 0 
+  ? ((topCiudad?.tam_neto || 0) / topCiudad?.tam_bruto * 100).toFixed(0) 
+  : 0;
+
 display(kpi([
   { 
     label: "TAM Bruto Nacional", 
     value: formatNumber(tamBruto),
-    subtitle: "Establecimientos de carnes",
+    subtitle: "Mercado Total Direccionable",
     color: "primary",
     icon: "🎯"
   },
   { 
     label: "Prospectos Verificados", 
     value: formatNumber(prospectosVerificados),
-    subtitle: "Alta calidad + contacto",
+    subtitle: `${pctVerificados}% pasó filtros de calidad`,
     color: "success",
     icon: "✅"
   },
   { 
     label: "Clientes FCarnes", 
     value: formatNumber(clientesActuales),
-    subtitle: `${formatPercent(penetracion)} penetración`,
+    subtitle: `${formatPercent(penetracion)} penetración nacional`,
     color: "info",
     icon: "👥"
   },
   { 
     label: "Top Ciudad", 
     value: topCiudad?.municipio || "N/A",
-    subtitle: `${formatNumber(topCiudad?.tam_neto || 0)} prospectos`,
+    subtitle: `${formatNumber(topCiudad?.tam_neto || 0)} prospectos verificados`,
     color: "warning",
     icon: "🏆"
   }
@@ -123,10 +151,32 @@ display(html`<div class="card" style="background: linear-gradient(135deg, #1a1a2
     </div>
     
     <div style="background: rgba(255,255,255,0.1); padding: 1rem; border-radius: 8px; border-left: 3px solid #ec4899;">
-      <strong style="color: #ec4899;">✅ Calidad Verificada</strong>
+      <strong style="color: #ec4899;">✅ Calidad + Scoring v2</strong>
       <p style="margin: 0.5rem 0 0; font-size: 0.95rem; line-height: 1.5;">
-        Solo el <strong>11%</strong> del TAM total pasó los filtros de calidad. Cada prospecto verificado tiene: contacto real, nombre de negocio, ubicación precisa y análisis de IA de fachada.
+        <strong>${pctVerificados}%</strong> del TAM pasó filtros de calidad. De estos, <strong>${formatNumber(oportunidadesPrioritarias)}</strong> son prioritarios (cadenas 4+ suc, bodegones ZM MTY, mayoristas).
       </p>
+    </div>
+  </div>
+  
+  <div style="margin-top: 1.5rem; padding: 1rem; background: linear-gradient(135deg, rgba(34, 197, 94, 0.2) 0%, rgba(59, 130, 246, 0.2) 100%); border-radius: 8px; border: 1px solid rgba(255,255,255,0.2);">
+    <h4 style="margin: 0 0 0.5rem 0; color: #fbbf24; font-size: 1rem;">
+      🎯 ¿Qué región atacar primero?
+    </h4>
+    <p style="margin: 0; font-size: 0.9rem; line-height: 1.6;">
+      <strong>Recomendación basada en datos:</strong> Iniciar con <strong>BAJÍO</strong> (Querétaro, León, Aguascalientes) que ofrece el mejor balance de:
+      alto TAM (${formatNumber(bajioData?.tam_neto || 0)} prospectos), costo logístico moderado ($${formatNumber(Math.round(costoBajio))}/viaje), 
+      y baja penetración actual. En paralelo, consolidar el mercado de <strong>NORESTE</strong> donde ya existe infraestructura.
+    </p>
+    <div style="margin-top: 0.75rem; display: flex; gap: 1rem; flex-wrap: wrap;">
+      <span style="background: #22c55e; color: white; padding: 0.35rem 0.75rem; border-radius: 20px; font-size: 0.8rem; font-weight: 600;">
+        1° BAJÍO (ROI Alto)
+      </span>
+      <span style="background: #3b82f6; color: white; padding: 0.35rem 0.75rem; border-radius: 20px; font-size: 0.8rem; font-weight: 600;">
+        2° NORESTE (Consolidar)
+      </span>
+      <span style="background: #f59e0b; color: white; padding: 0.35rem 0.75rem; border-radius: 20px; font-size: 0.8rem; font-weight: 600;">
+        3° CENTRO (Evaluar CEDIS)
+      </span>
     </div>
   </div>
 </div>`);
@@ -138,12 +188,12 @@ display(html`<div class="card" style="background: linear-gradient(135deg, #1a1a2
 
 ```js
 display(decisionCallout({
-  title: "¿Qué decidir con este análisis?",
+  title: "¿Cómo usar esta información?",
   items: [
-    "Priorizar macro-regiones con mayor oportunidad",
+    "Comparar macro-regiones por TAM, costo logístico y penetración actual",
     "Identificar ciudades clave para expansión inmediata",
-    "Validar prospectos visualmente con Street View",
-    "Optimizar rutas de ventas por zona logística"
+    "Validar prospectos visualmente con Street View antes de contactar",
+    "Exportar bases filtradas para el equipo de ventas"
   ]
 }));
 ```
@@ -157,7 +207,8 @@ display(coberturaGeografica({
   "BAJIO": "Guanajuato, Querétaro, Aguascalientes",
   "PENINSULA": "Quintana Roo, Yucatán, Campeche",
   "FRONTERA_NORTE": "Chihuahua, BC, Sonora, BCS",
-  "NOROESTE": "Sinaloa, Durango, Zacatecas"
+  "NOROESTE": "Sinaloa, Durango, Zacatecas",
+  "SIN_REGION": "Registros pendientes de clasificación geográfica"
 }));
 ```
 
@@ -306,7 +357,69 @@ const topRutas = (costosLogisticos.rutas_principales || []).slice(0, 10);
 
 // Orden de ciudades para el eje Y (por costo total descendente)
 const ordenCiudades = topRutas.map(r => r.ciudad);
+```
 
+### Comparar Rutas por Métrica
+
+```js
+// Selector de métrica para el eje X
+const metricaRutas = view(Inputs.select(
+  ["Costo Total", "Distancia", "Tiempo"], 
+  { 
+    label: "Comparar por:", 
+    value: "Costo Total" 
+  }
+));
+```
+
+```js
+// Configuración dinámica según la métrica seleccionada
+const metricaConfig = {
+  "Costo Total": { field: "costo_total_mxn", label: "Costo por Viaje (MXN)", format: d => `$${d >= 1000 ? (d/1000).toFixed(1) + 'K' : d}`, color: "#C41E3A" },
+  "Distancia": { field: "distancia_km", label: "Distancia (km)", format: d => `${d} km`, color: "#1565C0" },
+  "Tiempo": { field: "tiempo_horas", label: "Tiempo de Viaje (horas)", format: d => `${d}h`, color: "#2E7D32" }
+};
+
+const config = metricaConfig[metricaRutas];
+
+display(resize((width) => Plot.plot({
+  width,
+  height: 400,
+  marginLeft: 110,
+  marginRight: 80,
+  x: { 
+    label: `${config.label} →`, 
+    grid: true,
+    tickFormat: config.format
+  },
+  y: { label: null },
+  marks: [
+    Plot.barX(topRutas, {
+      y: "ciudad",
+      x: config.field,
+      fill: config.color,
+      sort: { y: `-x` },
+      tip: true,
+      title: d => `${d.ciudad}\nDistancia: ${d.distancia_km} km\nTiempo: ${d.tiempo_horas}h\nCosto Total: $${d.costo_total_mxn?.toLocaleString()}`
+    }),
+    Plot.text(topRutas, {
+      y: "ciudad",
+      x: config.field,
+      text: d => config.format(d[config.field]),
+      dx: 5,
+      textAnchor: "start",
+      fontWeight: "600",
+      fontSize: 11,
+      fill: "#333"
+    }),
+    Plot.ruleX([0])
+  ]
+})));
+```
+
+### Desglose: Casetas vs Combustible
+
+```js
 // Transformar datos para barras agrupadas
 const datosBarras = [];
 for (const r of topRutas) {
@@ -387,16 +500,31 @@ display(resize((width) => Plot.plot({
 </div>
 
 ```js
-// Tabla detallada de rutas
-display(Inputs.table(topRutas, {
-  columns: ["ciudad", "distancia_km", "tiempo_horas", "costo_casetas_mxn", "costo_combustible_mxn", "costo_total_mxn"],
+// Agregar clasificación de semáforo a las rutas
+const topRutasConSemaforo = topRutas.map(r => {
+  let semaforo = "🟢";
+  let zona_costo = "Verde";
+  if (r.costo_total_mxn >= 7000) {
+    semaforo = "🔴";
+    zona_costo = "Roja";
+  } else if (r.costo_total_mxn >= 4000) {
+    semaforo = "🟡";
+    zona_costo = "Amarilla";
+  }
+  return { ...r, semaforo, zona_costo };
+});
+
+// Tabla detallada de rutas con semáforo
+display(Inputs.table(topRutasConSemaforo, {
+  columns: ["semaforo", "ciudad", "distancia_km", "tiempo_horas", "costo_casetas_mxn", "costo_combustible_mxn", "costo_total_mxn"],
   header: {
+    semaforo: "Zona",
     ciudad: "Destino",
     distancia_km: "Distancia",
     tiempo_horas: "Tiempo",
     costo_casetas_mxn: "Casetas",
     costo_combustible_mxn: "Combustible",
-    costo_total_mxn: "Total"
+    costo_total_mxn: "Costo Logístico Total"
   },
   format: {
     distancia_km: d => `${formatNumber(d)} km`,
@@ -408,6 +536,12 @@ display(Inputs.table(topRutas, {
   rows: 10
 }));
 ```
+
+<div style="display: flex; gap: 1.5rem; justify-content: center; margin: 0.5rem 0; font-size: 0.8rem;">
+  <span>🟢 <strong>Verde</strong>: &lt;$4,000 (alta rentabilidad)</span>
+  <span>🟡 <strong>Amarilla</strong>: $4,000-$7,000 (requiere volumen)</span>
+  <span>🔴 <strong>Roja</strong>: &gt;$7,000 (evaluar CEDIS regional)</span>
+</div>
 
 <div class="note" style="background: #E8F5E9; border-left: 4px solid #4CAF50; padding: 0.75rem 1rem; margin: 1rem 0; border-radius: 0 8px 8px 0; font-size: 0.9rem;">
   <strong>📊 Fuente:</strong> Costos calculados con <strong>INEGI Sakbe API</strong> (rutas óptimas reales). 
@@ -475,24 +609,29 @@ const tamSinPresencia = sinPresencia.reduce((s, c) => s + c.tam_neto, 0);
 ```
 
 ```js
+// Calcular datos adicionales para el hallazgo
+const leonData = top10.find(c => c.municipio === "León");
+const leonPctVerif = leonData?.tam_bruto > 0 ? ((leonData?.tam_neto || 0) / leonData?.tam_bruto * 100).toFixed(0) : 0;
+
 display(html`<div class="card" style="background: linear-gradient(135deg, #fef2f2 0%, #fff 100%); border-left: 4px solid #C41E3A; margin-bottom: 1rem;">
   <p style="margin: 0; font-size: 0.95rem; line-height: 1.6;">
-    <strong style="color: #C41E3A;">🎯 Hallazgo Crítico:</strong> De las 10 ciudades con mayor oportunidad, 
+    <strong style="color: #C41E3A;">🎯 Oportunidad Identificada:</strong> De las 10 ciudades con mayor potencial, 
     <strong>${sinPresencia.length}</strong> no tienen presencia de FCarnes, representando 
-    <strong>${formatNumber(tamSinPresencia)}</strong> prospectos verificados completamente inexplorados.
-    León, Iztapalapa y Puebla combinadas suman más prospectos que todo el mercado actual de FCarnes en NORESTE.
+    <strong>${formatNumber(tamSinPresencia)}</strong> prospectos verificados sin explorar.
+    ${leonData ? `<br><strong>Ejemplo: León</strong> tiene ${formatNumber(leonData.tam_neto)} prospectos verificados (${leonPctVerif}% del mercado total de esa ciudad pasó los filtros de calidad).` : ""}
   </p>
 </div>`);
 ```
 
 ```js
+// Tabla sin checkbox (select: false)
 display(Inputs.table(top10, {
   columns: ["municipio", "macro_region", "tam_neto", "clientes_fcarnes", "penetracion_pct"],
   header: {
     municipio: "Ciudad",
     macro_region: "Región",
-    tam_neto: "TAM Neto",
-    clientes_fcarnes: "Clientes",
+    tam_neto: "Prospectos Verificados",
+    clientes_fcarnes: "Clientes Actuales",
     penetracion_pct: "Penetración"
   },
   format: {
@@ -501,13 +640,14 @@ display(Inputs.table(top10, {
   },
   sort: "tam_neto",
   reverse: true,
-  rows: 10
+  rows: 10,
+  select: false
 }));
 ```
 
 <div class="note" style="background: #EDE7F6; border-left: 4px solid #7C3AED; padding: 0.75rem; margin: 1rem 0; font-size: 0.9rem;">
-  <strong>📌 Nota para Ventas:</strong> Las ciudades en <strong>CENTRO</strong> (CDMX y área metropolitana) tienen la mayor concentración de prospectos. 
-  Una estrategia de entrada coordinada en estas plazas podría capturar <strong>~8,000 prospectos</strong> con un solo CEDIS regional.
+  <strong>📌 Siguiente Paso Recomendado:</strong> Las ciudades en <strong>CENTRO</strong> (CDMX y área metropolitana) tienen la mayor concentración de prospectos verificados. 
+  Una estrategia de entrada coordinada en estas plazas podría capturar <strong>~8,000 prospectos</strong> estableciendo un CEDIS en Querétaro como hub logístico intermedio.
 </div>
 
 <div style="text-align: center; margin-top: 1rem;">

@@ -1,153 +1,743 @@
 {
   "resumen": {
-    "total_rutas": 16,
-    "rutas_con_casetas": 15,
-    "rutas_sin_casetas": 1,
-    "distancia_promedio_km": 843.9,
-    "costo_casetas_promedio": 2126.0,
-    "costo_combustible_promedio": 3710.0,
-    "costo_total_promedio": 5704.0,
-    "distancia_max_km": 2600.0,
-    "costo_max_mxn": 18568.0
+    "total_rutas": 74,
+    "rutas_con_casetas": 53,
+    "rutas_sin_casetas": 21,
+    "distancia_promedio_km": 598.4,
+    "costo_casetas_promedio": 1272.0,
+    "costo_combustible_promedio": 2631.0,
+    "costo_total_promedio": 3903.0,
+    "distancia_max_km": 2592.0,
+    "costo_max_mxn": 18530.0
   },
   "rutas_principales": [
     {
       "ciudad": "Tijuana",
-      "distancia_km": 2600.0,
+      "distancia_km": 2592.0,
       "costo_casetas_mxn": 7135.0,
-      "costo_combustible_mxn": 11433.0,
-      "costo_total_mxn": 18568.0,
-      "tiempo_horas": 32.5,
+      "costo_combustible_mxn": 11395.0,
+      "costo_total_mxn": 18530.0,
+      "tiempo_horas": 39.9,
       "zona": "LEJANA"
     },
     {
       "ciudad": "Mexicali",
-      "distancia_km": 2429.0,
+      "distancia_km": 2428.0,
       "costo_casetas_mxn": 6360.0,
-      "costo_combustible_mxn": 10680.0,
-      "costo_total_mxn": 17040.0,
-      "tiempo_horas": 30.4,
-      "zona": "LEJANA"
-    },
-    {
-      "ciudad": "Culiacan",
-      "distancia_km": 1529.0,
-      "costo_casetas_mxn": 3728.0,
-      "costo_combustible_mxn": 6724.0,
-      "costo_total_mxn": 10452.0,
-      "tiempo_horas": 19.1,
+      "costo_combustible_mxn": 10678.0,
+      "costo_total_mxn": 17038.0,
+      "tiempo_horas": 37.4,
       "zona": "LEJANA"
     },
     {
       "ciudad": "Puebla",
-      "distancia_km": 1293.0,
-      "costo_casetas_mxn": 3453.0,
-      "costo_combustible_mxn": 5686.0,
-      "costo_total_mxn": 9139.0,
-      "tiempo_horas": 16.2,
+      "distancia_km": 2411.0,
+      "costo_casetas_mxn": 6305.0,
+      "costo_combustible_mxn": 10601.0,
+      "costo_total_mxn": 16906.0,
+      "tiempo_horas": 37.1,
       "zona": "LEJANA"
     },
     {
-      "ciudad": "Ciudad Juarez",
-      "distancia_km": 1163.0,
+      "ciudad": "Tuxtla Gutiérrez",
+      "distancia_km": 2385.0,
+      "costo_casetas_mxn": 6069.0,
+      "costo_combustible_mxn": 10487.0,
+      "costo_total_mxn": 16556.0,
+      "tiempo_horas": 36.7,
+      "zona": "LEJANA"
+    },
+    {
+      "ciudad": "Hermosillo",
+      "distancia_km": 1714.0,
+      "costo_casetas_mxn": 5563.0,
+      "costo_combustible_mxn": 7537.0,
+      "costo_total_mxn": 13100.0,
+      "tiempo_horas": 26.4,
+      "zona": "LEJANA"
+    },
+    {
+      "ciudad": "La Paz",
+      "distancia_km": 2005.0,
+      "costo_casetas_mxn": 4057.0,
+      "costo_combustible_mxn": 8816.0,
+      "costo_total_mxn": 12873.0,
+      "tiempo_horas": 30.8,
+      "zona": "LEJANA"
+    },
+    {
+      "ciudad": "Acayucan",
+      "distancia_km": 1719.0,
+      "costo_casetas_mxn": 5075.0,
+      "costo_combustible_mxn": 7559.0,
+      "costo_total_mxn": 12634.0,
+      "tiempo_horas": 26.4,
+      "zona": "LEJANA"
+    },
+    {
+      "ciudad": "Allende",
+      "distancia_km": 1842.0,
+      "costo_casetas_mxn": 3701.0,
+      "costo_combustible_mxn": 8100.0,
+      "costo_total_mxn": 11801.0,
+      "tiempo_horas": 28.3,
+      "zona": "LEJANA"
+    },
+    {
+      "ciudad": "San Buenaventura",
+      "distancia_km": 1211.0,
+      "costo_casetas_mxn": 3741.0,
+      "costo_combustible_mxn": 5324.0,
+      "costo_total_mxn": 9065.0,
+      "tiempo_horas": 18.6,
+      "zona": "LEJANA"
+    },
+    {
+      "ciudad": "Santa Catarina",
+      "distancia_km": 1173.0,
+      "costo_casetas_mxn": 3277.0,
+      "costo_combustible_mxn": 5156.0,
+      "costo_total_mxn": 8433.0,
+      "tiempo_horas": 18.0,
+      "zona": "LEJANA"
+    },
+    {
+      "ciudad": "El Carmen",
+      "distancia_km": 1170.0,
+      "costo_casetas_mxn": 2828.0,
+      "costo_combustible_mxn": 5146.0,
+      "costo_total_mxn": 7974.0,
+      "tiempo_horas": 18.0,
+      "zona": "LEJANA"
+    },
+    {
+      "ciudad": "San Rafael",
+      "distancia_km": 1262.0,
+      "costo_casetas_mxn": 2371.0,
+      "costo_combustible_mxn": 5547.0,
+      "costo_total_mxn": 7918.0,
+      "tiempo_horas": 19.4,
+      "zona": "LEJANA"
+    },
+    {
+      "ciudad": "Benito Juárez",
+      "distancia_km": 1178.0,
+      "costo_casetas_mxn": 2675.0,
+      "costo_combustible_mxn": 5179.0,
+      "costo_total_mxn": 7854.0,
+      "tiempo_horas": 18.1,
+      "zona": "LEJANA"
+    },
+    {
+      "ciudad": "Metepec",
+      "distancia_km": 1184.0,
+      "costo_casetas_mxn": 2332.0,
+      "costo_combustible_mxn": 5207.0,
+      "costo_total_mxn": 7539.0,
+      "tiempo_horas": 18.2,
+      "zona": "LEJANA"
+    },
+    {
+      "ciudad": "Juárez",
+      "distancia_km": 1160.0,
       "costo_casetas_mxn": 2392.0,
-      "costo_combustible_mxn": 5114.0,
-      "costo_total_mxn": 7506.0,
-      "tiempo_horas": 14.5,
+      "costo_combustible_mxn": 5100.0,
+      "costo_total_mxn": 7492.0,
+      "tiempo_horas": 17.8,
+      "zona": "LEJANA"
+    },
+    {
+      "ciudad": "Zapopan",
+      "distancia_km": 907.0,
+      "costo_casetas_mxn": 1966.0,
+      "costo_combustible_mxn": 3990.0,
+      "costo_total_mxn": 5956.0,
+      "tiempo_horas": 14.0,
+      "zona": "LEJANA"
+    },
+    {
+      "ciudad": "Villagrán",
+      "distancia_km": 905.0,
+      "costo_casetas_mxn": 1951.0,
+      "costo_combustible_mxn": 3979.0,
+      "costo_total_mxn": 5930.0,
+      "tiempo_horas": 13.9,
+      "zona": "LEJANA"
+    },
+    {
+      "ciudad": "Guadalajara",
+      "distancia_km": 899.0,
+      "costo_casetas_mxn": 1966.0,
+      "costo_combustible_mxn": 3953.0,
+      "costo_total_mxn": 5919.0,
+      "tiempo_horas": 13.8,
       "zona": "LEJANA"
     },
     {
       "ciudad": "Chihuahua",
-      "distancia_km": 800.0,
-      "costo_casetas_mxn": 1734.0,
-      "costo_combustible_mxn": 3518.0,
-      "costo_total_mxn": 5252.0,
-      "tiempo_horas": 10.0,
+      "distancia_km": 897.0,
+      "costo_casetas_mxn": 1132.0,
+      "costo_combustible_mxn": 3945.0,
+      "costo_total_mxn": 5077.0,
+      "tiempo_horas": 13.8,
       "zona": "LEJANA"
     },
     {
-      "ciudad": "Leon",
-      "distancia_km": 693.0,
-      "costo_casetas_mxn": 1251.0,
-      "costo_combustible_mxn": 3047.0,
-      "costo_total_mxn": 4298.0,
-      "tiempo_horas": 8.7,
+      "ciudad": "Tampico",
+      "distancia_km": 814.0,
+      "costo_casetas_mxn": 1492.0,
+      "costo_combustible_mxn": 3580.0,
+      "costo_total_mxn": 5072.0,
+      "tiempo_horas": 12.5,
+      "zona": "FORANEA"
+    },
+    {
+      "ciudad": "Tamazunchale",
+      "distancia_km": 767.0,
+      "costo_casetas_mxn": 1327.0,
+      "costo_combustible_mxn": 3374.0,
+      "costo_total_mxn": 4701.0,
+      "tiempo_horas": 11.8,
+      "zona": "FORANEA"
+    },
+    {
+      "ciudad": "Ciudad Valles",
+      "distancia_km": 670.0,
+      "costo_casetas_mxn": 1235.0,
+      "costo_combustible_mxn": 2945.0,
+      "costo_total_mxn": 4180.0,
+      "tiempo_horas": 10.3,
+      "zona": "FORANEA"
+    },
+    {
+      "ciudad": "Guanajuato",
+      "distancia_km": 681.0,
+      "costo_casetas_mxn": 1151.0,
+      "costo_combustible_mxn": 2995.0,
+      "costo_total_mxn": 4146.0,
+      "tiempo_horas": 10.5,
       "zona": "FORANEA"
     },
     {
       "ciudad": "Aguascalientes",
-      "distancia_km": 679.0,
+      "distancia_km": 677.0,
       "costo_casetas_mxn": 978.0,
-      "costo_combustible_mxn": 2983.0,
-      "costo_total_mxn": 3961.0,
-      "tiempo_horas": 8.5,
+      "costo_combustible_mxn": 2976.0,
+      "costo_total_mxn": 3954.0,
+      "tiempo_horas": 10.4,
       "zona": "FORANEA"
     },
     {
-      "ciudad": "Queretaro",
-      "distancia_km": 703.0,
-      "costo_casetas_mxn": 852.0,
-      "costo_combustible_mxn": 3091.0,
-      "costo_total_mxn": 3943.0,
-      "tiempo_horas": 8.8,
-      "zona": "LEJANA"
+      "ciudad": "San Juan de los Lagos",
+      "distancia_km": 734.0,
+      "costo_casetas_mxn": 680.0,
+      "costo_combustible_mxn": 3227.0,
+      "costo_total_mxn": 3906.0,
+      "tiempo_horas": 11.3,
+      "zona": "FORANEA"
     },
     {
-      "ciudad": "San Luis Potosi",
-      "distancia_km": 510.0,
-      "costo_casetas_mxn": 745.0,
-      "costo_combustible_mxn": 2242.0,
-      "costo_total_mxn": 2987.0,
+      "ciudad": "Victoria",
+      "distancia_km": 663.0,
+      "costo_casetas_mxn": 852.0,
+      "costo_combustible_mxn": 2916.0,
+      "costo_total_mxn": 3768.0,
+      "tiempo_horas": 10.2,
+      "zona": "FORANEA"
+    },
+    {
+      "ciudad": "San Luis Potosí",
+      "distancia_km": 513.0,
+      "costo_casetas_mxn": 675.0,
+      "costo_combustible_mxn": 2256.0,
+      "costo_total_mxn": 2931.0,
+      "tiempo_horas": 7.9,
+      "zona": "FORANEA"
+    },
+    {
+      "ciudad": "Gómez Palacio",
+      "distancia_km": 358.0,
+      "costo_casetas_mxn": 1067.0,
+      "costo_combustible_mxn": 1574.0,
+      "costo_total_mxn": 2641.0,
+      "tiempo_horas": 5.5,
+      "zona": "FORANEA"
+    },
+    {
+      "ciudad": "Jiménez",
+      "distancia_km": 436.0,
+      "costo_casetas_mxn": 621.0,
+      "costo_combustible_mxn": 1915.0,
+      "costo_total_mxn": 2536.0,
+      "tiempo_horas": 6.7,
+      "zona": "FORANEA"
+    },
+    {
+      "ciudad": "Nava",
+      "distancia_km": 417.0,
+      "costo_casetas_mxn": 621.0,
+      "costo_combustible_mxn": 1834.0,
+      "costo_total_mxn": 2455.0,
       "tiempo_horas": 6.4,
       "zona": "FORANEA"
     },
     {
-      "ciudad": "Matamoros",
-      "distancia_km": 310.0,
+      "ciudad": "Valle Hermoso",
+      "distancia_km": 320.0,
       "costo_casetas_mxn": 1040.0,
-      "costo_combustible_mxn": 1365.0,
-      "costo_total_mxn": 2405.0,
-      "tiempo_horas": 3.9,
+      "costo_combustible_mxn": 1408.0,
+      "costo_total_mxn": 2448.0,
+      "tiempo_horas": 4.9,
       "zona": "FORANEA"
     },
     {
-      "ciudad": "Torreon",
-      "distancia_km": 331.0,
+      "ciudad": "González",
+      "distancia_km": 482.0,
+      "costo_casetas_mxn": 241.0,
+      "costo_combustible_mxn": 2120.0,
+      "costo_total_mxn": 2361.0,
+      "tiempo_horas": 7.4,
+      "zona": "FORANEA"
+    },
+    {
+      "ciudad": "Piedras Negras",
+      "distancia_km": 391.0,
+      "costo_casetas_mxn": 621.0,
+      "costo_combustible_mxn": 1718.0,
+      "costo_total_mxn": 2339.0,
+      "tiempo_horas": 6.0,
+      "zona": "FORANEA"
+    },
+    {
+      "ciudad": "Torreón",
+      "distancia_km": 332.0,
       "costo_casetas_mxn": 849.0,
-      "costo_combustible_mxn": 1457.0,
-      "costo_total_mxn": 2306.0,
-      "tiempo_horas": 4.1,
+      "costo_combustible_mxn": 1462.0,
+      "costo_total_mxn": 2311.0,
+      "tiempo_horas": 5.1,
+      "zona": "FORANEA"
+    },
+    {
+      "ciudad": "Matamoros",
+      "distancia_km": 316.0,
+      "costo_casetas_mxn": 849.0,
+      "costo_combustible_mxn": 1388.0,
+      "costo_total_mxn": 2237.0,
+      "tiempo_horas": 4.9,
+      "zona": "FORANEA"
+    },
+    {
+      "ciudad": "Guerrero",
+      "distancia_km": 344.0,
+      "costo_casetas_mxn": 621.0,
+      "costo_combustible_mxn": 1513.0,
+      "costo_total_mxn": 2134.0,
+      "tiempo_horas": 5.3,
+      "zona": "FORANEA"
+    },
+    {
+      "ciudad": "Mier y Noriega",
+      "distancia_km": 360.0,
+      "costo_casetas_mxn": 473.0,
+      "costo_combustible_mxn": 1582.0,
+      "costo_total_mxn": 2055.0,
+      "tiempo_horas": 5.5,
+      "zona": "FORANEA"
+    },
+    {
+      "ciudad": "Río Bravo",
+      "distancia_km": 248.0,
+      "costo_casetas_mxn": 859.0,
+      "costo_combustible_mxn": 1092.0,
+      "costo_total_mxn": 1951.0,
+      "tiempo_horas": 3.8,
+      "zona": "REGIONAL"
+    },
+    {
+      "ciudad": "Matehuala",
+      "distancia_km": 318.0,
+      "costo_casetas_mxn": 473.0,
+      "costo_combustible_mxn": 1397.0,
+      "costo_total_mxn": 1870.0,
+      "tiempo_horas": 4.9,
+      "zona": "FORANEA"
+    },
+    {
+      "ciudad": "Aramberri",
+      "distancia_km": 317.0,
+      "costo_casetas_mxn": 473.0,
+      "costo_combustible_mxn": 1396.0,
+      "costo_total_mxn": 1869.0,
+      "tiempo_horas": 4.9,
+      "zona": "FORANEA"
+    },
+    {
+      "ciudad": "Cedral",
+      "distancia_km": 317.0,
+      "costo_casetas_mxn": 473.0,
+      "costo_combustible_mxn": 1395.0,
+      "costo_total_mxn": 1868.0,
+      "tiempo_horas": 4.9,
+      "zona": "FORANEA"
+    },
+    {
+      "ciudad": "Anáhuac",
+      "distancia_km": 275.0,
+      "costo_casetas_mxn": 621.0,
+      "costo_combustible_mxn": 1208.0,
+      "costo_total_mxn": 1829.0,
+      "tiempo_horas": 4.2,
+      "zona": "REGIONAL"
+    },
+    {
+      "ciudad": "San Fernando",
+      "distancia_km": 291.0,
+      "costo_casetas_mxn": 499.0,
+      "costo_combustible_mxn": 1278.0,
+      "costo_total_mxn": 1777.0,
+      "tiempo_horas": 4.5,
+      "zona": "REGIONAL"
+    },
+    {
+      "ciudad": "Xicoténcatl",
+      "distancia_km": 390.0,
+      "costo_casetas_mxn": 0.0,
+      "costo_combustible_mxn": 1717.0,
+      "costo_total_mxn": 1717.0,
+      "tiempo_horas": 6.0,
       "zona": "FORANEA"
     },
     {
       "ciudad": "Reynosa",
       "distancia_km": 218.0,
       "costo_casetas_mxn": 748.0,
-      "costo_combustible_mxn": 958.0,
-      "costo_total_mxn": 1706.0,
-      "tiempo_horas": 2.7,
+      "costo_combustible_mxn": 957.0,
+      "costo_total_mxn": 1705.0,
+      "tiempo_horas": 3.4,
+      "zona": "REGIONAL"
+    },
+    {
+      "ciudad": "Soto la Marina",
+      "distancia_km": 380.0,
+      "costo_casetas_mxn": 0.0,
+      "costo_combustible_mxn": 1673.0,
+      "costo_total_mxn": 1673.0,
+      "tiempo_horas": 5.9,
       "zona": "FORANEA"
     },
     {
       "ciudad": "Nuevo Laredo",
-      "distancia_km": 218.0,
+      "distancia_km": 216.0,
       "costo_casetas_mxn": 621.0,
-      "costo_combustible_mxn": 957.0,
-      "costo_total_mxn": 1578.0,
-      "tiempo_horas": 2.7,
+      "costo_combustible_mxn": 950.0,
+      "costo_total_mxn": 1571.0,
+      "tiempo_horas": 3.3,
+      "zona": "REGIONAL"
+    },
+    {
+      "ciudad": "Jaumave",
+      "distancia_km": 350.0,
+      "costo_casetas_mxn": 0.0,
+      "costo_combustible_mxn": 1539.0,
+      "costo_total_mxn": 1539.0,
+      "tiempo_horas": 5.4,
       "zona": "FORANEA"
+    },
+    {
+      "ciudad": "Méndez",
+      "distancia_km": 224.0,
+      "costo_casetas_mxn": 499.0,
+      "costo_combustible_mxn": 985.0,
+      "costo_total_mxn": 1484.0,
+      "tiempo_horas": 3.4,
+      "zona": "REGIONAL"
+    },
+    {
+      "ciudad": "Sabinas",
+      "distancia_km": 307.0,
+      "costo_casetas_mxn": 0.0,
+      "costo_combustible_mxn": 1352.0,
+      "costo_total_mxn": 1352.0,
+      "tiempo_horas": 4.7,
+      "zona": "FORANEA"
+    },
+    {
+      "ciudad": "General Bravo",
+      "distancia_km": 127.0,
+      "costo_casetas_mxn": 553.0,
+      "costo_combustible_mxn": 560.0,
+      "costo_total_mxn": 1113.0,
+      "tiempo_horas": 2.0,
+      "zona": "REGIONAL"
+    },
+    {
+      "ciudad": "China",
+      "distancia_km": 123.0,
+      "costo_casetas_mxn": 499.0,
+      "costo_combustible_mxn": 539.0,
+      "costo_total_mxn": 1038.0,
+      "tiempo_horas": 1.9,
+      "zona": "REGIONAL"
+    },
+    {
+      "ciudad": "Galeana",
+      "distancia_km": 200.0,
+      "costo_casetas_mxn": 0.0,
+      "costo_combustible_mxn": 881.0,
+      "costo_total_mxn": 881.0,
+      "tiempo_horas": 3.1,
+      "zona": "REGIONAL"
+    },
+    {
+      "ciudad": "Frontera",
+      "distancia_km": 198.0,
+      "costo_casetas_mxn": 0.0,
+      "costo_combustible_mxn": 872.0,
+      "costo_total_mxn": 872.0,
+      "tiempo_horas": 3.1,
+      "zona": "REGIONAL"
+    },
+    {
+      "ciudad": "Monclova",
+      "distancia_km": 192.0,
+      "costo_casetas_mxn": 0.0,
+      "costo_combustible_mxn": 844.0,
+      "costo_total_mxn": 844.0,
+      "tiempo_horas": 3.0,
+      "zona": "REGIONAL"
+    },
+    {
+      "ciudad": "Los Ramones",
+      "distancia_km": 81.0,
+      "costo_casetas_mxn": 436.0,
+      "costo_combustible_mxn": 356.0,
+      "costo_total_mxn": 792.0,
+      "tiempo_horas": 1.2,
+      "zona": "LOCAL"
+    },
+    {
+      "ciudad": "Agualeguas",
+      "distancia_km": 139.0,
+      "costo_casetas_mxn": 179.0,
+      "costo_combustible_mxn": 612.0,
+      "costo_total_mxn": 791.0,
+      "tiempo_horas": 2.1,
+      "zona": "REGIONAL"
+    },
+    {
+      "ciudad": "Saltillo",
+      "distancia_km": 87.0,
+      "costo_casetas_mxn": 294.0,
+      "costo_combustible_mxn": 384.0,
+      "costo_total_mxn": 678.0,
+      "tiempo_horas": 1.3,
+      "zona": "LOCAL"
+    },
+    {
+      "ciudad": "Candela",
+      "distancia_km": 152.0,
+      "costo_casetas_mxn": 0.0,
+      "costo_combustible_mxn": 667.0,
+      "costo_total_mxn": 667.0,
+      "tiempo_horas": 2.3,
+      "zona": "REGIONAL"
+    },
+    {
+      "ciudad": "Ramos Arizpe",
+      "distancia_km": 73.0,
+      "costo_casetas_mxn": 294.0,
+      "costo_combustible_mxn": 323.0,
+      "costo_total_mxn": 617.0,
+      "tiempo_horas": 1.1,
+      "zona": "LOCAL"
+    },
+    {
+      "ciudad": "Linares",
+      "distancia_km": 130.0,
+      "costo_casetas_mxn": 0.0,
+      "costo_combustible_mxn": 572.0,
+      "costo_total_mxn": 572.0,
+      "tiempo_horas": 2.0,
+      "zona": "REGIONAL"
+    },
+    {
+      "ciudad": "Cadereyta Jiménez",
+      "distancia_km": 45.0,
+      "costo_casetas_mxn": 321.0,
+      "costo_combustible_mxn": 198.0,
+      "costo_total_mxn": 519.0,
+      "tiempo_horas": 0.7,
+      "zona": "LOCAL"
+    },
+    {
+      "ciudad": "General Treviño",
+      "distancia_km": 111.0,
+      "costo_casetas_mxn": 0.0,
+      "costo_combustible_mxn": 489.0,
+      "costo_total_mxn": 489.0,
+      "tiempo_horas": 1.7,
+      "zona": "REGIONAL"
+    },
+    {
+      "ciudad": "Cerralvo",
+      "distancia_km": 91.0,
+      "costo_casetas_mxn": 0.0,
+      "costo_combustible_mxn": 399.0,
+      "costo_total_mxn": 399.0,
+      "tiempo_horas": 1.4,
+      "zona": "LOCAL"
+    },
+    {
+      "ciudad": "Montemorelos",
+      "distancia_km": 82.0,
+      "costo_casetas_mxn": 0.0,
+      "costo_combustible_mxn": 359.0,
+      "costo_total_mxn": 359.0,
+      "tiempo_horas": 1.3,
+      "zona": "LOCAL"
+    },
+    {
+      "ciudad": "Hidalgo",
+      "distancia_km": 40.0,
+      "costo_casetas_mxn": 0.0,
+      "costo_combustible_mxn": 177.0,
+      "costo_total_mxn": 177.0,
+      "tiempo_horas": 0.6,
+      "zona": "LOCAL"
+    },
+    {
+      "ciudad": "Marín",
+      "distancia_km": 40.0,
+      "costo_casetas_mxn": 0.0,
+      "costo_combustible_mxn": 176.0,
+      "costo_total_mxn": 176.0,
+      "tiempo_horas": 0.6,
+      "zona": "LOCAL"
+    },
+    {
+      "ciudad": "Santiago",
+      "distancia_km": 36.0,
+      "costo_casetas_mxn": 0.0,
+      "costo_combustible_mxn": 157.0,
+      "costo_total_mxn": 157.0,
+      "tiempo_horas": 0.5,
+      "zona": "LOCAL"
+    },
+    {
+      "ciudad": "García",
+      "distancia_km": 35.0,
+      "costo_casetas_mxn": 0.0,
+      "costo_combustible_mxn": 156.0,
+      "costo_total_mxn": 156.0,
+      "tiempo_horas": 0.5,
+      "zona": "LOCAL"
+    },
+    {
+      "ciudad": "Ciénega de Flores",
+      "distancia_km": 34.0,
+      "costo_casetas_mxn": 0.0,
+      "costo_combustible_mxn": 151.0,
+      "costo_total_mxn": 151.0,
+      "tiempo_horas": 0.5,
+      "zona": "LOCAL"
+    },
+    {
+      "ciudad": "Pesquería",
+      "distancia_km": 33.0,
+      "costo_casetas_mxn": 0.0,
+      "costo_combustible_mxn": 146.0,
+      "costo_total_mxn": 146.0,
+      "tiempo_horas": 0.5,
+      "zona": "LOCAL"
+    },
+    {
+      "ciudad": "Salinas Victoria",
+      "distancia_km": 32.0,
+      "costo_casetas_mxn": 0.0,
+      "costo_combustible_mxn": 142.0,
+      "costo_total_mxn": 142.0,
+      "tiempo_horas": 0.5,
+      "zona": "LOCAL"
+    },
+    {
+      "ciudad": "Apodaca",
+      "distancia_km": 16.0,
+      "costo_casetas_mxn": 0.0,
+      "costo_combustible_mxn": 69.0,
+      "costo_total_mxn": 69.0,
+      "tiempo_horas": 0.2,
+      "zona": "LOCAL"
+    },
+    {
+      "ciudad": "Guadalupe",
+      "distancia_km": 12.0,
+      "costo_casetas_mxn": 0.0,
+      "costo_combustible_mxn": 54.0,
+      "costo_total_mxn": 54.0,
+      "tiempo_horas": 0.2,
+      "zona": "LOCAL"
     }
   ],
   "rutas_cercanas": [
     {
-      "ciudad": "Santa Catarina",
-      "distancia_km": 18.6,
-      "costo_total_mxn": 91.0
+      "ciudad": "San Nicolás de los Garza",
+      "distancia_km": 9.0,
+      "costo_total_mxn": 40.0
+    },
+    {
+      "ciudad": "San Pedro Garza García",
+      "distancia_km": 9.7,
+      "costo_total_mxn": 43.0
     },
     {
       "ciudad": "Guadalupe",
-      "distancia_km": 7.1,
-      "costo_total_mxn": 31.0
+      "distancia_km": 12.3,
+      "costo_total_mxn": 54.0
+    },
+    {
+      "ciudad": "Apodaca",
+      "distancia_km": 15.8,
+      "costo_total_mxn": 69.0
+    },
+    {
+      "ciudad": "Salinas Victoria",
+      "distancia_km": 32.2,
+      "costo_total_mxn": 142.0
+    },
+    {
+      "ciudad": "Pesquería",
+      "distancia_km": 33.1,
+      "costo_total_mxn": 146.0
+    },
+    {
+      "ciudad": "Ciénega de Flores",
+      "distancia_km": 34.3,
+      "costo_total_mxn": 151.0
+    },
+    {
+      "ciudad": "García",
+      "distancia_km": 35.5,
+      "costo_total_mxn": 156.0
+    },
+    {
+      "ciudad": "Santiago",
+      "distancia_km": 35.6,
+      "costo_total_mxn": 157.0
+    },
+    {
+      "ciudad": "Marín",
+      "distancia_km": 40.0,
+      "costo_total_mxn": 176.0
+    },
+    {
+      "ciudad": "Hidalgo",
+      "distancia_km": 40.4,
+      "costo_total_mxn": 177.0
+    },
+    {
+      "ciudad": "Cadereyta Jiménez",
+      "distancia_km": 45.1,
+      "costo_total_mxn": 519.0
     }
   ]
 }

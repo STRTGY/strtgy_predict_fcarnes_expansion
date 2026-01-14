@@ -1,8 +1,8 @@
 {
   "type": "FeatureCollection",
   "metadata": {
-    "generated": "2026-01-07T17:10:51.418409",
-    "total_nodes": 17
+    "generated": "2026-01-12T16:53:42.450242",
+    "total_nodes": 78
   },
   "features": [
     {
@@ -26,18 +26,767 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -117.0382,
-          32.5149
+          -100.3151,
+          25.6677
+        ]
+      },
+      "properties": {
+        "name": "Monterrey",
+        "type": "destino_local",
+        "zona_logistica": "LOCAL",
+        "distancia_km": 3.41,
+        "costo_total": 24.38,
+        "clientes_fcarnes": 877,
+        "macro_region": "NORESTE",
+        "icon": "📍",
+        "color": "#4CAF50",
+        "sakbe_costo_total": 13.06,
+        "costo_total_final": 13.06,
+        "fuente_costos": "SAKBE_INEGI"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -100.2177,
+          21.2114
+        ]
+      },
+      "properties": {
+        "name": "Victoria",
+        "type": "destino_foranea",
+        "zona_logistica": "FORANEA",
+        "distancia_km": 663.73,
+        "costo_total": 4745.67,
+        "clientes_fcarnes": 451,
+        "macro_region": "NORESTE",
+        "icon": "📍",
+        "color": "#FF9800",
+        "sakbe_costo_total": 3768.13,
+        "costo_total_final": 3768.13,
+        "fuente_costos": "SAKBE_INEGI"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -100.21,
+          25.6764
+        ]
+      },
+      "properties": {
+        "name": "Guadalupe",
+        "type": "destino_local",
+        "zona_logistica": "LOCAL",
+        "distancia_km": 16.39,
+        "costo_total": 117.19,
+        "clientes_fcarnes": 333,
+        "macro_region": "NORESTE",
+        "icon": "📍",
+        "color": "#4CAF50",
+        "sakbe_costo_total": 54.0,
+        "costo_total_final": 54.0,
+        "fuente_costos": "SAKBE_INEGI"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -98.2985,
+          26.0498
+        ]
+      },
+      "properties": {
+        "name": "Reynosa",
+        "type": "destino_regional",
+        "zona_logistica": "REGIONAL",
+        "distancia_km": 220.58,
+        "costo_total": 1577.15,
+        "clientes_fcarnes": 180,
+        "macro_region": "NORESTE",
+        "icon": "📍",
+        "color": "#2196F3",
+        "sakbe_costo_total": 1705.45,
+        "costo_total_final": 1705.45,
+        "fuente_costos": "SAKBE_INEGI"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -100.2032,
+          25.7629
+        ]
+      },
+      "properties": {
+        "name": "Apodaca",
+        "type": "destino_local",
+        "zona_logistica": "LOCAL",
+        "distancia_km": 21.43,
+        "costo_total": 153.22,
+        "clientes_fcarnes": 126,
+        "macro_region": "NORESTE",
+        "icon": "📍",
+        "color": "#4CAF50",
+        "sakbe_costo_total": 69.25,
+        "costo_total_final": 69.25,
+        "fuente_costos": "SAKBE_INEGI"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -100.2707,
+          25.7361
+        ]
+      },
+      "properties": {
+        "name": "San Nicolás de los Garza",
+        "type": "destino_local",
+        "zona_logistica": "LOCAL",
+        "distancia_km": 9.59,
+        "costo_total": 68.57,
+        "clientes_fcarnes": 104,
+        "macro_region": "NORESTE",
+        "icon": "📍",
+        "color": "#4CAF50",
+        "sakbe_costo_total": 39.57,
+        "costo_total_final": 39.57,
+        "fuente_costos": "SAKBE_INEGI"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -99.9936,
+          25.5887
+        ]
+      },
+      "properties": {
+        "name": "Cadereyta Jiménez",
+        "type": "destino_local",
+        "zona_logistica": "LOCAL",
+        "distancia_km": 43.96,
+        "costo_total": 314.31,
+        "clientes_fcarnes": 103,
+        "macro_region": "NORESTE",
+        "icon": "📍",
+        "color": "#4CAF50",
+        "sakbe_costo_total": 519.44,
+        "costo_total_final": 519.44,
+        "fuente_costos": "SAKBE_INEGI"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -100.6405,
+          23.6556
+        ]
+      },
+      "properties": {
+        "name": "Matehuala",
+        "type": "destino_foranea",
+        "zona_logistica": "FORANEA",
+        "distancia_km": 321.06,
+        "costo_total": 2295.58,
+        "clientes_fcarnes": 75,
+        "macro_region": "NORESTE",
+        "icon": "📍",
+        "color": "#FF9800",
+        "sakbe_costo_total": 1869.66,
+        "costo_total_final": 1869.66,
+        "fuente_costos": "SAKBE_INEGI"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -106.4269,
+          31.6562
+        ]
+      },
+      "properties": {
+        "name": "Juárez",
+        "type": "destino_lejana",
+        "zona_logistica": "LEJANA",
+        "distancia_km": 1163.7,
+        "costo_total": 8320.46,
+        "clientes_fcarnes": 72,
+        "macro_region": "NORESTE",
+        "icon": "📍",
+        "color": "#F44336",
+        "sakbe_costo_total": 7492.34,
+        "costo_total_final": 7492.34,
+        "fuente_costos": "SAKBE_INEGI"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -99.5418,
+          27.4643
+        ]
+      },
+      "properties": {
+        "name": "Nuevo Laredo",
+        "type": "destino_regional",
+        "zona_logistica": "REGIONAL",
+        "distancia_km": 222.75,
+        "costo_total": 1592.66,
+        "clientes_fcarnes": 70,
+        "macro_region": "NORESTE",
+        "icon": "📍",
+        "color": "#2196F3",
+        "sakbe_costo_total": 1570.58,
+        "costo_total_final": 1570.58,
+        "fuente_costos": "SAKBE_INEGI"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -98.9247,
+          19.6363
+        ]
+      },
+      "properties": {
+        "name": "Santa Catarina",
+        "type": "destino_lejana",
+        "zona_logistica": "LEJANA",
+        "distancia_km": 901.58,
+        "costo_total": 6446.3,
+        "clientes_fcarnes": 58,
+        "macro_region": "NORESTE",
+        "icon": "📍",
+        "color": "#F44336",
+        "sakbe_costo_total": 8433.49,
+        "costo_total_final": 8433.49,
+        "fuente_costos": "SAKBE_INEGI"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -100.9837,
+          25.432
+        ]
+      },
+      "properties": {
+        "name": "Saltillo",
+        "type": "destino_local",
+        "zona_logistica": "LOCAL",
+        "distancia_km": 86.75,
+        "costo_total": 620.26,
+        "clientes_fcarnes": 57,
+        "macro_region": "NORESTE",
+        "icon": "📍",
+        "color": "#4CAF50",
+        "sakbe_costo_total": 677.55,
+        "costo_total_final": 677.55,
+        "fuente_costos": "SAKBE_INEGI"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -99.2333,
+          25.7
+        ]
+      },
+      "properties": {
+        "name": "China",
+        "type": "destino_regional",
+        "zona_logistica": "REGIONAL",
+        "distancia_km": 125.3,
+        "costo_total": 895.89,
+        "clientes_fcarnes": 48,
+        "macro_region": "NORESTE",
+        "icon": "📍",
+        "color": "#2196F3",
+        "sakbe_costo_total": 1037.76,
+        "costo_total_final": 1037.76,
+        "fuente_costos": "SAKBE_INEGI"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -100.3702,
+          25.6477
+        ]
+      },
+      "properties": {
+        "name": "San Pedro Garza García",
+        "type": "destino_local",
+        "zona_logistica": "LOCAL",
+        "distancia_km": 10.09,
+        "costo_total": 72.14,
+        "clientes_fcarnes": 47,
+        "macro_region": "NORESTE",
+        "icon": "📍",
+        "color": "#4CAF50",
+        "sakbe_costo_total": 42.52,
+        "costo_total_final": 42.52,
+        "fuente_costos": "SAKBE_INEGI"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -99.1611,
+          19.3806
+        ]
+      },
+      "properties": {
+        "name": "Benito Juárez",
+        "type": "destino_lejana",
+        "zona_logistica": "LEJANA",
+        "distancia_km": 907.29,
+        "costo_total": 6487.12,
+        "clientes_fcarnes": 32,
+        "macro_region": "PENINSULA",
+        "icon": "📍",
+        "color": "#F44336",
+        "sakbe_costo_total": 7853.61,
+        "costo_total_final": 7853.61,
+        "fuente_costos": "SAKBE_INEGI"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -100.5971,
+          25.8013
+        ]
+      },
+      "properties": {
+        "name": "García",
+        "type": "destino_local",
+        "zona_logistica": "LOCAL",
+        "distancia_km": 46.94,
+        "costo_total": 335.62,
+        "clientes_fcarnes": 30,
+        "macro_region": "NORESTE",
+        "icon": "📍",
+        "color": "#4CAF50",
+        "sakbe_costo_total": 155.92,
+        "costo_total_final": 155.92,
+        "fuente_costos": "SAKBE_INEGI"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -100.1562,
+          25.4327
+        ]
+      },
+      "properties": {
+        "name": "Santiago",
+        "type": "destino_local",
+        "zona_logistica": "LOCAL",
+        "distancia_km": 36.26,
+        "costo_total": 259.26,
+        "clientes_fcarnes": 27,
+        "macro_region": "NORESTE",
+        "icon": "📍",
+        "color": "#4CAF50",
+        "sakbe_costo_total": 156.75,
+        "costo_total_final": 156.75,
+        "fuente_costos": "SAKBE_INEGI"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -98.0947,
+          25.9869
+        ]
+      },
+      "properties": {
+        "name": "Río Bravo",
+        "type": "destino_regional",
+        "zona_logistica": "REGIONAL",
+        "distancia_km": 251.37,
+        "costo_total": 1797.3,
+        "clientes_fcarnes": 27,
+        "macro_region": "NORESTE",
+        "icon": "📍",
+        "color": "#2196F3",
+        "sakbe_costo_total": 1950.86,
+        "costo_total_final": 1950.86,
+        "fuente_costos": "SAKBE_INEGI"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -100.0479,
+          25.7909
+        ]
+      },
+      "properties": {
+        "name": "Pesquería",
+        "type": "destino_local",
+        "zona_logistica": "LOCAL",
+        "distancia_km": 34.36,
+        "costo_total": 245.67,
+        "clientes_fcarnes": 20,
+        "macro_region": "NORESTE",
+        "icon": "📍",
+        "color": "#4CAF50",
+        "sakbe_costo_total": 145.54,
+        "costo_total_final": 145.54,
+        "fuente_costos": "SAKBE_INEGI"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -101.4209,
+          26.9068
+        ]
+      },
+      "properties": {
+        "name": "Monclova",
+        "type": "destino_regional",
+        "zona_logistica": "REGIONAL",
+        "distancia_km": 238.85,
+        "costo_total": 1707.78,
+        "clientes_fcarnes": 20,
+        "macro_region": "NORESTE",
+        "icon": "📍",
+        "color": "#2196F3",
+        "sakbe_costo_total": 843.78,
+        "costo_total_final": 843.78,
+        "fuente_costos": "SAKBE_INEGI"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -99.4847,
+          26.2222
+        ]
+      },
+      "properties": {
+        "name": "General Treviño",
+        "type": "destino_regional",
+        "zona_logistica": "REGIONAL",
+        "distancia_km": 113.28,
+        "costo_total": 809.95,
+        "clientes_fcarnes": 17,
+        "macro_region": "NORESTE",
+        "icon": "📍",
+        "color": "#2196F3",
+        "sakbe_costo_total": 488.95,
+        "costo_total_final": 488.95,
+        "fuente_costos": "SAKBE_INEGI"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -94.3846,
+          18.1386
+        ]
+      },
+      "properties": {
+        "name": "Allende",
+        "type": "destino_lejana",
+        "zona_logistica": "LEJANA",
+        "distancia_km": 1266.99,
+        "costo_total": 9058.98,
+        "clientes_fcarnes": 15,
+        "macro_region": "NORESTE",
+        "icon": "📍",
+        "color": "#F44336",
+        "sakbe_costo_total": 11800.94,
+        "costo_total_final": 11800.94,
+        "fuente_costos": "SAKBE_INEGI"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -99.1789,
+          25.7943
+        ]
+      },
+      "properties": {
+        "name": "General Bravo",
+        "type": "destino_regional",
+        "zona_logistica": "REGIONAL",
+        "distancia_km": 129.5,
+        "costo_total": 925.93,
+        "clientes_fcarnes": 15,
+        "macro_region": "NORESTE",
+        "icon": "📍",
+        "color": "#2196F3",
+        "sakbe_costo_total": 1113.35,
+        "costo_total_final": 1113.35,
+        "fuente_costos": "SAKBE_INEGI"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -100.7256,
+          23.8184
+        ]
+      },
+      "properties": {
+        "name": "Cedral",
+        "type": "destino_foranea",
+        "zona_logistica": "FORANEA",
+        "distancia_km": 331.6,
+        "costo_total": 2370.94,
+        "clientes_fcarnes": 13,
+        "macro_region": "NORESTE",
+        "icon": "📍",
+        "color": "#FF9800",
+        "sakbe_costo_total": 1867.9,
+        "costo_total_final": 1867.9,
+        "fuente_costos": "SAKBE_INEGI"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -100.9504,
+          25.5397
+        ]
+      },
+      "properties": {
+        "name": "Ramos Arizpe",
+        "type": "destino_local",
+        "zona_logistica": "LOCAL",
+        "distancia_km": 72.69,
+        "costo_total": 519.73,
+        "clientes_fcarnes": 12,
+        "macro_region": "NORESTE",
+        "icon": "📍",
+        "color": "#4CAF50",
+        "sakbe_costo_total": 616.74,
+        "costo_total_final": 616.74,
+        "fuente_costos": "SAKBE_INEGI"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -99.5629,
+          24.8621
+        ]
+      },
+      "properties": {
+        "name": "Linares",
+        "type": "destino_regional",
+        "zona_logistica": "REGIONAL",
+        "distancia_km": 141.24,
+        "costo_total": 1009.87,
+        "clientes_fcarnes": 12,
+        "macro_region": "NORESTE",
+        "icon": "📍",
+        "color": "#2196F3",
+        "sakbe_costo_total": 571.79,
+        "costo_total_final": 571.79,
+        "fuente_costos": "SAKBE_INEGI"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -98.9433,
+          22.9953
+        ]
+      },
+      "properties": {
+        "name": "Xicoténcatl",
+        "type": "destino_foranea",
+        "zona_logistica": "FORANEA",
+        "distancia_km": 402.96,
+        "costo_total": 2881.16,
+        "clientes_fcarnes": 11,
+        "macro_region": "NORESTE",
+        "icon": "📍",
+        "color": "#FF9800",
+        "sakbe_costo_total": 1716.54,
+        "costo_total_final": 1716.54,
+        "fuente_costos": "SAKBE_INEGI"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -99.6181,
+          26.0843
+        ]
+      },
+      "properties": {
+        "name": "Cerralvo",
+        "type": "destino_local",
+        "zona_logistica": "LOCAL",
+        "distancia_km": 92.58,
+        "costo_total": 661.95,
+        "clientes_fcarnes": 11,
+        "macro_region": "NORESTE",
+        "icon": "📍",
+        "color": "#4CAF50",
+        "sakbe_costo_total": 398.54,
+        "costo_total_final": 398.54,
+        "fuente_costos": "SAKBE_INEGI"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -103.2503,
+          25.5301
+        ]
+      },
+      "properties": {
+        "name": "Matamoros",
+        "type": "destino_foranea",
+        "zona_logistica": "FORANEA",
+        "distancia_km": 316.21,
+        "costo_total": 2260.9,
+        "clientes_fcarnes": 10,
+        "macro_region": "NORESTE",
+        "icon": "📍",
+        "color": "#FF9800",
+        "sakbe_costo_total": 2237.44,
+        "costo_total_final": 2237.44,
+        "fuente_costos": "SAKBE_INEGI"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -100.1675,
+          25.9601
+        ]
+      },
+      "properties": {
+        "name": "Ciénega de Flores",
+        "type": "destino_local",
+        "zona_logistica": "LOCAL",
+        "distancia_km": 37.15,
+        "costo_total": 265.62,
+        "clientes_fcarnes": 9,
+        "macro_region": "NORESTE",
+        "icon": "📍",
+        "color": "#4CAF50",
+        "sakbe_costo_total": 150.95,
+        "costo_total_final": 150.95,
+        "fuente_costos": "SAKBE_INEGI"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -99.832,
+          25.1861
+        ]
+      },
+      "properties": {
+        "name": "Montemorelos",
+        "type": "destino_local",
+        "zona_logistica": "LOCAL",
+        "distancia_km": 93.13,
+        "costo_total": 665.88,
+        "clientes_fcarnes": 9,
+        "macro_region": "NORESTE",
+        "icon": "📍",
+        "color": "#4CAF50",
+        "sakbe_costo_total": 359.1,
+        "costo_total_final": 359.1,
+        "fuente_costos": "SAKBE_INEGI"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -116.9652,
+          32.5017
         ]
       },
       "properties": {
         "name": "Tijuana",
-        "type": "destino_lejano",
+        "type": "destino_lejana",
         "zona_logistica": "LEJANA",
-        "distancia_km": 2600.19,
-        "costo_total": 18568.03543,
+        "distancia_km": 2679.22,
+        "costo_total": 19156.42,
+        "clientes_fcarnes": 8,
+        "macro_region": "FRONTERA_NORTE",
         "icon": "📍",
-        "color": "#F44336"
+        "color": "#F44336",
+        "sakbe_costo_total": 18530.44,
+        "costo_total_final": 18530.440000000002,
+        "fuente_costos": "SAKBE_INEGI"
       }
     },
     {
@@ -45,18 +794,311 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -115.4523,
-          32.6245
+          -103.3986,
+          25.5437
+        ]
+      },
+      "properties": {
+        "name": "Torreón",
+        "type": "destino_foranea",
+        "zona_logistica": "FORANEA",
+        "distancia_km": 331.67,
+        "costo_total": 2371.44,
+        "clientes_fcarnes": 8,
+        "macro_region": "NORESTE",
+        "icon": "📍",
+        "color": "#FF9800",
+        "sakbe_costo_total": 2310.83,
+        "costo_total_final": 2310.83,
+        "fuente_costos": "SAKBE_INEGI"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -100.2924,
+          25.9657
+        ]
+      },
+      "properties": {
+        "name": "Salinas Victoria",
+        "type": "destino_local",
+        "zona_logistica": "LOCAL",
+        "distancia_km": 43.22,
+        "costo_total": 309.02,
+        "clientes_fcarnes": 8,
+        "macro_region": "NORESTE",
+        "icon": "📍",
+        "color": "#4CAF50",
+        "sakbe_costo_total": 141.54,
+        "costo_total_final": 141.54,
+        "fuente_costos": "SAKBE_INEGI"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -100.1375,
+          27.2373
+        ]
+      },
+      "properties": {
+        "name": "Anáhuac",
+        "type": "destino_regional",
+        "zona_logistica": "REGIONAL",
+        "distancia_km": 209.57,
+        "costo_total": 1498.43,
+        "clientes_fcarnes": 7,
+        "macro_region": "NORESTE",
+        "icon": "📍",
+        "color": "#2196F3",
+        "sakbe_costo_total": 1828.72,
+        "costo_total_final": 1828.72,
+        "fuente_costos": "SAKBE_INEGI"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -98.9547,
+          19.8851
+        ]
+      },
+      "properties": {
+        "name": "El Carmen",
+        "type": "destino_lejana",
+        "zona_logistica": "LEJANA",
+        "distancia_km": 911.0,
+        "costo_total": 6513.65,
+        "clientes_fcarnes": 7,
+        "macro_region": "NORESTE",
+        "icon": "📍",
+        "color": "#F44336",
+        "sakbe_costo_total": 7973.9,
+        "costo_total_final": 7973.9,
+        "fuente_costos": "SAKBE_INEGI"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -99.54,
+          26.3106
+        ]
+      },
+      "properties": {
+        "name": "Agualeguas",
+        "type": "destino_regional",
+        "zona_logistica": "REGIONAL",
+        "distancia_km": 126.52,
+        "costo_total": 904.62,
+        "clientes_fcarnes": 7,
+        "macro_region": "NORESTE",
+        "icon": "📍",
+        "color": "#2196F3",
+        "sakbe_costo_total": 791.41,
+        "costo_total_final": 791.41,
+        "fuente_costos": "SAKBE_INEGI"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -100.6798,
+          29.0653
+        ]
+      },
+      "properties": {
+        "name": "Jiménez",
+        "type": "destino_foranea",
+        "zona_logistica": "FORANEA",
+        "distancia_km": 439.89,
+        "costo_total": 3145.21,
+        "clientes_fcarnes": 7,
+        "macro_region": "FRONTERA_NORTE",
+        "icon": "📍",
+        "color": "#FF9800",
+        "sakbe_costo_total": 2535.98,
+        "costo_total_final": 2535.98,
+        "fuente_costos": "SAKBE_INEGI"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -100.9587,
+          22.1331
+        ]
+      },
+      "properties": {
+        "name": "San Luis Potosí",
+        "type": "destino_foranea",
+        "zona_logistica": "FORANEA",
+        "distancia_km": 511.71,
+        "costo_total": 3658.73,
+        "clientes_fcarnes": 7,
+        "macro_region": "NORESTE",
+        "icon": "📍",
+        "color": "#FF9800",
+        "sakbe_costo_total": 2931.45,
+        "costo_total_final": 2931.45,
+        "fuente_costos": "SAKBE_INEGI"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -101.1299,
+          27.8641
+        ]
+      },
+      "properties": {
+        "name": "Sabinas",
+        "type": "destino_foranea",
+        "zona_logistica": "FORANEA",
+        "distancia_km": 355.62,
+        "costo_total": 2542.68,
+        "clientes_fcarnes": 6,
+        "macro_region": "NORESTE",
+        "icon": "📍",
+        "color": "#FF9800",
+        "sakbe_costo_total": 1351.59,
+        "costo_total_final": 1351.59,
+        "fuente_costos": "SAKBE_INEGI"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -106.0708,
+          28.6585
+        ]
+      },
+      "properties": {
+        "name": "Chihuahua",
+        "type": "destino_lejana",
+        "zona_logistica": "LEJANA",
+        "distancia_km": 804.45,
+        "costo_total": 5751.82,
+        "clientes_fcarnes": 6,
+        "macro_region": "FRONTERA_NORTE",
+        "icon": "📍",
+        "color": "#F44336",
+        "sakbe_costo_total": 5077.27,
+        "costo_total_final": 5077.27,
+        "fuente_costos": "SAKBE_INEGI"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -98.5885,
+          25.1183
+        ]
+      },
+      "properties": {
+        "name": "Méndez",
+        "type": "destino_regional",
+        "zona_logistica": "REGIONAL",
+        "distancia_km": 226.68,
+        "costo_total": 1620.76,
+        "clientes_fcarnes": 5,
+        "macro_region": "NORESTE",
+        "icon": "📍",
+        "color": "#2196F3",
+        "sakbe_costo_total": 1484.1,
+        "costo_total_final": 1484.1,
+        "fuente_costos": "SAKBE_INEGI"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -98.1476,
+          24.8459
+        ]
+      },
+      "properties": {
+        "name": "San Fernando",
+        "type": "destino_regional",
+        "zona_logistica": "REGIONAL",
+        "distancia_km": 293.9,
+        "costo_total": 2101.39,
+        "clientes_fcarnes": 4,
+        "macro_region": "GOLFO_SURESTE",
+        "icon": "📍",
+        "color": "#2196F3",
+        "sakbe_costo_total": 1777.38,
+        "costo_total_final": 1777.38,
+        "fuente_costos": "SAKBE_INEGI"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -99.6248,
+          25.6986
+        ]
+      },
+      "properties": {
+        "name": "Los Ramones",
+        "type": "destino_local",
+        "zona_logistica": "LOCAL",
+        "distancia_km": 82.61,
+        "costo_total": 590.66,
+        "clientes_fcarnes": 4,
+        "macro_region": "NORESTE",
+        "icon": "📍",
+        "color": "#4CAF50",
+        "sakbe_costo_total": 791.63,
+        "costo_total_final": 791.63,
+        "fuente_costos": "SAKBE_INEGI"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -115.4467,
+          32.6211
         ]
       },
       "properties": {
         "name": "Mexicali",
-        "type": "destino_lejano",
+        "type": "destino_lejana",
         "zona_logistica": "LEJANA",
-        "distancia_km": 2428.88,
-        "costo_total": 17039.78536,
+        "distancia_km": 2926.33,
+        "costo_total": 20923.26,
+        "clientes_fcarnes": 4,
+        "macro_region": "FRONTERA_NORTE",
         "icon": "📍",
-        "color": "#F44336"
+        "color": "#F44336",
+        "sakbe_costo_total": 17038.07,
+        "costo_total_final": 17038.07,
+        "fuente_costos": "SAKBE_INEGI"
       }
     },
     {
@@ -64,18 +1106,479 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -107.394,
-          24.8049
+          -102.2858,
+          21.8842
         ]
       },
       "properties": {
-        "name": "Culiacan",
-        "type": "destino_lejano",
-        "zona_logistica": "LEJANA",
-        "distancia_km": 1529.17,
-        "costo_total": 10451.76049,
+        "name": "Aguascalientes",
+        "type": "destino_foranea",
+        "zona_logistica": "FORANEA",
+        "distancia_km": 571.61,
+        "costo_total": 4087.01,
+        "clientes_fcarnes": 4,
+        "macro_region": "BAJIO",
         "icon": "📍",
-        "color": "#F44336"
+        "color": "#FF9800",
+        "sakbe_costo_total": 3953.63,
+        "costo_total_final": 3953.63,
+        "fuente_costos": "SAKBE_INEGI"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -115.3357,
+          32.5655
+        ]
+      },
+      "properties": {
+        "name": "Puebla",
+        "type": "destino_lejana",
+        "zona_logistica": "LEJANA",
+        "distancia_km": 2094.37,
+        "costo_total": 14974.75,
+        "clientes_fcarnes": 3,
+        "macro_region": "CENTRO",
+        "icon": "📍",
+        "color": "#F44336",
+        "sakbe_costo_total": 16906.43,
+        "costo_total_final": 16906.43,
+        "fuente_costos": "SAKBE_INEGI"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -100.4531,
+          25.9703
+        ]
+      },
+      "properties": {
+        "name": "Hidalgo",
+        "type": "destino_local",
+        "zona_logistica": "LOCAL",
+        "distancia_km": 42.01,
+        "costo_total": 300.37,
+        "clientes_fcarnes": 3,
+        "macro_region": "OCCIDENTE",
+        "icon": "📍",
+        "color": "#4CAF50",
+        "sakbe_costo_total": 177.42,
+        "costo_total_final": 177.42,
+        "fuente_costos": "SAKBE_INEGI"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -103.4879,
+          25.5834
+        ]
+      },
+      "properties": {
+        "name": "Gómez Palacio",
+        "type": "destino_foranea",
+        "zona_logistica": "FORANEA",
+        "distancia_km": 344.78,
+        "costo_total": 2465.18,
+        "clientes_fcarnes": 3,
+        "macro_region": "NOROESTE",
+        "icon": "📍",
+        "color": "#FF9800",
+        "sakbe_costo_total": 2641.17,
+        "costo_total_final": 2641.17,
+        "fuente_costos": "SAKBE_INEGI"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -100.0297,
+          25.8782
+        ]
+      },
+      "properties": {
+        "name": "Marín",
+        "type": "destino_local",
+        "zona_logistica": "LOCAL",
+        "distancia_km": 42.72,
+        "costo_total": 305.45,
+        "clientes_fcarnes": 3,
+        "macro_region": "NORESTE",
+        "icon": "📍",
+        "color": "#4CAF50",
+        "sakbe_costo_total": 175.66,
+        "costo_total_final": 175.66,
+        "fuente_costos": "SAKBE_INEGI"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -100.0757,
+          24.8206
+        ]
+      },
+      "properties": {
+        "name": "Galeana",
+        "type": "destino_regional",
+        "zona_logistica": "REGIONAL",
+        "distancia_km": 234.57,
+        "costo_total": 1677.18,
+        "clientes_fcarnes": 3,
+        "macro_region": "NORESTE",
+        "icon": "📍",
+        "color": "#2196F3",
+        "sakbe_costo_total": 881.38,
+        "costo_total_final": 881.38,
+        "fuente_costos": "SAKBE_INEGI"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -100.5423,
+          28.6907
+        ]
+      },
+      "properties": {
+        "name": "Piedras Negras",
+        "type": "destino_foranea",
+        "zona_logistica": "FORANEA",
+        "distancia_km": 394.95,
+        "costo_total": 2823.89,
+        "clientes_fcarnes": 2,
+        "macro_region": "NORESTE",
+        "icon": "📍",
+        "color": "#FF9800",
+        "sakbe_costo_total": 2338.86,
+        "costo_total_final": 2338.8599999999997,
+        "fuente_costos": "SAKBE_INEGI"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -97.8124,
+          25.6706
+        ]
+      },
+      "properties": {
+        "name": "Valle Hermoso",
+        "type": "destino_foranea",
+        "zona_logistica": "FORANEA",
+        "distancia_km": 301.4,
+        "costo_total": 2155.01,
+        "clientes_fcarnes": 2,
+        "macro_region": "NORESTE",
+        "icon": "📍",
+        "color": "#FF9800",
+        "sakbe_costo_total": 2447.79,
+        "costo_total_final": 2447.79,
+        "fuente_costos": "SAKBE_INEGI"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -100.9968,
+          20.5155
+        ]
+      },
+      "properties": {
+        "name": "Villagrán",
+        "type": "destino_lejana",
+        "zona_logistica": "LEJANA",
+        "distancia_km": 741.66,
+        "costo_total": 5302.87,
+        "clientes_fcarnes": 2,
+        "macro_region": "BAJIO",
+        "icon": "📍",
+        "color": "#F44336",
+        "sakbe_costo_total": 5929.67,
+        "costo_total_final": 5929.67,
+        "fuente_costos": "SAKBE_INEGI"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -93.1377,
+          16.7457
+        ]
+      },
+      "properties": {
+        "name": "Tuxtla Gutiérrez",
+        "type": "destino_lejana",
+        "zona_logistica": "LEJANA",
+        "distancia_km": 1489.3,
+        "costo_total": 10648.49,
+        "clientes_fcarnes": 1,
+        "macro_region": "GOLFO_SURESTE",
+        "icon": "📍",
+        "color": "#F44336",
+        "sakbe_costo_total": 16555.76,
+        "costo_total_final": 16555.760000000002,
+        "fuente_costos": "SAKBE_INEGI"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -101.2574,
+          21.0203
+        ]
+      },
+      "properties": {
+        "name": "Guanajuato",
+        "type": "destino_foranea",
+        "zona_logistica": "FORANEA",
+        "distancia_km": 681.14,
+        "costo_total": 4870.15,
+        "clientes_fcarnes": 1,
+        "macro_region": "BAJIO",
+        "icon": "📍",
+        "color": "#FF9800",
+        "sakbe_costo_total": 4145.97,
+        "costo_total_final": 4145.969999999999,
+        "fuente_costos": "SAKBE_INEGI"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -97.8714,
+          22.2667
+        ]
+      },
+      "properties": {
+        "name": "Tampico",
+        "type": "destino_foranea",
+        "zona_logistica": "FORANEA",
+        "distancia_km": 515.14,
+        "costo_total": 3683.25,
+        "clientes_fcarnes": 1,
+        "macro_region": "NORESTE",
+        "icon": "📍",
+        "color": "#FF9800",
+        "sakbe_costo_total": 5072.04,
+        "costo_total_final": 5072.04,
+        "fuente_costos": "SAKBE_INEGI"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -110.9766,
+          29.0832
+        ]
+      },
+      "properties": {
+        "name": "Hermosillo",
+        "type": "destino_lejana",
+        "zona_logistica": "LEJANA",
+        "distancia_km": 1720.48,
+        "costo_total": 12301.43,
+        "clientes_fcarnes": 1,
+        "macro_region": "FRONTERA_NORTE",
+        "icon": "📍",
+        "color": "#F44336",
+        "sakbe_costo_total": 13099.72,
+        "costo_total_final": 13099.720000000001,
+        "fuente_costos": "SAKBE_INEGI"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -99.6036,
+          19.2551
+        ]
+      },
+      "properties": {
+        "name": "Metepec",
+        "type": "destino_lejana",
+        "zona_logistica": "LEJANA",
+        "distancia_km": 893.85,
+        "costo_total": 6391.03,
+        "clientes_fcarnes": 1,
+        "macro_region": "CENTRO",
+        "icon": "📍",
+        "color": "#F44336",
+        "sakbe_costo_total": 7538.72,
+        "costo_total_final": 7538.72,
+        "fuente_costos": "SAKBE_INEGI"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -110.3074,
+          24.1258
+        ]
+      },
+      "properties": {
+        "name": "La Paz",
+        "type": "destino_lejana",
+        "zona_logistica": "LEJANA",
+        "distancia_km": 1495.22,
+        "costo_total": 10690.82,
+        "clientes_fcarnes": 1,
+        "macro_region": "CENTRO",
+        "icon": "📍",
+        "color": "#F44336",
+        "sakbe_costo_total": 12873.34,
+        "costo_total_final": 12873.34,
+        "fuente_costos": "SAKBE_INEGI"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -103.3383,
+          20.673
+        ]
+      },
+      "properties": {
+        "name": "Guadalajara",
+        "type": "destino_lejana",
+        "zona_logistica": "LEJANA",
+        "distancia_km": 802.18,
+        "costo_total": 5735.59,
+        "clientes_fcarnes": 1,
+        "macro_region": "OCCIDENTE",
+        "icon": "📍",
+        "color": "#F44336",
+        "sakbe_costo_total": 5919.25,
+        "costo_total_final": 5919.25,
+        "fuente_costos": "SAKBE_INEGI"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -103.4164,
+          20.6997
+        ]
+      },
+      "properties": {
+        "name": "Zapopan",
+        "type": "destino_lejana",
+        "zona_logistica": "LEJANA",
+        "distancia_km": 818.51,
+        "costo_total": 5852.35,
+        "clientes_fcarnes": 1,
+        "macro_region": "OCCIDENTE",
+        "icon": "📍",
+        "color": "#F44336",
+        "sakbe_costo_total": 5956.01,
+        "costo_total_final": 5956.01,
+        "fuente_costos": "SAKBE_INEGI"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -98.4302,
+          22.828
+        ]
+      },
+      "properties": {
+        "name": "González",
+        "type": "destino_foranea",
+        "zona_logistica": "FORANEA",
+        "distancia_km": 423.94,
+        "costo_total": 3031.17,
+        "clientes_fcarnes": 1,
+        "macro_region": "NORESTE",
+        "icon": "📍",
+        "color": "#FF9800",
+        "sakbe_costo_total": 2361.27,
+        "costo_total_final": 3031.18,
+        "fuente_costos": "ESTIMACION"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -98.8605,
+          19.3075
+        ]
+      },
+      "properties": {
+        "name": "San Buenaventura",
+        "type": "destino_lejana",
+        "zona_logistica": "LEJANA",
+        "distancia_km": 939.59,
+        "costo_total": 6718.07,
+        "clientes_fcarnes": 1,
+        "macro_region": "NORESTE",
+        "icon": "📍",
+        "color": "#F44336",
+        "sakbe_costo_total": 9064.93,
+        "costo_total_final": 9064.93,
+        "fuente_costos": "SAKBE_INEGI"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -99.3812,
+          23.4055
+        ]
+      },
+      "properties": {
+        "name": "Jaumave",
+        "type": "destino_foranea",
+        "zona_logistica": "FORANEA",
+        "distancia_km": 370.75,
+        "costo_total": 2650.86,
+        "clientes_fcarnes": 1,
+        "macro_region": "NORESTE",
+        "icon": "📍",
+        "color": "#FF9800",
+        "sakbe_costo_total": 1538.64,
+        "costo_total_final": 1538.64,
+        "fuente_costos": "SAKBE_INEGI"
       }
     },
     {
@@ -84,17 +1587,94 @@
         "type": "Point",
         "coordinates": [
           -98.2063,
-          19.0414
+          23.7699
         ]
       },
       "properties": {
-        "name": "Puebla",
-        "type": "destino_lejano",
+        "name": "Soto la Marina",
+        "type": "destino_foranea",
+        "zona_logistica": "FORANEA",
+        "distancia_km": 393.98,
+        "costo_total": 2816.96,
+        "clientes_fcarnes": 1,
+        "macro_region": "NORESTE",
+        "icon": "📍",
+        "color": "#FF9800",
+        "sakbe_costo_total": 1673.01,
+        "costo_total_final": 1673.01,
+        "fuente_costos": "SAKBE_INEGI"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -100.378,
+          28.3097
+        ]
+      },
+      "properties": {
+        "name": "Guerrero",
+        "type": "destino_foranea",
+        "zona_logistica": "FORANEA",
+        "distancia_km": 347.91,
+        "costo_total": 2487.56,
+        "clientes_fcarnes": 1,
+        "macro_region": "FRONTERA_NORTE",
+        "icon": "📍",
+        "color": "#FF9800",
+        "sakbe_costo_total": 2134.1,
+        "costo_total_final": 2134.1,
+        "fuente_costos": "SAKBE_INEGI"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -101.4575,
+          26.9324
+        ]
+      },
+      "properties": {
+        "name": "Frontera",
+        "type": "destino_regional",
+        "zona_logistica": "REGIONAL",
+        "distancia_km": 242.23,
+        "costo_total": 1731.94,
+        "clientes_fcarnes": 1,
+        "macro_region": "NORESTE",
+        "icon": "📍",
+        "color": "#2196F3",
+        "sakbe_costo_total": 872.5,
+        "costo_total_final": 872.5,
+        "fuente_costos": "SAKBE_INEGI"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -98.7657,
+          19.2056
+        ]
+      },
+      "properties": {
+        "name": "San Rafael",
+        "type": "destino_lejana",
         "zona_logistica": "LEJANA",
-        "distancia_km": 1293.25,
-        "costo_total": 9139.42025,
+        "distancia_km": 958.18,
+        "costo_total": 6850.99,
+        "clientes_fcarnes": 1,
+        "macro_region": "GOLFO_SURESTE",
         "icon": "📍",
-        "color": "#F44336"
+        "color": "#F44336",
+        "sakbe_costo_total": 7917.86,
+        "costo_total_final": 7917.86,
+        "fuente_costos": "SAKBE_INEGI"
       }
     },
     {
@@ -102,18 +1682,95 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -106.4245,
-          31.6904
+          -98.7822,
+          21.256
         ]
       },
       "properties": {
-        "name": "Ciudad Juarez",
-        "type": "destino_lejano",
+        "name": "Tamazunchale",
+        "type": "destino_foranea",
+        "zona_logistica": "FORANEA",
+        "distancia_km": 636.52,
+        "costo_total": 4551.12,
+        "clientes_fcarnes": 1,
+        "macro_region": "NORESTE",
+        "icon": "📍",
+        "color": "#FF9800",
+        "sakbe_costo_total": 4700.82,
+        "costo_total_final": 4700.82,
+        "fuente_costos": "SAKBE_INEGI"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -102.3287,
+          21.2492
+        ]
+      },
+      "properties": {
+        "name": "San Juan de los Lagos",
+        "type": "destino_foranea",
+        "zona_logistica": "FORANEA",
+        "distancia_km": 662.24,
+        "costo_total": 4735.02,
+        "clientes_fcarnes": 1,
+        "macro_region": "OCCIDENTE",
+        "icon": "📍",
+        "color": "#FF9800",
+        "sakbe_costo_total": 3906.16,
+        "costo_total_final": 3906.17,
+        "fuente_costos": "SAKBE_INEGI"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -99.0103,
+          21.9952
+        ]
+      },
+      "properties": {
+        "name": "Ciudad Valles",
+        "type": "destino_foranea",
+        "zona_logistica": "FORANEA",
+        "distancia_km": 529.72,
+        "costo_total": 3787.5,
+        "clientes_fcarnes": 1,
+        "macro_region": "NORESTE",
+        "icon": "📍",
+        "color": "#FF9800",
+        "sakbe_costo_total": 4179.93,
+        "costo_total_final": 4179.93,
+        "fuente_costos": "SAKBE_INEGI"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -94.9162,
+          17.9498
+        ]
+      },
+      "properties": {
+        "name": "Acayucan",
+        "type": "destino_lejana",
         "zona_logistica": "LEJANA",
-        "distancia_km": 1163.09,
-        "costo_total": 7506.106729999999,
+        "distancia_km": 1196.77,
+        "costo_total": 8556.91,
+        "clientes_fcarnes": 1,
+        "macro_region": "GOLFO_SURESTE",
         "icon": "📍",
-        "color": "#F44336"
+        "color": "#F44336",
+        "sakbe_costo_total": 12634.19,
+        "costo_total_final": 12634.189999999999,
+        "fuente_costos": "SAKBE_INEGI"
       }
     },
     {
@@ -121,18 +1778,23 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -106.0889,
-          28.6353
+          -100.6669,
+          26.836
         ]
       },
       "properties": {
-        "name": "Chihuahua",
-        "type": "destino_lejano",
-        "zona_logistica": "LEJANA",
-        "distancia_km": 800.06,
-        "costo_total": 5251.8638200000005,
+        "name": "Candela",
+        "type": "destino_regional",
+        "zona_logistica": "REGIONAL",
+        "distancia_km": 161.33,
+        "costo_total": 1153.51,
+        "clientes_fcarnes": 1,
+        "macro_region": "NORESTE",
         "icon": "📍",
-        "color": "#F44336"
+        "color": "#2196F3",
+        "sakbe_costo_total": 666.81,
+        "costo_total_final": 666.81,
+        "fuente_costos": "SAKBE_INEGI"
       }
     },
     {
@@ -140,37 +1802,23 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -100.3899,
-          20.5888
+          -100.1186,
+          23.423
         ]
       },
       "properties": {
-        "name": "Queretaro",
-        "type": "destino_lejano",
-        "zona_logistica": "LEJANA",
-        "distancia_km": 702.8699999999999,
-        "costo_total": 3942.51939,
-        "icon": "📍",
-        "color": "#F44336"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -101.686,
-          21.1221
-        ]
-      },
-      "properties": {
-        "name": "Leon",
-        "type": "destino_foraneo",
+        "name": "Mier y Noriega",
+        "type": "destino_foranea",
         "zona_logistica": "FORANEA",
-        "distancia_km": 692.99,
-        "costo_total": 4298.07703,
+        "distancia_km": 401.89,
+        "costo_total": 2873.51,
+        "clientes_fcarnes": 1,
+        "macro_region": "NORESTE",
         "icon": "📍",
-        "color": "#FF9800"
+        "color": "#FF9800",
+        "sakbe_costo_total": 2054.82,
+        "costo_total_final": 2054.8199999999997,
+        "fuente_costos": "SAKBE_INEGI"
       }
     },
     {
@@ -178,18 +1826,23 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -102.2916,
-          21.8853
+          -99.8167,
+          24.1001
         ]
       },
       "properties": {
-        "name": "Aguascalientes",
-        "type": "destino_foraneo",
+        "name": "Aramberri",
+        "type": "destino_foranea",
         "zona_logistica": "FORANEA",
-        "distancia_km": 678.53,
-        "costo_total": 3961.49641,
+        "distancia_km": 320.67,
+        "costo_total": 2292.79,
+        "clientes_fcarnes": 1,
+        "macro_region": "NORESTE",
         "icon": "📍",
-        "color": "#FF9800"
+        "color": "#FF9800",
+        "sakbe_costo_total": 1868.56,
+        "costo_total_final": 1868.56,
+        "fuente_costos": "SAKBE_INEGI"
       }
     },
     {
@@ -197,132 +1850,23 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -100.9855,
-          22.1565
+          -100.7647,
+          28.4243
         ]
       },
       "properties": {
-        "name": "San Luis Potosi",
-        "type": "destino_foraneo",
+        "name": "Nava",
+        "type": "destino_foranea",
         "zona_logistica": "FORANEA",
-        "distancia_km": 509.82,
-        "costo_total": 2986.67854,
+        "distancia_km": 423.72,
+        "costo_total": 3029.6,
+        "clientes_fcarnes": 1,
+        "macro_region": "NORESTE",
         "icon": "📍",
-        "color": "#FF9800"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -103.4068,
-          25.5428
-        ]
-      },
-      "properties": {
-        "name": "Torreon",
-        "type": "destino_foraneo",
-        "zona_logistica": "FORANEA",
-        "distancia_km": 331.31,
-        "costo_total": 2305.77007,
-        "icon": "📍",
-        "color": "#FF9800"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -97.5027,
-          25.8691
-        ]
-      },
-      "properties": {
-        "name": "Matamoros",
-        "type": "destino_foraneo",
-        "zona_logistica": "FORANEA",
-        "distancia_km": 310.35,
-        "costo_total": 2404.60895,
-        "icon": "📍",
-        "color": "#FF9800"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -98.2979,
-          26.0508
-        ]
-      },
-      "properties": {
-        "name": "Reynosa",
-        "type": "destino_foraneo",
-        "zona_logistica": "FORANEA",
-        "distancia_km": 217.94,
-        "costo_total": 1706.28218,
-        "icon": "📍",
-        "color": "#FF9800"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -99.5067,
-          27.4861
-        ]
-      },
-      "properties": {
-        "name": "Nuevo Laredo",
-        "type": "destino_foraneo",
-        "zona_logistica": "FORANEA",
-        "distancia_km": 217.72,
-        "costo_total": 1578.31484,
-        "icon": "📍",
-        "color": "#FF9800"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -100.4583,
-          25.6732
-        ]
-      },
-      "properties": {
-        "name": "Santa Catarina",
-        "type": "destino_local",
-        "zona_logistica": "LOCAL",
-        "distancia_km": 18.626201408803936,
-        "costo_total": 91.2125082989129,
-        "icon": "📍",
-        "color": "#4CAF50"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -100.2597,
-          25.6775
-        ]
-      },
-      "properties": {
-        "name": "Guadalupe",
-        "type": "destino_local",
-        "zona_logistica": "LOCAL",
-        "distancia_km": 7.13,
-        "costo_total": 31.35061,
-        "icon": "📍",
-        "color": "#4CAF50"
+        "color": "#FF9800",
+        "sakbe_costo_total": 2455.43,
+        "costo_total_final": 2455.4300000000003,
+        "fuente_costos": "SAKBE_INEGI"
       }
     }
   ]

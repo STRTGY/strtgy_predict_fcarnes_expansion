@@ -54,6 +54,7 @@ function expandProps(p) {
     categoria_fcarnes: p.properties?.cat || p.properties?.categoria_fcarnes || "N/A",
     tier: tier,
     score_total: p.properties?.s || p.properties?.score_total || 50,
+    score_ajustado: p.properties?.sadj || p.properties?.score_ajustado || p.properties?.s || 50,
     distancia_planta_km: p.properties?.d || p.properties?.distancia_planta_km || 0,
     telefono: p.properties?.tel || p.properties?.telefono || "",
     nivel_confianza: p.properties?.conf || p.properties?.nivel_confianza || "MEDIA",
@@ -71,6 +72,14 @@ function expandProps(p) {
     dist_ruta_km: p.properties?.dist_ruta_km || null,
     ruta_cercana: p.properties?.ruta_cercana || null,
     en_corredor: p.properties?.en_corredor === 1 || p.properties?.en_corredor === true,
+    // === NUEVOS CAMPOS: Cadenas y Scoring Diferenciado (del pipeline) ===
+    es_cadena: p.properties?.cad === 1 || p.properties?.es_cadena || false,
+    nombre_cadena: p.properties?.cad_nom || p.properties?.nombre_cadena || null,
+    num_sucursales: p.properties?.cad_suc || p.properties?.num_sucursales || 1,
+    metodo_deteccion_cadena: p.properties?.cad_met || p.properties?.metodo_deteccion_cadena || "NINGUNO",
+    es_prioritario: p.properties?.prio === 1 || p.properties?.es_prioritario || false,
+    razon_prioridad: p.properties?.prio_raz || p.properties?.razon_prioridad || "",
+    zona_scoring: p.properties?.zona_sc || p.properties?.zona_scoring || "EXTERIOR",
     lat, lon
   };
 }
@@ -93,6 +102,70 @@ const macroRegiones = ["Todas", ...new Set(features.map(f => f.properties?.macro
 const zonas = ["Todas", "LOCAL", "REGIONAL", "FORANEA", "LEJANA"];
 const categorias = ["Todas", ...new Set(features.map(f => f.properties?.categoria_fcarnes).filter(Boolean)).values()].sort();
 const tiers = ["Todos", "A_PREMIUM", "B_ALTA", "C_MEDIA", "D_BAJA"];
+
+// === NUEVOS FILTROS: Estado y Ciudad ===
+const estados = ["Todos", ...new Set(features.map(f => f.properties?.estado).filter(Boolean)).values()].sort();
+
+// Crear mapa de ciudades por estado para filtro cascading
+const ciudadesPorEstado = {};
+for (const f of features) {
+  const estado = f.properties?.estado;
+  const ciudad = f.properties?.ciudad;
+  if (estado && ciudad) {
+    if (!ciudadesPorEstado[estado]) ciudadesPorEstado[estado] = new Set();
+    ciudadesPorEstado[estado].add(ciudad);
+  }
+}
+// Convertir sets a arrays ordenados
+for (const estado in ciudadesPorEstado) {
+  ciudadesPorEstado[estado] = [...ciudadesPorEstado[estado]].sort();
+}
+
+// === SCORING DIFERENCIADO: Ahora se lee del pipeline (pre-calculado) ===
+// Los campos vienen del JSON generado por step_09 (cadenas) y step_10 (scoring)
+// Campos disponibles: prio (es_prioritario), prio_raz (razon), cad (es_cadena), 
+// cad_nom (nombre_cadena), cad_suc (num_sucursales), zona_sc (zona_scoring)
+
+// NOTA: La lógica de scoring ahora está en el pipeline Python (config_cadenas.py, 
+// step_09_detect_chains.py, step_10_scoring_diferenciado.py)
+
+// Municipios ZM Monterrey (solo para referencia visual)
+const ZM_MONTERREY_MUNICIPIOS = [
+  "Monterrey", "San Nicolás de los Garza", "Guadalupe", "Apodaca",
+  "San Pedro Garza García", "Santa Catarina", "General Escobedo",
+  "Juárez", "García", "Cadereyta Jiménez", "Santiago", "Salinas Victoria",
+  "Ciénega de Flores", "General Zuazua", "Pesquería", "El Carmen"
+];
+
+// Función wrapper para compatibilidad - lee datos del pipeline
+function obtenerPrioridad(prospecto) {
+  const props = prospecto.properties || {};
+  // Leer campos pre-calculados del pipeline
+  const esPrioritario = props.es_prioritario || props.prio === 1 || props.prio === true;
+  const razon = props.razon_prioridad || props.prio_raz || "Sin clasificar";
+  return { prioritario: esPrioritario, razon: razon };
+}
+
+// Info de cadena desde pipeline
+function obtenerInfoCadena(prospecto) {
+  const props = prospecto.properties || {};
+  return {
+    esCadena: props.es_cadena || props.cad === 1 || props.cad === true,
+    nombreCadena: props.nombre_cadena || props.cad_nom || null,
+    numSucursales: props.num_sucursales || props.cad_suc || 1,
+    zonaScoring: props.zona_scoring || props.zona_sc || "EXTERIOR"
+  };
+}
+
+// Territorios de interés estratégico
+const TERRITORIOS_ESTRATEGICOS = [
+  { id: "todos", label: "Todos", estado: null, filtroEspecial: null },
+  { id: "slp", label: "San Luis Potosí", estado: "San Luis Potosí", filtroEspecial: null },
+  { id: "qro", label: "Querétaro", estado: "Querétaro", filtroEspecial: null },
+  { id: "bc", label: "Baja California", estado: "Baja California", filtroEspecial: null },
+  { id: "coah", label: "Coahuila", estado: "Coahuila de Zaragoza", filtroEspecial: null },
+  { id: "zm_mty", label: "ZM Monterrey", estado: "Nuevo León", filtroEspecial: "ZM_MTY" }
+];
 ```
 
 <h1 style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
@@ -100,7 +173,7 @@ const tiers = ["Todos", "A_PREMIUM", "B_ALTA", "C_MEDIA", "D_BAJA"];
 </h1>
 
 <p style="color: #666; margin-top: 0;">
-  <strong>Solo prospectos de alta calidad</strong> — Filtrados por tier (A+B), score, completitud y contacto verificable. Cada punto incluye link a <strong>Street View</strong> para validación visual.
+  <strong>Prospectos verificados de alta calidad</strong> — Filtrados por score, completitud y contacto verificable. Incluye <strong>scoring diferenciado v2</strong> con priorización de cadenas y bodegones. Cada punto incluye link a <strong>Street View</strong> para validación visual.
 </p>
 
 <div class="card" style="background: linear-gradient(135deg, #0c4a6e 0%, #075985 100%); color: white; border: none; margin: 1rem 0;">
@@ -132,18 +205,18 @@ const tiers = ["Todos", "A_PREMIUM", "B_ALTA", "C_MEDIA", "D_BAJA"];
 </div>
 
 <div class="note" style="background: #E8F5E9; border-left: 4px solid #4CAF50; padding: 0.75rem; margin: 0.5rem 0; font-size: 0.85rem;">
-  ✅ <strong>Filtro de Calidad Aplicado:</strong> Estos prospectos han pasado filtros estrictos: Tier A/B únicamente, score ≥50, datos de contacto verificables, y nombres identificables (sin genéricos como "CARNICERIA").
+  ✅ <strong>Filtro de Calidad Aplicado:</strong> Prospectos verificados con score ≥35, datos de contacto verificables, y nombres identificables. <strong>Scoring v2:</strong> Prioriza cadenas (4+ suc) y bodegones en ZM Monterrey.
 </div>
 
 ---
 
 ```js
 display(decisionCallout({
-  title: "Prospectos de Alta Calidad",
+  title: "Prospectos Verificados con Scoring v2",
   items: [
     "Todos los prospectos tienen contacto verificable (teléfono, reviews o web)",
-    "Solo tier A (Premium) y B (Alta prioridad) — Sin tier C ni D",
-    "Nombres identificables — Excluidos genéricos sin identidad comercial",
+    "Incluye todos los tiers (A, B, C, D) — Filtra por tier si necesitas",
+    "⭐ Prioritarios: Cadenas 4+ sucursales, bodegones ZM MTY, mayoristas",
     "Haz clic en cualquier punto para ver ficha completa + Street View"
   ]
 }));
@@ -151,9 +224,56 @@ display(decisionCallout({
 
 ---
 
-## Filtros
+## Acceso Rápido a Territorios Estratégicos
 
-<div class="grid grid-cols-4">
+```js
+// Botones de acceso rápido
+const territorioSeleccionado = view(Inputs.radio(
+  TERRITORIOS_ESTRATEGICOS.map(t => t.id),
+  {
+    label: "Territorio:",
+    value: "todos",
+    format: id => TERRITORIOS_ESTRATEGICOS.find(t => t.id === id)?.label || id
+  }
+));
+```
+
+<div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 0.5rem 0 1rem;">
+  <span style="font-size: 0.8rem; color: #666;">💡 Territorios de expansión prioritarios:</span>
+  <span style="background: #dbeafe; color: #1e40af; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.75rem;">San Luis Potosí</span>
+  <span style="background: #dbeafe; color: #1e40af; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.75rem;">Querétaro</span>
+  <span style="background: #fee2e2; color: #991b1b; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.75rem;">ZM Monterrey (Bodegones)</span>
+</div>
+
+---
+
+## Filtros Detallados
+
+<div class="grid grid-cols-3">
+
+```js
+// Obtener estado del territorio seleccionado
+const territorioConfig = TERRITORIOS_ESTRATEGICOS.find(t => t.id === territorioSeleccionado);
+const estadoDesdeTerritorioVal = territorioConfig?.estado || null;
+
+// Filtro de Estado (reactivo al territorio seleccionado)
+const estadoFiltro = view(Inputs.select(estados, {
+  label: "Estado",
+  value: estadoDesdeTerritorioVal ? estadoDesdeTerritorioVal : "Todos"
+}));
+```
+
+```js
+// Ciudades disponibles según el estado seleccionado
+const ciudadesDisponibles = estadoFiltro === "Todos" 
+  ? ["Todas", ...new Set(features.map(f => f.properties?.ciudad).filter(Boolean))].sort()
+  : ["Todas", ...(ciudadesPorEstado[estadoFiltro] || [])];
+
+const ciudadFiltro = view(Inputs.select(ciudadesDisponibles, {
+  label: "Ciudad/Municipio",
+  value: "Todas"
+}));
+```
 
 ```js
 const regionFiltro = view(Inputs.select(macroRegiones, {
@@ -161,6 +281,10 @@ const regionFiltro = view(Inputs.select(macroRegiones, {
   value: "Todas"
 }));
 ```
+
+</div>
+
+<div class="grid grid-cols-4">
 
 ```js
 const zonaFiltro = view(Inputs.select(zonas, {
@@ -183,6 +307,25 @@ const tierFiltro = view(Inputs.select(tiers, {
 }));
 ```
 
+```js
+const soloPrioritarios = view(Inputs.toggle({
+  label: "⭐ Solo Prioritarios",
+  value: false
+}));
+
+const soloCadenas = view(Inputs.toggle({
+  label: "🔗 Solo Cadenas (4+ suc)",
+  value: false
+}));
+```
+
+</div>
+
+<div class="note" style="background: #fef3c7; border-left: 4px solid #f59e0b; padding: 0.75rem; margin: 0.75rem 0; font-size: 0.85rem;">
+  <strong>⭐ Criterios de "Prioritario":</strong><br>
+  • <strong>ZM Monterrey:</strong> Bodegones y retailers medianos/grandes. Se excluyen procesadoras de carne.<br>
+  • <strong>Fuera de ZM NL:</strong> Cadenas, multi-ubicación, mayoristas (ej: El Florido, Las Nenas, El Tío, Omerca, La Cabaña).<br>
+  <span style="font-size: 0.8rem; color: #92400e;">📖 Ver criterios completos en <a href="./metodologia" style="color: #1d4ed8;">Metodología → Priorización por Zona Geográfica</a></span>
 </div>
 
 ### Capas del Mapa
@@ -225,9 +368,23 @@ const distanciaCorredor = view(Inputs.range([5, 50], {
 ## Resultados
 
 ```js
-// Aplicar filtros
+// Aplicar filtros incluyendo Estado, Ciudad y Prioritarios
 const prospectosFiltrados = features.filter(f => {
   const p = f.properties || {};
+  
+  // Filtros geográficos nuevos
+  if (estadoFiltro !== "Todos" && p.estado !== estadoFiltro) return false;
+  if (ciudadFiltro !== "Todas" && p.ciudad !== ciudadFiltro) return false;
+  
+  // Filtro especial de ZM Monterrey
+  if (territorioConfig?.filtroEspecial === "ZM_MTY") {
+    const enZMMTY = p.estado === "Nuevo León" && ZM_MONTERREY_MUNICIPIOS.some(m => 
+      (p.ciudad || "").toLowerCase().includes(m.toLowerCase())
+    );
+    if (!enZMMTY) return false;
+  }
+  
+  // Filtros existentes
   if (regionFiltro !== "Todas" && p.macro_region !== regionFiltro) return false;
   if (zonaFiltro !== "Todas" && p.zona_logistica !== zonaFiltro) return false;
   if (categoriaFiltro !== "Todas" && p.categoria_fcarnes !== categoriaFiltro) return false;
@@ -239,8 +396,21 @@ const prospectosFiltrados = features.filter(f => {
     if (distRuta === null || distRuta === undefined || distRuta > distanciaCorredor) return false;
   }
   
+  // Filtro de prioritarios (usa campo pre-calculado del pipeline)
+  if (soloPrioritarios) {
+    if (!p.es_prioritario) return false;
+  }
+  
+  // Filtro de cadenas (nuevo - usa campo pre-calculado del pipeline)
+  if (soloCadenas) {
+    if (!p.es_cadena) return false;
+  }
+  
   return true;
 });
+
+// Los datos de prioridad ya vienen del pipeline - no necesitamos calcularlos
+const prospectosFiltradosConPrioridad = prospectosFiltrados;
 
 const totalFiltrados = prospectosFiltrados.length;
 const totalProspectos = features.length;
@@ -251,16 +421,18 @@ const scorePromedio = totalFiltrados > 0
 const tierA = prospectosFiltrados.filter(f => f.properties?.tier === "A_PREMIUM").length;
 const tierB = prospectosFiltrados.filter(f => f.properties?.tier === "B_ALTA").length;
 
-// Stats del corredor
+// Stats adicionales (usando campos pre-calculados del pipeline)
 const enCorredor = features.filter(f => f.properties?.en_corredor).length;
+const totalPrioritarios = prospectosFiltrados.filter(f => f.properties?.es_prioritario).length;
+const totalCadenas = prospectosFiltrados.filter(f => f.properties?.es_cadena).length;
 ```
 
 ```js
 display(kpi([
   { label: "Prospectos Filtrados", value: formatNumber(totalFiltrados), subtitle: `de ${formatNumber(totalProspectos)} totales` },
   { label: "Score Promedio", value: scorePromedio.toFixed(1), subtitle: "Puntuación 0-100" },
-  { label: "Tier A + B", value: formatNumber(tierA + tierB), subtitle: "Alta prioridad" },
-  { label: "En Corredor (<25km)", value: formatNumber(enCorredor), subtitle: `${formatPercent((enCorredor / totalProspectos) * 100)} cerca de ruta` }
+  { label: "⭐ Prioritarios", value: formatNumber(totalPrioritarios), subtitle: `${formatPercent((totalPrioritarios / Math.max(totalFiltrados, 1)) * 100)} del filtro` },
+  { label: "🔗 Cadenas", value: formatNumber(totalCadenas), subtitle: "4+ sucursales detectadas" }
 ]));
 ```
 
@@ -270,13 +442,39 @@ display(kpi([
 
 ---
 
+## 🎯 Cómo Interpretar los Prospectos
+
+<div class="card" style="background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%); border-left: 4px solid #d97706; margin-bottom: 1rem;">
+  <h4 style="margin-top: 0; color: #92400e;">📊 Qué Significa Cada Indicador</h4>
+  <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-top: 0.75rem; font-size: 0.9rem;">
+    <div>
+      <strong style="color: #b45309;">Score (0-100):</strong>
+      <p style="margin: 0.25rem 0 0; color: #78350f;">Puntuación compuesta basada en: canal (mayorista vs retail), tamaño del negocio, completitud de datos y presencia en Google Maps. <strong>&gt;70 = alta prioridad</strong>.</p>
+    </div>
+    <div>
+      <strong style="color: #b45309;">Tier (A/B/C/D):</strong>
+      <p style="margin: 0.25rem 0 0; color: #78350f;"><strong>A_PREMIUM:</strong> Mayoristas, alto volumen. <strong>B_ALTA:</strong> Carnicerías establecidas. <strong>C_MEDIA/D_BAJA:</strong> Retail micro. Ver detalles en <a href="./metodologia" style="color: #1d4ed8;">Metodología</a>.</p>
+    </div>
+    <div>
+      <strong style="color: #b45309;">Dist. Ruta (km):</strong>
+      <p style="margin: 0.25rem 0 0; color: #78350f;">Distancia al corredor logístico más cercano. Prospectos <strong>&lt;10 km</strong> se pueden atender sin desvío significativo.</p>
+    </div>
+    <div>
+      <strong style="color: #b45309;">Nivel de Confianza:</strong>
+      <p style="margin: 0.25rem 0 0; color: #78350f;"><strong>ALTA:</strong> Validado con IA + teléfono + reseñas. <strong>MEDIA:</strong> Teléfono o reseñas. <strong>PENDIENTE:</strong> Solo datos básicos.</p>
+    </div>
+  </div>
+</div>
+
+---
+
 ## Mapa de Prospectos
 
 ```js
-// Crear GeoJSON filtrado
+// Crear GeoJSON filtrado (con info de prioridad)
 const geoJsonFiltrado = {
   type: "FeatureCollection",
-  features: prospectosFiltrados
+  features: prospectosFiltradosConPrioridad
 };
 ```
 
@@ -417,6 +615,41 @@ if (typeof L !== 'undefined' && L.map) {
     createLegend(map, legendItems, { position: "bottomright", title: "Leyenda" });
   }
   
+  // ============================================
+  // Botón de Reset/Re-centrar mapa
+  // ============================================
+  const resetControl = L.control({ position: 'topleft' });
+  resetControl.onAdd = function() {
+    const div = L.DomUtil.create('div', 'leaflet-bar leaflet-control');
+    div.innerHTML = `
+      <a href="#" title="Centrar en México" style="
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 34px;
+        height: 34px;
+        background: white;
+        font-size: 18px;
+        text-decoration: none;
+        color: #333;
+      ">🎯</a>
+    `;
+    div.onclick = function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      if (prospectosLayer && geoJsonFiltrado.features.length > 0) {
+        fitBounds(map, prospectosLayer, 40);
+      } else if (rutasLayer) {
+        fitBounds(map, rutasLayer, 30);
+      } else {
+        map.setView([24.5, -102.5], 5);
+      }
+      return false;
+    };
+    return div;
+  };
+  resetControl.addTo(map);
+  
 } else {
   mapContainer.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 100%; background: #f5f5f5; color: #666;">⚠️ Error cargando el mapa. Recarga la página.</div>';
 }
@@ -439,25 +672,39 @@ if (typeof L !== 'undefined' && L.map) {
 ## Tabla de Prospectos
 
 ```js
-const tablaData = prospectosFiltrados
+const tablaData = prospectosFiltradosConPrioridad
   .map(f => {
     const p = f.properties || {};
+    // Usar campos pre-calculados del pipeline
+    const esPrio = p.es_prioritario || false;
+    const esCadena = p.es_cadena || false;
     return {
+      prioritario: esPrio ? "⭐" : "",
+      cadena: esCadena ? "🔗" : "",
       nombre: p.nombre || "Sin nombre",
+      estado: p.estado || "N/A",
       ciudad: p.ciudad || "N/A",
-      macro_region: p.macro_region || "N/A",
       zona_logistica: p.zona_logistica || "N/A",
       tier: p.tier || "N/A",
       score: typeof p.score_total === 'number' ? p.score_total : 0,
       telefono: p.telefono || "—",
-      dist_planta: typeof p.distancia_planta_km === 'number' ? p.distancia_planta_km : 0,
       dist_ruta: p.dist_ruta_km ?? null,
-      ruta_cercana: p.ruta_cercana || "—",
+      razon_prioridad: p.razon_prioridad || "",
+      nombre_cadena: p.nombre_cadena || "",
+      num_sucursales: p.num_sucursales || 1,
+      zona_scoring: p.zona_scoring || "N/A",
       lat: p.lat || 0,
       lon: p.lon || 0
     };
   })
-  .sort((a, b) => b.score - a.score);
+  .sort((a, b) => {
+    // Ordenar: primero prioritarios, luego cadenas, luego por score
+    if (a.prioritario && !b.prioritario) return -1;
+    if (!a.prioritario && b.prioritario) return 1;
+    if (a.cadena && !b.cadena) return -1;
+    if (!a.cadena && b.cadena) return 1;
+    return b.score - a.score;
+  });
 ```
 
 ```js
@@ -465,30 +712,39 @@ const tablaData = prospectosFiltrados
 const tablaLimitada = tablaData.slice(0, 500);
 
 display(Inputs.table(tablaLimitada, {
-  columns: ["nombre", "ciudad", "zona_logistica", "tier", "score", "dist_planta", "dist_ruta", "ruta_cercana"],
+  columns: ["prioritario", "cadena", "nombre", "estado", "ciudad", "zona_logistica", "tier", "score", "telefono", "dist_ruta"],
   header: {
+    prioritario: "⭐",
+    cadena: "🔗",
     nombre: "Establecimiento",
+    estado: "Estado",
     ciudad: "Ciudad",
     zona_logistica: "Zona",
     tier: "Tier",
     score: "Score",
-    dist_planta: "Dist. Planta",
-    dist_ruta: "Dist. Ruta",
-    ruta_cercana: "Ruta Cercana"
+    telefono: "Teléfono",
+    dist_ruta: "Dist. Ruta"
   },
   format: {
     score: d => typeof d === 'number' ? d.toFixed(1) : "—",
-    dist_planta: d => `${Math.round(d)} km`,
     dist_ruta: d => d !== null ? `${d.toFixed(1)} km` : "—"
   },
   sort: "score",
   reverse: true,
-  rows: 20
+  rows: 20,
+  select: false
 }));
 ```
 
+```js
+// Nota dinámica según cantidad de resultados
+const notaTabla = tablaData.length <= 500 
+  ? `Mostrando ${formatNumber(tablaData.length)} prospectos filtrados (ordenados por score)`
+  : `Mostrando top 500 de ${formatNumber(tablaData.length)} prospectos filtrados (ordenados por score)`;
+```
+
 <small style="color: #666; display: block; margin-top: 0.5rem;">
-  Mostrando top 500 de ${formatNumber(tablaData.length)} prospectos filtrados (ordenados por score)
+  ${notaTabla}
 </small>
 
 ---
@@ -537,32 +793,6 @@ display(resize((width) => Plot.plot({
 
 ---
 
-## 🎯 Cómo Interpretar los Prospectos
-
-<div class="card" style="background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%); border-left: 4px solid #d97706; margin-bottom: 1rem;">
-  <h4 style="margin-top: 0; color: #92400e;">📊 Qué Significa Cada Indicador</h4>
-  <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-top: 0.75rem; font-size: 0.9rem;">
-    <div>
-      <strong style="color: #b45309;">Score (0-100):</strong>
-      <p style="margin: 0.25rem 0 0; color: #78350f;">Puntuación compuesta basada en: canal (mayorista vs retail), tamaño del negocio, completitud de datos y presencia en Google Maps. <strong>&gt;70 = alta prioridad</strong>.</p>
-    </div>
-    <div>
-      <strong style="color: #b45309;">Tier (A/B/C/D):</strong>
-      <p style="margin: 0.25rem 0 0; color: #78350f;"><strong>A_PREMIUM:</strong> Mayoristas, alto volumen. <strong>B_ALTA:</strong> Carnicerías establecidas con potencial. Este explorador solo muestra A y B.</p>
-    </div>
-    <div>
-      <strong style="color: #b45309;">Dist. Ruta (km):</strong>
-      <p style="margin: 0.25rem 0 0; color: #78350f;">Distancia al corredor logístico más cercano. Prospectos <strong>&lt;10 km</strong> se pueden atender sin desvío significativo.</p>
-    </div>
-    <div>
-      <strong style="color: #b45309;">Nivel de Confianza:</strong>
-      <p style="margin: 0.25rem 0 0; color: #78350f;"><strong>ALTA:</strong> Validado con IA + teléfono + reseñas. <strong>MEDIA:</strong> Teléfono o reseñas. <strong>PENDIENTE:</strong> Solo datos básicos.</p>
-    </div>
-  </div>
-</div>
-
----
-
 ## Próximos Pasos con la Selección
 
 <div class="grid grid-cols-2">
@@ -601,7 +831,7 @@ display(resize((width) => Plot.plot({
 
 <small style="color: #999; display: block; text-align: center; margin-top: 2rem; padding-top: 1rem; border-top: 1px solid #eee;">
   <strong>Prospectos verificados:</strong> ${formatNumber(totalProspectos)} (filtrados por calidad) | Datos DENUE + Google Maps + Validación IA<br>
-  <strong>Filtros aplicados:</strong> Tier A/B, Score ≥50, Contacto verificable, Sin nombres genéricos<br>
+  <strong>Scoring v2:</strong> Prioriza cadenas (4+ suc) y bodegones ZM MTY | Todos los tiers disponibles<br>
   <strong>STRTGY</strong> — Transformando complejidad en certeza | Proyecto FCarnes | Enero 2026
 </small>
 

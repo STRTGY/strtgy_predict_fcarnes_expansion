@@ -443,6 +443,8 @@ export function createRoutesLayer(routesGeoJSON, options = {}) {
     },
     onEachFeature: (feature, layer) => {
       const props = feature.properties;
+      // Support both Spanish (distancia_km) and English (distance_km) property names
+      const distanciaKm = props.distancia_km ?? props.distance_km;
       
       // Popup con información de la ruta
       const popupContent = `
@@ -453,7 +455,7 @@ export function createRoutesLayer(routesGeoJSON, options = {}) {
           <table style="width: 100%; font-size: 0.85rem;">
             <tr>
               <td style="color: #666; padding: 3px 0;"><strong>Distancia:</strong></td>
-              <td style="text-align: right;">${props.distancia_km?.toLocaleString("es-MX")} km</td>
+              <td style="text-align: right;">${distanciaKm?.toLocaleString("es-MX")} km</td>
             </tr>
             <tr>
               <td style="color: #666; padding: 3px 0;"><strong>Tiempo:</strong></td>

@@ -25,11 +25,133 @@ Este análisis de expansión nacional para FCarnes utiliza una metodología de *
 ```js
 display(kpi([
   { label: "Fuentes de Datos", value: "5", subtitle: "Integradas" },
-  { label: "TAM Bruto Analizado", value: "79,620", subtitle: "Prospectos totales" },
-  { label: "Prospectos Verificados", value: "8,761", subtitle: "Alta calidad (11%)" },
+  { label: "TAM Bruto Analizado", value: "79,620", subtitle: "Mercado Total" },
+  { label: "Prospectos Verificados", value: "28,690", subtitle: "36% pasó filtros" },
   { label: "Macro-Regiones", value: "9", subtitle: "Cobertura nacional" }
 ]));
 ```
+
+---
+
+## ⚠️ Definición de "Calidad" (Filtros Aplicados)
+
+<div class="card" style="background: linear-gradient(135deg, #fef3c7 0%, #fef9c3 100%); border-left: 4px solid #f59e0b; margin: 1rem 0;">
+  <h4 style="margin: 0 0 0.75rem 0; color: #92400e;">
+    ¿Qué significa "Prospectos Verificados" o "Filtrados por Calidad"?
+  </h4>
+  <p style="margin: 0 0 0.75rem 0; font-size: 0.9rem; color: #78350f; line-height: 1.6;">
+    Cuando decimos que un prospecto es "verificado" o de "alta calidad", significa que pasó <strong>7 criterios específicos</strong> de filtrado:
+  </p>
+  <ol style="margin: 0; padding-left: 1.5rem; font-size: 0.9rem; color: #78350f; line-height: 1.8;">
+    <li><strong>Todos los Tiers:</strong> Incluye A, B, C y D — Priorización via Scoring v2</li>
+    <li><strong>Score ≥ 35:</strong> Puntuación mínima de relevancia basada en canal, tamaño y ubicación</li>
+    <li><strong>Datos de contacto:</strong> Tiene teléfono, email, web o reseñas verificables en Google</li>
+    <li><strong>Coordenadas precisas:</strong> Mínimo 4 decimales de precisión (~11 metros)</li>
+    <li><strong>Nombre específico:</strong> Excluye nombres genéricos como "CARNICERIA", "EXPENDIO", etc.</li>
+    <li><strong>Negocio activo:</strong> No marcado como cerrado en Google Maps</li>
+    <li><strong>Completitud ≥ 30%:</strong> Score mínimo de datos completos en el registro</li>
+  </ol>
+  <p style="margin: 0.75rem 0 0 0; font-size: 0.85rem; color: #92400e; background: white; padding: 0.5rem; border-radius: 4px;">
+    <strong>Resultado:</strong> De 79,620 registros iniciales → 28,690 prospectos verificados (36% de retención).
+  </p>
+</div>
+
+---
+
+## 🎯 Priorización por Zona Geográfica (Scoring Diferenciado)
+
+<div class="card" style="background: linear-gradient(135deg, #ede9fe 0%, #f5f3ff 100%); border-left: 4px solid #8b5cf6; margin: 1rem 0;">
+  <h4 style="margin: 0 0 0.75rem 0; color: #5b21b6;">
+    Reglas de Priorización Aplicadas
+  </h4>
+  <p style="margin: 0 0 0.75rem 0; font-size: 0.9rem; color: #4c1d95; line-height: 1.6;">
+    Además del filtrado de calidad, se aplica una <strong>priorización estratégica</strong> basada en la ubicación geográfica y el tipo de negocio:
+  </p>
+</div>
+
+### Zona Metropolitana de Monterrey
+
+En los **16 municipios** de la ZM Monterrey (Monterrey, San Nicolás, Guadalupe, Apodaca, San Pedro, Santa Catarina, General Escobedo, Juárez, García, Cadereyta, Santiago, Salinas Victoria, Ciénega de Flores, General Zuazua, Pesquería, El Carmen):
+
+| Tipo de Negocio | Prioridad | Razón |
+|-----------------|-----------|-------|
+| **Bodegones, Retailers Medianos/Grandes** | ⭐ **Alta** | Volumen y frecuencia de compra |
+| **Mayoristas** | ⭐ **Alta** | Canal B2B estratégico |
+| **Procesadoras de Carne** | ❌ **Excluidas** | No son target comercial |
+| **Retail Individual** | ⚪ Normal | Scoring estándar |
+
+### Fuera de Nuevo León (Exterior)
+
+Para el resto del país, la priorización se basa en la **detección de cadenas con criterios estrictos**:
+
+| Criterio | Prioridad | Confianza |
+|----------|-----------|-----------|
+| **Misma razón social (DENUE)** | ⭐⭐ **Máxima** | CONFIRMADA |
+| **Patrón conocido (Perplexity)** | ⭐⭐ **Máxima** | CONFIRMADA |
+| **Mismo email/teléfono** | ⭐ **Alta** | CONFIRMADA/PROBABLE |
+| **Mismo nombre + misma ciudad** | ⚪ **Media** | PROBABLE |
+| **Retail individual** | ⚪ Normal | Scoring estándar |
+
+### Cadenas Regionales Identificadas (Investigación Perplexity + DENUE)
+
+Las siguientes cadenas fueron identificadas mediante investigación de mercado y validadas con conteo de sucursales en DENUE:
+
+<div class="grid grid-cols-3">
+  <div class="card">
+    <h5 style="margin: 0; color: #1e40af;">🔵 Baja California</h5>
+    <ul style="margin: 0.5rem 0; font-size: 0.85rem; padding-left: 1rem;">
+      <li><strong>El Florido</strong> - 6+ sucursales</li>
+      <li><strong>Las Nenas</strong> - 4+ sucursales</li>
+      <li><strong>El Tío</strong> - 4+ sucursales</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h5 style="margin: 0; color: #1e40af;">🔵 Coahuila</h5>
+    <ul style="margin: 0.5rem 0; font-size: 0.85rem; padding-left: 1rem;">
+      <li><strong>Bodegas Omerca</strong> - 4+ sucursales</li>
+      <li><strong>La Cabaña</strong> - 4+ sucursales</li>
+      <li><strong>Carnes Finas del Norte</strong> - 5+ suc</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h5 style="margin: 0; color: #1e40af;">🔵 Otros Estados</h5>
+    <ul style="margin: 0.5rem 0; font-size: 0.85rem; padding-left: 1rem;">
+      <li><strong>Carnes JC</strong> - Sonora</li>
+      <li><strong>Alicarnes</strong> - Querétaro</li>
+      <li><strong>Mi Granja San Agustín</strong> - 6 estados</li>
+    </ul>
+  </div>
+</div>
+
+### Algoritmo de Detección de Cadenas (v3 - Criterios Estrictos)
+
+La detección de cadenas utiliza **5 métodos** ordenados por nivel de confianza para minimizar falsos positivos:
+
+| # | Método | Confianza | Criterio |
+|---|--------|-----------|----------|
+| 1 | **RAZON_SOCIAL** | 🟢 Máxima | Misma razón social exacta en 4+ ubicaciones |
+| 2 | **PATRON** | 🟢 Máxima | Cadenas conocidas (CarneMart, SuKarne, etc.) |
+| 3 | **EMAIL** | 🟡 Alta | Mismo correo electrónico en 4+ ubicaciones |
+| 4 | **TELEFONO** | 🟠 Media-Alta | Mismo teléfono en 3+ ubicaciones |
+| 5 | **CIUDAD_NOMBRE** | 🟠 Media | Mismo nombre en misma ciudad (4+ ubicaciones) |
+
+```
+Prospecto → ¿Razón social compartida con 4+? → CONFIRMADA
+                │
+                └── NO → ¿Match patrón conocido? → CONFIRMADA
+                              │
+                              └── NO → ¿Mismo email/tel en múltiples? → CONFIRMADA/PROBABLE
+                                            │
+                                            └── NO → ¿Mismo nombre + misma ciudad? → PROBABLE
+```
+
+**Resultados v3.2 (con Fuzzy Matching):**
+- **574 cadenas** detectadas (vs ~18,600 sin criterios estrictos)
+- **295 CONFIRMADAS** (razón social, patrón, email)
+- **279 PROBABLES** (teléfono, nombre+ciudad)
+- Fuzzy matching captura variaciones: "SUKARNE SA DE CV" ≈ "SU KARNE S.A. DE C.V."
+- Falsos positivos eliminados: nombres genéricos, nombres comunes mexicanos
+- Top cadenas: SUKARNE, DISTRIBUIDORA SUCAHERZA, Carnes Finas San Juan, ABASTECEDORA CARNICOS
 
 ---
 
@@ -207,15 +329,15 @@ Para garantizar que **solo se entreguen prospectos verificables**, se implement�
 
 | Filtro | Criterio | Impacto |
 |--------|----------|---------|
-| **Tier** | Solo A_PREMIUM y B_ALTA | Elimina ~71% del TAM (C y D) |
-| **Score mínimo** | ≥ 50 puntos | Elimina baja relevancia |
+| **Tier** | Todos los tiers incluidos | Priorización via Scoring v2 (cadenas, bodegones) |
+| **Score mínimo** | ≥ 35 puntos | Elimina baja relevancia |
 | **Completitud** | ≥ 30% de campos | Elimina registros vacíos |
 | **Nombres** | Excluir genéricos | Elimina "CARNICERIA", "EXPENDIO", etc. |
 | **Contacto** | Requiere teléfono, reviews o web | Elimina sin forma de contacto |
 
 **Resultado del filtrado:**
 - TAM Bruto: 79,620 prospectos
-- **Prospectos Verificados: 8,761** (11% de alta calidad)
+- **Prospectos Verificados: 28,690** (36% de alta calidad)
 - Cada prospecto tiene contacto verificable
 
 </div>
@@ -348,17 +470,8 @@ Se calcularon 16 rutas estratégicas desde la planta de Monterrey, optimizadas p
 | Enriquecimiento Google Maps | ✅ Completado | 866 prospectos |
 | Análisis IA (Tier A+B) | ✅ Completado | 22,286 prospectos (99.4%) |
 | Cálculo de rutas logísticas | ✅ Completado | 16 destinos estratégicos |
-| Filtrado de calidad | ✅ Completado | 8,761 verificados |
+| Filtrado de calidad | ✅ Completado | 28,690 verificados |
 | Red logística visualizable | ✅ Completado | Rutas en mapa interactivo |
-
-### 5.2 Posibles Mejoras Futuras
-
-| Mejora | Beneficio | Prioridad |
-|--------|-----------|-----------|
-| Análisis IA Tier C | +56,372 prospectos evaluados | Media |
-| Actualización DENUE 2025 | Datos más recientes | Alta |
-| Integración CRM | Sincronización automática | Media |
-| Alertas de nuevos prospectos | Detección en tiempo real | Baja |
 
 ---
 
