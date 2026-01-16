@@ -135,14 +135,17 @@ La detección de cadenas utiliza **5 métodos** ordenados por nivel de confianza
 | 4 | **TELEFONO** | 🟠 Media-Alta | Mismo teléfono en 3+ ubicaciones |
 | 5 | **CIUDAD_NOMBRE** | 🟠 Media | Mismo nombre en misma ciudad (4+ ubicaciones) |
 
-```
-Prospecto → ¿Razón social compartida con 4+? → CONFIRMADA
-                │
-                └── NO → ¿Match patrón conocido? → CONFIRMADA
-                              │
-                              └── NO → ¿Mismo email/tel en múltiples? → CONFIRMADA/PROBABLE
-                                            │
-                                            └── NO → ¿Mismo nombre + misma ciudad? → PROBABLE
+```mermaid
+flowchart TD
+    A[Prospecto] --> B{Razon social compartida<br/>con 4+ ubicaciones?}
+    B -- Si --> C[CONFIRMADA]
+    B -- No --> D{Match patron conocido?}
+    D -- Si --> C
+    D -- No --> E{Mismo email o telefono<br/>en multiples ubicaciones?}
+    E -- Si --> F[CONFIRMADA / PROBABLE]
+    E -- No --> G{Mismo nombre + misma ciudad<br/>con 4+ ubicaciones?}
+    G -- Si --> H[PROBABLE]
+    G -- No --> I[NO_CADENA]
 ```
 
 **Resultados v3.2 (con Fuzzy Matching):**

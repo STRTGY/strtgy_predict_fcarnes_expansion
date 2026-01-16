@@ -232,8 +232,8 @@ export function createProspectPopup(props) {
       </h4>
       <table style="width: 100%; border-collapse: collapse;">
         <tr>
-          <td style="padding: 4px 8px 4px 0; color: #666; width: 40%;"><strong>Categoría:</strong></td>
-          <td style="padding: 4px 0;">${props.categoria_fcarnes || props.categoria || "N/A"}</td>
+          <td style="padding: 4px 8px 4px 0; color: #666; width: 40%;"><strong>Canal:</strong></td>
+          <td style="padding: 4px 0;">${props.categoria_fcarnes || props.cat || props.canal_fcarnes || props.categoria || "N/A"}</td>
         </tr>
         <tr>
           <td style="padding: 4px 8px 4px 0; color: #666;"><strong>Ciudad:</strong></td>

@@ -123,7 +123,7 @@ import {note} from "./components/ui.js";
   </div>
   
   <p style="font-size: 0.85rem; color: #888; margin: 0;">
-    <strong>Solicitar a:</strong> contacto@strtgy.mx
+    <strong>Solicitar a:</strong> fei@strtgy.ai
   </p>
 </div>
 
