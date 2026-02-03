@@ -23,10 +23,13 @@ const penetracion = (clientesActuales / tamBruto * 100);
 const regionesOrdenadas = [...tamRegion].sort((a, b) => b.tam_neto - a.tam_neto);
 const topCiudad = topCiudades.sort((a, b) => b.tam_neto - a.tam_neto)[0];
 
-// Calcular prospectos prioritarios (Scoring v2: cadenas, bodegones, mayoristas)
+// Calcular prospectos prioritarios (Scoring v4: tier 1 y 2 por tipo de cliente)
 const allFeatures = prospectosData?.features || [];
-// Scoring v2: usa el campo es_prioritario calculado en el pipeline
-const oportunidadesPrioritarias = allFeatures.filter(f => f.properties?.prio === 1 || f.properties?.es_prioritario).length;
+// Scoring v4: usa tier_fcarnes (tier por tipo de cliente)
+const oportunidadesPrioritarias = allFeatures.filter(f => {
+  const tierFc = f.properties?.tier_fc || f.properties?.tier_fcarnes;
+  return tierFc === 1 || tierFc === 2;
+}).length;
 const totalCadenas = allFeatures.filter(f => f.properties?.cad === 1 || f.properties?.es_cadena).length;
 ```
 
@@ -55,7 +58,7 @@ display(heroFCarnes({
   <p style="margin: 0; font-size: 0.9rem; color: #78350f; line-height: 1.6;">
     <strong>Mercado Total (TAM)</strong> = Todos los establecimientos de carnes en México según DENUE + Google Maps.<br>
     <strong>Prospectos Verificados</strong> = Cumplen criterios de calidad: score ≥35, contacto verificable, coordenadas precisas, nombre específico, negocio activo.<br>
-    <strong>⭐ Prioritarios (Scoring v2)</strong> = Cadenas con 4+ sucursales, bodegones en ZM Monterrey, mayoristas fuera de NL.<br>
+    <strong>⭐ Prioritarios (Scoring v4)</strong> = Tier 1 y 2 por tipo de cliente (mayoristas, cadenas, procesadores, supermercados regionales, carnicerias premium).<br>
     <strong>Clientes Actuales</strong> = Base instalada de FCarnes que se excluye del mercado objetivo.
   </p>
 </div>
@@ -67,7 +70,7 @@ display(heroFCarnes({
   <div style="margin-top: 0.75rem; font-size: 0.85rem; color: #475569; line-height: 1.6;">
     <p><strong>TAM (Total Addressable Market)</strong> = Mercado Total Direccionable. Todos los establecimientos de carnes en México que podrían ser clientes potenciales.</p>
     <p><strong>Sakbe</strong> = Sistema de ruteo de INEGI que calcula distancias reales por carretera, incluyendo casetas y tiempos estimados. El nombre proviene de "sacbé" (camino blanco en maya).</p>
-    <p><strong>Tier</strong> = Nivel de prioridad del prospecto (A_PREMIUM = máxima, B_ALTA = alta, C_MEDIA, D_BAJA).</p>
+    <p><strong>Tier</strong> = Nivel de prioridad del prospecto. Sistema v4 usa dos clasificaciones: tier por tipo de cliente (1-4 según categoría de negocio) y tier por score (basado en percentiles: T1=top 5%, T2=top 20%, T3=medio 50%, T4=bottom 30%).</p>
     <p><strong>Penetración</strong> = Porcentaje de clientes actuales respecto al mercado total de esa región.</p>
   </div>
 </details>
@@ -151,9 +154,9 @@ display(html`<div class="card" style="background: linear-gradient(135deg, #1a1a2
     </div>
     
     <div style="background: rgba(255,255,255,0.1); padding: 1rem; border-radius: 8px; border-left: 3px solid #ec4899;">
-      <strong style="color: #ec4899;">✅ Calidad + Scoring v2</strong>
+      <strong style="color: #ec4899;">✅ Calidad + Scoring v4</strong>
       <p style="margin: 0.5rem 0 0; font-size: 0.95rem; line-height: 1.5;">
-        <strong>${pctVerificados}%</strong> del TAM pasó filtros de calidad. De estos, <strong>${formatNumber(oportunidadesPrioritarias)}</strong> son prioritarios (cadenas 4+ suc, bodegones ZM MTY, mayoristas).
+        <strong>${pctVerificados}%</strong> del TAM pasó filtros de calidad. De estos, <strong>${formatNumber(oportunidadesPrioritarias)}</strong> son prioritarios (Tier 1 y 2 por tipo de cliente: mayoristas, cadenas, supermercados regionales).
       </p>
     </div>
   </div>

@@ -114,7 +114,7 @@ display(kpi([
       <strong>${formatNumber(totalVerificados)}</strong> prospectos de alta calidad después del proceso de filtrado y verificación multicapa.
     </p>
     <p style="margin-top: 0.5rem; font-size: 0.8rem; color: #777;">
-      Incluye todos los tiers, score &gt;50, datos de contacto, coordenadas precisas, negocios activos. Priorización via Scoring v2.
+      Incluye todos los tiers, score &gt;50, datos de contacto, coordenadas precisas, negocios activos. Scoring v4 con clasificación dual (tipo + score percentil).
     </p>
   </div>
 </div>
@@ -133,7 +133,7 @@ display(kpi([
 <div class="grid grid-cols-4" style="margin-top: 0.5rem; font-size: 0.85rem;">
   <div style="background: #fff; padding: 0.75rem; border-radius: 6px; border: 1px solid #E0E0E0;">
     <span style="color: #C41E3A; font-weight: 600;">1. Todos los Tiers</span><br>
-    <span style="color: #666;">Incluye A, B, C, D — Priorización via Scoring v2 (cadenas, bodegones)</span>
+    <span style="color: #666;">Sistema v4 con clasificación dual: tipo de cliente (1-4) + score percentil</span>
   </div>
   <div style="background: #fff; padding: 0.75rem; border-radius: 6px; border: 1px solid #E0E0E0;">
     <span style="color: #C41E3A; font-weight: 600;">2. Score ≥ 35</span><br>

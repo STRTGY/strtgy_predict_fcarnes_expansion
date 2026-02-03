@@ -11,7 +11,11 @@ import {
   createProspectPopup, getColorForTier, getRadiusForTier, 
   TIER_COLORS, ROUTE_COLORS, L,
   createRoutesLayer, createNodesLayer,
-  getRouteColor, filterProspectsInCorridor, getProximityColor
+  getRouteColor, filterProspectsInCorridor, getProximityColor,
+  // v4: Tipos de cliente
+  TIPO_CLIENTE_COLORS, TIPO_CLIENTE_LABELS,
+  getColorForTipoCliente, getLabelForTipoCliente,
+  getColorForScore, getRadiusForScore, getRadiusForTipoCliente
 } from "./components/maps.js";
 
 // CSS de Leaflet
@@ -40,10 +44,20 @@ function expandProps(p) {
   const rawRegion = p.properties?.r || p.properties?.macro_region || "N/A";
   const expandedRegion = REGION_EXPAND[rawRegion] || rawRegion;
   
-  // Mapear tier abreviado a formato completo
+  // Mapear tier abreviado a formato completo (legacy)
   const tierMap = {"A": "A_PREMIUM", "B": "B_ALTA", "C": "C_MEDIA", "D": "D_BAJA"};
   const rawTier = p.properties?.t || p.properties?.tier || "B";
   const tier = tierMap[rawTier] || rawTier;
+  
+  // Tipo de cliente v4 (nuevo sistema)
+  const tipoCliente = p.properties?.tipo || p.properties?.tipo_cliente_fcarnes || null;
+  const tierFcarnes = p.properties?.tier_fc || p.properties?.tier_fcarnes || null;
+  const scoreBaseTipo = p.properties?.s_tipo || p.properties?.score_base_tipo || 0;
+  const colorTipo = p.properties?.color || p.properties?.color_tipo || null;
+  const razonClasificacion = p.properties?.raz_tipo || p.properties?.razon_clasificacion || "";
+  
+  // v4: Score v4 (sv4) es el principal, score_ajustado como fallback
+  const scoreV4 = p.properties?.sv4 || p.properties?.score_v4 || p.properties?.sadj || p.properties?.score_ajustado || 50;
   
   return {
     nombre: p.properties?.n || p.properties?.nombre || "Sin nombre",
@@ -54,7 +68,7 @@ function expandProps(p) {
     categoria_fcarnes: p.properties?.cat || p.properties?.categoria_fcarnes || "N/A",
     tier: tier,
     score_total: p.properties?.s || p.properties?.score_total || 50,
-    score_ajustado: p.properties?.sadj || p.properties?.score_ajustado || p.properties?.s || 50,
+    score_ajustado: scoreV4,  // v4: Usar score v4 como principal
     distancia_planta_km: p.properties?.d || p.properties?.distancia_planta_km || 0,
     telefono: p.properties?.tel || p.properties?.telefono || "",
     nivel_confianza: p.properties?.conf || p.properties?.nivel_confianza || "MEDIA",
@@ -72,14 +86,23 @@ function expandProps(p) {
     dist_ruta_km: p.properties?.dist_ruta_km || null,
     ruta_cercana: p.properties?.ruta_cercana || null,
     en_corredor: p.properties?.en_corredor === 1 || p.properties?.en_corredor === true,
-    // === NUEVOS CAMPOS: Cadenas y Scoring Diferenciado (del pipeline) ===
+    // === CAMPOS: Cadenas y Scoring Diferenciado ===
     es_cadena: p.properties?.cad === 1 || p.properties?.es_cadena || false,
     nombre_cadena: p.properties?.cad_nom || p.properties?.nombre_cadena || null,
     num_sucursales: p.properties?.cad_suc || p.properties?.num_sucursales || 1,
     metodo_deteccion_cadena: p.properties?.cad_met || p.properties?.metodo_deteccion_cadena || "NINGUNO",
-    es_prioritario: p.properties?.prio === 1 || p.properties?.es_prioritario || false,
+    // es_prioritario: Redefinido como Tier 1 o 2 por TIPO de cliente (no por score)
+    es_prioritario: tierFcarnes === 1 || tierFcarnes === 2,
     razon_prioridad: p.properties?.prio_raz || p.properties?.razon_prioridad || "",
     zona_scoring: p.properties?.zona_sc || p.properties?.zona_scoring || "EXTERIOR",
+    // === NUEVOS CAMPOS v4: Tipos de Cliente FCarnes ===
+    tipo_cliente_fcarnes: tipoCliente,
+    tier_fcarnes: tierFcarnes,
+    score_base_tipo: scoreBaseTipo,
+    color_tipo: colorTipo,
+    razon_clasificacion: razonClasificacion,
+    // v4: Tier final del scoring (TIER_1_PREMIUM, TIER_2_ALTA, etc.)
+    tier_final: p.properties?.t_fin || p.properties?.tier_final || null,
     lat, lon
   };
 }
@@ -100,7 +123,13 @@ const prospectos = {
 // Extraer opciones únicas para filtros
 const macroRegiones = ["Todas", ...new Set(features.map(f => f.properties?.macro_region).filter(Boolean)).values()].sort();
 const zonas = ["Todas", "LOCAL", "REGIONAL", "FORANEA", "LEJANA"];
-const categorias = ["Todas", ...new Set(features.map(f => f.properties?.categoria_fcarnes).filter(Boolean)).values()].sort();
+
+// v4: Usar tipo_cliente_fcarnes en lugar de categoria_fcarnes
+const tiposClienteV4 = ["Todos", ...new Set(features.map(f => f.properties?.tipo_cliente_fcarnes).filter(Boolean)).values()].sort();
+
+// Tiers v4 por tipo de cliente (tier_fcarnes: 1=Alto Valor, 2=Alta, 3=Media, 4=Baja)
+const tiersPorTipo = ["Todos", 1, 2, 3, 4];
+// Legacy tiers para compatibilidad
 const tiers = ["Todos", "A_PREMIUM", "B_ALTA", "C_MEDIA", "D_BAJA"];
 
 // === NUEVOS FILTROS: Estado y Ciudad ===
@@ -173,7 +202,7 @@ const TERRITORIOS_ESTRATEGICOS = [
 </h1>
 
 <p style="color: #666; margin-top: 0;">
-  <strong>Prospectos verificados de alta calidad</strong> — Filtrados por score, completitud y contacto verificable. Incluye <strong>scoring diferenciado v2</strong> con priorización de cadenas y bodegones. Cada punto incluye link a <strong>Street View</strong> para validación visual.
+  <strong>Prospectos verificados de alta calidad</strong> — Filtrados por score, completitud y contacto verificable. Incluye <strong>scoring v4 con 15 tipos de cliente</strong> basado en valor comercial real para FCarnes. Cada punto incluye link a <strong>Street View</strong> para validación visual.
 </p>
 
 <div class="card" style="background: linear-gradient(135deg, #0c4a6e 0%, #075985 100%); color: white; border: none; margin: 1rem 0;">
@@ -205,18 +234,18 @@ const TERRITORIOS_ESTRATEGICOS = [
 </div>
 
 <div class="note" style="background: #E8F5E9; border-left: 4px solid #4CAF50; padding: 0.75rem; margin: 0.5rem 0; font-size: 0.85rem;">
-  ✅ <strong>Filtro de Calidad Aplicado:</strong> Prospectos verificados con score ≥35, datos de contacto verificables, y nombres identificables. <strong>Scoring v2:</strong> Prioriza cadenas (4+ suc) y bodegones en ZM Monterrey.
+  ✅ <strong>Filtro de Calidad v4:</strong> Rastros y pollerias eliminados automaticamente. <strong>15 tipos de cliente</strong> con scoring basado en valor comercial (Mayoristas > Cadenas > Empacadoras > HORECA > Carniceria Consolidada > Micro).
 </div>
 
 ---
 
 ```js
 display(decisionCallout({
-  title: "Prospectos Verificados con Scoring v2",
+  title: "Prospectos Verificados con Scoring v4",
   items: [
     "Todos los prospectos tienen contacto verificable (teléfono, reviews o web)",
-    "Incluye todos los tiers (A, B, C, D) — Filtra por tier si necesitas",
-    "⭐ Prioritarios: Cadenas 4+ sucursales, bodegones ZM MTY, mayoristas",
+    "Sistema dual: Tier por tipo de cliente (1-4) + Tier por score percentil",
+    "⭐ Prioritarios: Tier 1 y 2 por tipo (mayoristas, cadenas, supermercados regionales, carnicerias premium)",
     "Haz clic en cualquier punto para ver ficha completa + Street View"
   ]
 }));
@@ -294,16 +323,19 @@ const zonaFiltro = view(Inputs.select(zonas, {
 ```
 
 ```js
-const categoriaFiltro = view(Inputs.select(categorias, {
-  label: "Categoría",
-  value: "Todas"
+// v4: Filtro por Tipo de Cliente (15 categorías específicas FCarnes)
+const tipoClienteFiltro = view(Inputs.select(tiposClienteV4, {
+  label: "Tipo Cliente v4",
+  value: "Todos"
 }));
 ```
 
 ```js
-const tierFiltro = view(Inputs.select(tiers, {
-  label: "Tier (Prioridad)",
-  value: "Todos"
+// v4: Filtro por Tier basado en tipo de cliente (tier_fcarnes)
+const tierTipoFiltro = view(Inputs.select(tiersPorTipo, {
+  label: "Tier por Tipo",
+  value: "Todos",
+  format: t => t === "Todos" ? "Todos" : `T${t} - ${["", "Alto Valor", "Alta", "Media", "Baja"][t]}`
 }));
 ```
 
@@ -387,8 +419,12 @@ const prospectosFiltrados = features.filter(f => {
   // Filtros existentes
   if (regionFiltro !== "Todas" && p.macro_region !== regionFiltro) return false;
   if (zonaFiltro !== "Todas" && p.zona_logistica !== zonaFiltro) return false;
-  if (categoriaFiltro !== "Todas" && p.categoria_fcarnes !== categoriaFiltro) return false;
-  if (tierFiltro !== "Todos" && p.tier !== tierFiltro) return false;
+  
+  // v4: Filtrar por tipo de cliente (15 categorías)
+  if (tipoClienteFiltro !== "Todos" && p.tipo_cliente_fcarnes !== tipoClienteFiltro) return false;
+  
+  // v4: Filtrar por tier basado en tipo de cliente (tier_fcarnes: 1-4)
+  if (tierTipoFiltro !== "Todos" && p.tier_fcarnes !== tierTipoFiltro) return false;
   
   // Filtro de corredor logístico
   if (soloEnCorredor) {
@@ -414,25 +450,33 @@ const prospectosFiltradosConPrioridad = prospectosFiltrados;
 
 const totalFiltrados = prospectosFiltrados.length;
 const totalProspectos = features.length;
+
+// v4: Usar score_ajustado (score v4) en lugar de score_total
 const scorePromedio = totalFiltrados > 0
-  ? prospectosFiltrados.reduce((s, f) => s + (f.properties?.score_total || 0), 0) / totalFiltrados
+  ? prospectosFiltrados.reduce((s, f) => s + (f.properties?.score_ajustado || f.properties?.score_total || 0), 0) / totalFiltrados
   : 0;
 
-const tierA = prospectosFiltrados.filter(f => f.properties?.tier === "A_PREMIUM").length;
-const tierB = prospectosFiltrados.filter(f => f.properties?.tier === "B_ALTA").length;
+// v4: Contar por tier basado en tipo de cliente (tier_fcarnes: 1-4)
+const tier1Count = prospectosFiltrados.filter(f => f.properties?.tier_fcarnes === 1).length;
+const tier2Count = prospectosFiltrados.filter(f => f.properties?.tier_fcarnes === 2).length;
+const tier3Count = prospectosFiltrados.filter(f => f.properties?.tier_fcarnes === 3).length;
+const tier4Count = prospectosFiltrados.filter(f => f.properties?.tier_fcarnes === 4).length;
 
 // Stats adicionales (usando campos pre-calculados del pipeline)
 const enCorredor = features.filter(f => f.properties?.en_corredor).length;
 const totalPrioritarios = prospectosFiltrados.filter(f => f.properties?.es_prioritario).length;
 const totalCadenas = prospectosFiltrados.filter(f => f.properties?.es_cadena).length;
+
+// v4: Contar tipos de alto valor (Tier 1 por tipo)
+const tiposAltoValor = tier1Count;
 ```
 
 ```js
 display(kpi([
   { label: "Prospectos Filtrados", value: formatNumber(totalFiltrados), subtitle: `de ${formatNumber(totalProspectos)} totales` },
-  { label: "Score Promedio", value: scorePromedio.toFixed(1), subtitle: "Puntuación 0-100" },
-  { label: "⭐ Prioritarios", value: formatNumber(totalPrioritarios), subtitle: `${formatPercent((totalPrioritarios / Math.max(totalFiltrados, 1)) * 100)} del filtro` },
-  { label: "🔗 Cadenas", value: formatNumber(totalCadenas), subtitle: "4+ sucursales detectadas" }
+  { label: "Score v4 Promedio", value: scorePromedio.toFixed(1), subtitle: "Puntuación 0-100" },
+  { label: "🟢 T1: Alto Valor", value: formatNumber(tier1Count), subtitle: "Mayoristas, Cadenas, Empacadoras" },
+  { label: "🔵 T2: Alta Prioridad", value: formatNumber(tier2Count), subtitle: "Premium, HORECA, Supers" }
 ]));
 ```
 
@@ -452,8 +496,8 @@ display(kpi([
       <p style="margin: 0.25rem 0 0; color: #78350f;">Puntuación compuesta basada en: canal (mayorista vs retail), tamaño del negocio, completitud de datos y presencia en Google Maps. <strong>&gt;70 = alta prioridad</strong>.</p>
     </div>
     <div>
-      <strong style="color: #b45309;">Tier (A/B/C/D):</strong>
-      <p style="margin: 0.25rem 0 0; color: #78350f;"><strong>A_PREMIUM:</strong> Mayoristas, alto volumen. <strong>B_ALTA:</strong> Carnicerías establecidas. <strong>C_MEDIA/D_BAJA:</strong> Retail micro. Ver detalles en <a href="./metodologia" style="color: #1d4ed8;">Metodología</a>.</p>
+      <strong style="color: #b45309;">Tier (1-4 por tipo):</strong>
+      <p style="margin: 0.25rem 0 0; color: #78350f;"><strong>Tier 1:</strong> Mayoristas, cadenas grandes. <strong>Tier 2:</strong> Supermercados regionales, carnicerias premium. <strong>Tier 3:</strong> Carnicerias consolidadas. <strong>Tier 4:</strong> Micro negocios. Ver detalles en <a href="./metodologia" style="color: #1d4ed8;">Metodología</a>.</p>
     </div>
     <div>
       <strong style="color: #b45309;">Dist. Ruta (km):</strong>
@@ -524,16 +568,26 @@ if (typeof L !== 'undefined' && L.map) {
       pointToLayer: (feature, latlng) => {
         const p = feature.properties;
         const tier = p.tier || "C_MEDIA";
+        const tipoCliente = p.tipo_cliente_fcarnes;
+        const score = p.score_total || p.score_ajustado || 50;
         
-        // Color: si está en modo corredor, colorear por proximidad
+        // Color: prioridad = corredor > tipo_cliente v4 > tier legacy
         let color;
-        if (soloEnCorredor && p.dist_ruta_km !== null) {
-          color = getProximityColor(p.dist_ruta_km);
-        } else {
-          color = getColorForTier(tier);
-        }
+        let radius;
         
-        const radius = getRadiusForTier(tier);
+        if (soloEnCorredor && p.dist_ruta_km !== null) {
+          // Modo corredor: colorear por proximidad
+          color = getProximityColor(p.dist_ruta_km);
+          radius = getRadiusForTier(tier);
+        } else if (tipoCliente && TIPO_CLIENTE_COLORS[tipoCliente]) {
+          // v4: Color y radio por tipo de cliente
+          color = TIPO_CLIENTE_COLORS[tipoCliente];
+          radius = getRadiusForTipoCliente(tipoCliente);
+        } else {
+          // Legacy: por tier
+          color = getColorForTier(tier);
+          radius = getRadiusForTier(tier);
+        }
         
         return L.circleMarker(latlng, {
           radius: radius,
@@ -580,21 +634,32 @@ if (typeof L !== 'undefined' && L.map) {
   }
 
   // ============================================
-  // Leyenda dinámica
+  // Leyenda dinamica v4
   // ============================================
   const legendItems = [];
   
-  // Leyenda de prospectos (solo si están visibles)
+  // Detectar si tenemos datos v4 (tipo_cliente_fcarnes)
+  const tieneV4 = geoJsonFiltrado.features.some(f => f.properties?.tipo_cliente_fcarnes);
+  
+  // Leyenda de prospectos (solo si estan visibles)
   if (mostrarProspectos) {
     if (soloEnCorredor) {
-      legendItems.push({ type: "header", label: "📍 Proximidad a Ruta" });
+      legendItems.push({ type: "header", label: "Proximidad a Ruta" });
       legendItems.push({ type: "circle", color: "#22c55e", label: "< 5 km" });
       legendItems.push({ type: "circle", color: "#84cc16", label: "5-15 km" });
       legendItems.push({ type: "circle", color: "#eab308", label: "15-25 km" });
       legendItems.push({ type: "circle", color: "#f97316", label: "25-50 km" });
+    } else if (tieneV4) {
+      // Leyenda v4 por tier de tipo de cliente
+      legendItems.push({ type: "header", label: "Tier por Tipo de Cliente" });
+      legendItems.push({ type: "circle", color: "#15803d", label: "T1: Alto Valor (Mayorista/Cadena)" });
+      legendItems.push({ type: "circle", color: "#3b82f6", label: "T2: Alta (Premium/HORECA)" });
+      legendItems.push({ type: "circle", color: "#eab308", label: "T3: Media (Consolidado)" });
+      legendItems.push({ type: "circle", color: "#9ca3af", label: "T4: Baja (Micro)" });
     } else {
-      legendItems.push({ type: "header", label: "📍 Tier de Prioridad" });
-      legendItems.push({ type: "circle", color: TIER_COLORS.A_PREMIUM, label: "A_PREMIUM (Máxima)" });
+      // Leyenda legacy por tier
+      legendItems.push({ type: "header", label: "Tier de Prioridad" });
+      legendItems.push({ type: "circle", color: TIER_COLORS.A_PREMIUM, label: "A_PREMIUM (Maxima)" });
       legendItems.push({ type: "circle", color: TIER_COLORS.B_ALTA, label: "B_ALTA (Alta)" });
       legendItems.push({ type: "circle", color: TIER_COLORS.C_MEDIA, label: "C_MEDIA (Media)" });
       legendItems.push({ type: "circle", color: TIER_COLORS.D_BAJA, label: "D_BAJA (Baja)" });
@@ -678,16 +743,27 @@ const tablaData = prospectosFiltradosConPrioridad
     // Usar campos pre-calculados del pipeline
     const esPrio = p.es_prioritario || false;
     const esCadena = p.es_cadena || false;
+    
+    // v4: Obtener score v4 (sv4) o score_ajustado como fallback
+    const scoreV4 = p.score_ajustado || p.score_total || 0;
+    
+    // v4: Formatear tipo de cliente para mostrar más legible
+    const tipoRaw = p.tipo_cliente_fcarnes || "N/A";
+    const tipoLegible = tipoRaw.replace(/_/g, " ").toLowerCase()
+      .replace(/\b\w/g, c => c.toUpperCase());
+    
     return {
       prioritario: esPrio ? "⭐" : "",
-      cadena: esCadena ? "🔗" : "",
+      cadena_info: esCadena ? { nombre: p.nombre_cadena || "Cadena", sucursales: p.num_sucursales || 0 } : null,
       nombre: p.nombre || "Sin nombre",
       estado: p.estado || "N/A",
       ciudad: p.ciudad || "N/A",
       zona_logistica: p.zona_logistica || "N/A",
-      tier: p.tier || "N/A",
-      score: typeof p.score_total === 'number' ? p.score_total : 0,
+      tipo_cliente: tipoLegible,  // v4: Tipo de cliente
+      tier_fc: p.tier_fcarnes || 4,  // v4: Tier numérico (1-4)
+      score: scoreV4,  // v4: Score ajustado
       telefono: p.telefono || "—",
+      street_view: p.lat && p.lon ? `https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=${p.lat},${p.lon}` : null,
       dist_ruta: p.dist_ruta_km ?? null,
       razon_prioridad: p.razon_prioridad || "",
       nombre_cadena: p.nombre_cadena || "",
@@ -698,11 +774,8 @@ const tablaData = prospectosFiltradosConPrioridad
     };
   })
   .sort((a, b) => {
-    // Ordenar: primero prioritarios, luego cadenas, luego por score
-    if (a.prioritario && !b.prioritario) return -1;
-    if (!a.prioritario && b.prioritario) return 1;
-    if (a.cadena && !b.cadena) return -1;
-    if (!a.cadena && b.cadena) return 1;
+    // Ordenar: primero por tier (menor=mejor), luego por score
+    if (a.tier_fc !== b.tier_fc) return a.tier_fc - b.tier_fc;
     return b.score - a.score;
   });
 ```
@@ -712,22 +785,22 @@ const tablaData = prospectosFiltradosConPrioridad
 const tablaLimitada = tablaData.slice(0, 500);
 
 display(Inputs.table(tablaLimitada, {
-  columns: ["prioritario", "cadena", "nombre", "estado", "ciudad", "zona_logistica", "tier", "score", "telefono", "dist_ruta"],
+  columns: ["prioritario", "nombre", "estado", "ciudad", "tipo_cliente", "tier_fc", "score", "telefono", "street_view"],
   header: {
     prioritario: "⭐",
-    cadena: "🔗",
     nombre: "Establecimiento",
     estado: "Estado",
     ciudad: "Ciudad",
-    zona_logistica: "Zona",
-    tier: "Tier",
-    score: "Score",
+    tipo_cliente: "Tipo Cliente",
+    tier_fc: "Tier",
+    score: "Score v4",
     telefono: "Teléfono",
-    dist_ruta: "Dist. Ruta"
+    street_view: "Street View"
   },
   format: {
     score: d => typeof d === 'number' ? d.toFixed(1) : "—",
-    dist_ruta: d => d !== null ? `${d.toFixed(1)} km` : "—"
+    tier_fc: d => `T${d}`,
+    street_view: (url) => url ? htl.html`<a href="${url}" target="_blank" style="color: #2563eb; text-decoration: none;">🗺️ Ver</a>` : "—"
   },
   sort: "score",
   reverse: true,
@@ -749,37 +822,61 @@ const notaTabla = tablaData.length <= 500
 
 ---
 
-## Distribución por Tier (Selección Actual)
+## Distribución por Tipo de Cliente v4 (Selección Actual)
 
 ```js
-const tierCounts = {
-  "A_PREMIUM": prospectosFiltrados.filter(f => f.properties?.tier === "A_PREMIUM").length,
-  "B_ALTA": prospectosFiltrados.filter(f => f.properties?.tier === "B_ALTA").length,
-  "C_MEDIA": prospectosFiltrados.filter(f => f.properties?.tier === "C_MEDIA").length,
-  "D_BAJA": prospectosFiltrados.filter(f => f.properties?.tier === "D_BAJA").length
-};
+// v4: Contar por tipo de cliente
+const tipoClienteCounts = {};
+for (const f of prospectosFiltrados) {
+  const tipo = f.properties?.tipo_cliente_fcarnes || "OTRO";
+  tipoClienteCounts[tipo] = (tipoClienteCounts[tipo] || 0) + 1;
+}
 
-const tierData = Object.entries(tierCounts).map(([tier, count]) => ({ tier, count }));
+// Ordenar por cantidad descendente y tomar top 10
+const tipoClienteData = Object.entries(tipoClienteCounts)
+  .map(([tipo, count]) => ({ tipo, count }))
+  .sort((a, b) => b.count - a.count)
+  .slice(0, 10);
+
+// Colores por tipo de cliente v4
+const TIPO_COLORS_MAP = {
+  "DISTRIBUIDOR_MAYORISTA": "#15803d",
+  "CADENA_CARNICERIA_GRANDE": "#22c55e",
+  "PROCESADOR_TROMPO": "#16a34a",
+  "EMPACADORA_INDUSTRIAL": "#4ade80",
+  "SUPERMERCADO_REGIONAL": "#1d4ed8",
+  "CARNICERIA_PREMIUM": "#3b82f6",
+  "HORECA_ALTO_VOLUMEN": "#60a5fa",
+  "TAQUERIA_CADENA": "#93c5fd",
+  "CARNICERIA_CONSOLIDADA": "#ca8a04",
+  "OBRADOR_TRADICIONAL": "#eab308",
+  "RESTAURANTE_CARNES": "#fbbf24",
+  "TAQUERIA_INDIVIDUAL": "#fcd34d",
+  "CARNICERIA_MICRO": "#9ca3af",
+  "MINISUPER_CARNES": "#d1d5db",
+  "CREMERIA_CARNES": "#e5e7eb",
+  "OTRO": "#6b7280"
+};
 ```
 
 ```js
 import * as Plot from "npm:@observablehq/plot";
 
 display(resize((width) => Plot.plot({
-  width: Math.min(width, 500),
-  height: 200,
-  marginLeft: 100,
+  width: Math.min(width, 600),
+  height: Math.max(300, tipoClienteData.length * 35),  // Altura dinámica: 35px por barra
+  marginLeft: 180,
   x: { label: "Cantidad", grid: true },
   y: { label: null },
   marks: [
-    Plot.barX(tierData, {
-      y: "tier",
+    Plot.barX(tipoClienteData, {
+      y: "tipo",
       x: "count",
-      fill: d => TIER_COLORS[d.tier] || "#666",
+      fill: d => TIPO_COLORS_MAP[d.tipo] || "#666",
       sort: { y: "x", reverse: true }
     }),
-    Plot.text(tierData, {
-      y: "tier",
+    Plot.text(tipoClienteData, {
+      y: "tipo",
       x: "count",
       text: d => formatNumber(d.count),
       dx: 5,
@@ -799,7 +896,7 @@ display(resize((width) => Plot.plot({
   <div class="card" style="border-left: 4px solid #3b82f6;">
     <h4 style="margin-top: 0; color: #1d4ed8;">📋 Para el Equipo Comercial</h4>
     <ol style="margin: 0; padding-left: 1.25rem; font-size: 0.9rem; color: #555; line-height: 1.6;">
-      <li>Filtra por <strong>Tier A_PREMIUM</strong> para mayoristas de alto volumen</li>
+      <li>Filtra por <strong>"Solo Prioritarios"</strong> para Tier 1 y 2 (mayoristas, cadenas, supermercados)</li>
       <li>Usa el filtro de <strong>Corredor</strong> para prospectos en rutas existentes</li>
       <li><strong>Valida visualmente</strong> con Street View antes de agendar visita</li>
       <li>Prioriza prospectos con <strong>reseñas en Google</strong> (negocio activo confirmado)</li>
@@ -830,8 +927,8 @@ display(resize((width) => Plot.plot({
 ---
 
 <small style="color: #999; display: block; text-align: center; margin-top: 2rem; padding-top: 1rem; border-top: 1px solid #eee;">
-  <strong>Prospectos verificados:</strong> ${formatNumber(totalProspectos)} (filtrados por calidad) | Datos DENUE + Google Maps + Validación IA<br>
-  <strong>Scoring v2:</strong> Prioriza cadenas (4+ suc) y bodegones ZM MTY | Todos los tiers disponibles<br>
+  <strong>Prospectos verificados:</strong> ${formatNumber(totalProspectos)} (filtrados por calidad) | Datos DENUE + Scoring v4<br>
+  <strong>Scoring v4:</strong> 15 tipos de cliente específicos FCarnes | Rastros y pollerías excluidos automáticamente<br>
   <strong>STRTGY</strong> — Transformando complejidad en certeza | Proyecto FCarnes | Enero 2026
 </small>
 

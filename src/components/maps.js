@@ -19,13 +19,72 @@ export const MAP_CONFIG = {
 };
 
 /**
- * Colores por tier de prospecto
+ * Colores por tier de prospecto (legacy)
  */
 export const TIER_COLORS = {
   "A_PREMIUM": "#C41E3A",
   "B_ALTA": "#FF9800",
   "C_MEDIA": "#2196F3",
-  "D_BAJA": "#9E9E9E"
+  "D_BAJA": "#9E9E9E",
+  // Nuevos tiers v4
+  "TIER_1_PREMIUM": "#15803d",
+  "TIER_2_ALTA": "#3b82f6",
+  "TIER_3_MEDIA": "#eab308",
+  "TIER_4_BAJA": "#9ca3af"
+};
+
+/**
+ * Colores por tipo de cliente FCarnes v4
+ * Basado en auditoria SME de industria carnica
+ */
+export const TIPO_CLIENTE_COLORS = {
+  // Tier 1 - Maxima Prioridad (Verdes)
+  "DISTRIBUIDOR_MAYORISTA": "#15803d",
+  "CADENA_CARNICERIA_GRANDE": "#22c55e",
+  "PROCESADOR_TROMPO": "#16a34a",
+  "EMPACADORA_INDUSTRIAL": "#4ade80",
+  
+  // Tier 2 - Prioridad Alta (Azules)
+  "SUPERMERCADO_REGIONAL": "#1d4ed8",
+  "CARNICERIA_PREMIUM": "#3b82f6",
+  "HORECA_ALTO_VOLUMEN": "#60a5fa",
+  "TAQUERIA_CADENA": "#93c5fd",
+  
+  // Tier 3 - Prioridad Media (Amarillos)
+  "CARNICERIA_CONSOLIDADA": "#ca8a04",
+  "OBRADOR_TRADICIONAL": "#eab308",
+  "RESTAURANTE_CARNES": "#fbbf24",
+  "TAQUERIA_INDIVIDUAL": "#fcd34d",
+  
+  // Tier 4 - Prioridad Baja (Grises)
+  "CARNICERIA_MICRO": "#9ca3af",
+  "MINISUPER_CARNES": "#d1d5db",
+  "CREMERIA_CARNES": "#e5e7eb",
+  
+  // Fallback
+  "OTRO": "#6b7280"
+};
+
+/**
+ * Labels legibles para tipos de cliente
+ */
+export const TIPO_CLIENTE_LABELS = {
+  "DISTRIBUIDOR_MAYORISTA": "Distribuidor Mayorista",
+  "CADENA_CARNICERIA_GRANDE": "Cadena Carniceria (4+ suc)",
+  "PROCESADOR_TROMPO": "Procesador Trompo/Pastor",
+  "EMPACADORA_INDUSTRIAL": "Empacadora Industrial",
+  "SUPERMERCADO_REGIONAL": "Supermercado Regional",
+  "CARNICERIA_PREMIUM": "Carniceria Premium",
+  "HORECA_ALTO_VOLUMEN": "HORECA Alto Volumen",
+  "TAQUERIA_CADENA": "Taqueria Cadena",
+  "CARNICERIA_CONSOLIDADA": "Carniceria Consolidada",
+  "OBRADOR_TRADICIONAL": "Obrador Tradicional",
+  "RESTAURANTE_CARNES": "Restaurante de Carnes",
+  "TAQUERIA_INDIVIDUAL": "Taqueria Individual",
+  "CARNICERIA_MICRO": "Carniceria Micro",
+  "MINISUPER_CARNES": "Minisuper con Carnes",
+  "CREMERIA_CARNES": "Cremeria con Carnes",
+  "OTRO": "Otro"
 };
 
 /**
@@ -160,7 +219,15 @@ export function createProspectPopup(props) {
   const streetViewUrl = props.url_streetview ||
     `https://www.google.com/maps/@${lat},${lon},3a,90y,0h,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192`;
 
-  const tierColor = TIER_COLORS[props.tier] || "#666";
+  // Soporte para nuevo sistema v4 y legacy
+  const tipoCliente = props.tipo || props.tipo_cliente_fcarnes;
+  const tierFinal = props.tier_final || props.tier || props.t;
+  const scoreV4 = props.score_v4 || props.s || props.score_total;
+  
+  // Color basado en tipo de cliente v4 o tier legacy
+  const tierColor = tipoCliente 
+    ? (TIPO_CLIENTE_COLORS[tipoCliente] || "#666")
+    : (TIER_COLORS[tierFinal] || "#666");
   
   // Verificar si tiene análisis de IA
   const hasAI = props.ai_analizado === true || props.ai_confidence > 0;
@@ -225,44 +292,65 @@ export function createProspectPopup(props) {
     </tr>
   `;
 
+  // Obtener label legible del tipo
+  const tipoLabel = tipoCliente ? (TIPO_CLIENTE_LABELS[tipoCliente] || tipoCliente) : "N/A";
+  
   return `
-    <div style="min-width: 300px; font-family: system-ui, -apple-system, sans-serif; font-size: 0.9rem;">
+    <div style="min-width: 320px; font-family: system-ui, -apple-system, sans-serif; font-size: 0.9rem;">
       <h4 style="margin: 0 0 10px; color: #C41E3A; font-size: 1.1rem; border-bottom: 2px solid #C41E3A; padding-bottom: 8px;">
-        ${props.nombre || props.nom_estab || "Sin nombre"}
+        ${props.nombre || props.n || props.nom_estab || "Sin nombre"}
       </h4>
       <table style="width: 100%; border-collapse: collapse;">
+        ${tipoCliente ? `
         <tr>
-          <td style="padding: 4px 8px 4px 0; color: #666; width: 40%;"><strong>Canal:</strong></td>
-          <td style="padding: 4px 0;">${props.categoria_fcarnes || props.cat || props.canal_fcarnes || props.categoria || "N/A"}</td>
-        </tr>
-        <tr>
-          <td style="padding: 4px 8px 4px 0; color: #666;"><strong>Ciudad:</strong></td>
-          <td style="padding: 4px 0;">${props.ciudad || props.nom_loc || "N/A"}</td>
-        </tr>
-        <tr>
-          <td style="padding: 4px 8px 4px 0; color: #666;"><strong>Región:</strong></td>
-          <td style="padding: 4px 0;">${props.macro_region || "N/A"}</td>
-        </tr>
-        <tr>
-          <td style="padding: 4px 8px 4px 0; color: #666;"><strong>Zona:</strong></td>
-          <td style="padding: 4px 0;">${props.zona_logistica || "N/A"}</td>
-        </tr>
-        <tr>
-          <td style="padding: 4px 8px 4px 0; color: #666;"><strong>Distancia:</strong></td>
-          <td style="padding: 4px 0;">${props.distancia_planta_km ? Math.round(props.distancia_planta_km) + " km" : "N/A"}</td>
-        </tr>
-        <tr>
-          <td style="padding: 4px 8px 4px 0; color: #666;"><strong>Tier:</strong></td>
+          <td style="padding: 4px 8px 4px 0; color: #666; width: 35%;"><strong>Tipo:</strong></td>
           <td style="padding: 4px 0;">
-            <span style="background: ${tierColor}; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; font-weight: 600;">
-              ${props.tier || "N/A"}
+            <span style="background: ${tierColor}; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 600;">
+              ${tipoLabel}
             </span>
           </td>
         </tr>
+        ` : `
+        <tr>
+          <td style="padding: 4px 8px 4px 0; color: #666; width: 35%;"><strong>Canal:</strong></td>
+          <td style="padding: 4px 0;">${props.categoria_fcarnes || props.cat || props.canal_fcarnes || props.categoria || "N/A"}</td>
+        </tr>
+        `}
+        <tr>
+          <td style="padding: 4px 8px 4px 0; color: #666;"><strong>Ciudad:</strong></td>
+          <td style="padding: 4px 0;">${props.ciudad || props.c || props.nom_loc || "N/A"}</td>
+        </tr>
+        <tr>
+          <td style="padding: 4px 8px 4px 0; color: #666;"><strong>Region:</strong></td>
+          <td style="padding: 4px 0;">${props.macro_region || props.r || "N/A"}</td>
+        </tr>
+        <tr>
+          <td style="padding: 4px 8px 4px 0; color: #666;"><strong>Zona:</strong></td>
+          <td style="padding: 4px 0;">${props.zona_logistica || props.z || "N/A"}</td>
+        </tr>
+        <tr>
+          <td style="padding: 4px 8px 4px 0; color: #666;"><strong>Distancia:</strong></td>
+          <td style="padding: 4px 0;">${(props.distancia_planta_km || props.d) ? Math.round(props.distancia_planta_km || props.d) + " km" : "N/A"}</td>
+        </tr>
         <tr>
           <td style="padding: 4px 8px 4px 0; color: #666;"><strong>Score:</strong></td>
-          <td style="padding: 4px 0;"><strong style="font-size: 1.1rem;">${props.score_total != null ? props.score_total.toFixed(1) : "N/A"}</strong></td>
+          <td style="padding: 4px 0;">
+            <strong style="font-size: 1.2rem; color: ${getColorForScore(scoreV4 || 0)};">
+              ${scoreV4 != null ? (typeof scoreV4 === 'number' ? scoreV4.toFixed(1) : scoreV4) : "N/A"}
+            </strong>
+            <span style="font-size: 0.75rem; color: #888;">/100</span>
+          </td>
         </tr>
+        ${tierFinal ? `
+        <tr>
+          <td style="padding: 4px 8px 4px 0; color: #666;"><strong>Tier:</strong></td>
+          <td style="padding: 4px 0;">
+            <span style="background: ${TIER_COLORS[tierFinal] || '#666'}; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem;">
+              ${tierFinal.replace("TIER_", "").replace("_", " ")}
+            </span>
+          </td>
+        </tr>
+        ` : ""}
         ${props.telefono ? `
         <tr>
           <td style="padding: 4px 8px 4px 0; color: #666;"><strong>Teléfono:</strong></td>
@@ -369,6 +457,38 @@ export function getColorForTier(tier) {
 }
 
 /**
+ * Obtiene el color para un tipo de cliente FCarnes v4
+ * @param {string} tipo - Tipo de cliente
+ * @returns {string} Color hex
+ */
+export function getColorForTipoCliente(tipo) {
+  return TIPO_CLIENTE_COLORS[tipo] || TIPO_CLIENTE_COLORS["OTRO"];
+}
+
+/**
+ * Obtiene el label legible para un tipo de cliente
+ * @param {string} tipo - Tipo de cliente
+ * @returns {string} Label legible
+ */
+export function getLabelForTipoCliente(tipo) {
+  return TIPO_CLIENTE_LABELS[tipo] || tipo;
+}
+
+/**
+ * Genera color en gradiente rojo-azul basado en score (0-100)
+ * @param {number} score - Score del prospecto (0-100)
+ * @returns {string} Color hex
+ */
+export function getColorForScore(score) {
+  // Score 0-100: Rojo (#ef4444) -> Amarillo (#eab308) -> Azul (#3b82f6)
+  if (score >= 80) return "#15803d";  // Verde - Premium
+  if (score >= 60) return "#3b82f6";  // Azul - Alta
+  if (score >= 40) return "#eab308";  // Amarillo - Media
+  if (score >= 20) return "#f97316";  // Naranja - Baja
+  return "#ef4444";                    // Rojo - Muy baja
+}
+
+/**
  * Obtiene el color para una región específica
  * @param {string} region - Nombre de la macro-región
  * @returns {string} Color hex
@@ -387,9 +507,52 @@ export function getRadiusForTier(tier) {
     "A_PREMIUM": 10,
     "B_ALTA": 8,
     "C_MEDIA": 6,
-    "D_BAJA": 4
+    "D_BAJA": 4,
+    // Nuevos tiers v4
+    "TIER_1_PREMIUM": 10,
+    "TIER_2_ALTA": 8,
+    "TIER_3_MEDIA": 6,
+    "TIER_4_BAJA": 4
   };
   return radii[tier] || 5;
+}
+
+/**
+ * Obtiene el radio del marcador según el score (0-100)
+ * @param {number} score - Score del prospecto
+ * @returns {number} Radio en píxeles
+ */
+export function getRadiusForScore(score) {
+  if (score >= 80) return 10;
+  if (score >= 60) return 8;
+  if (score >= 40) return 6;
+  if (score >= 20) return 5;
+  return 4;
+}
+
+/**
+ * Obtiene el radio del marcador según el tipo de cliente
+ * @param {string} tipo - Tipo de cliente
+ * @returns {number} Radio en píxeles
+ */
+export function getRadiusForTipoCliente(tipo) {
+  // Tier 1 - mas grandes
+  if (["DISTRIBUIDOR_MAYORISTA", "CADENA_CARNICERIA_GRANDE", 
+       "PROCESADOR_TROMPO", "EMPACADORA_INDUSTRIAL"].includes(tipo)) {
+    return 10;
+  }
+  // Tier 2
+  if (["SUPERMERCADO_REGIONAL", "CARNICERIA_PREMIUM",
+       "HORECA_ALTO_VOLUMEN", "TAQUERIA_CADENA"].includes(tipo)) {
+    return 8;
+  }
+  // Tier 3
+  if (["CARNICERIA_CONSOLIDADA", "OBRADOR_TRADICIONAL",
+       "RESTAURANTE_CARNES", "TAQUERIA_INDIVIDUAL"].includes(tipo)) {
+    return 6;
+  }
+  // Tier 4
+  return 4;
 }
 
 // =============================================================================

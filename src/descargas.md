@@ -166,17 +166,28 @@ La base de datos completa incluye los siguientes campos:
     <h4 style="margin-top: 0; color: #C41E3A;">Clasificación</h4>
     <ul style="margin: 0; padding-left: 1.2rem; color: #555;">
       <li><code>categoria_fcarnes</code> - MAYOREO/RETAIL/PROCESO</li>
-      <li><code>tier</code> - A/B/C/D</li>
-      <li><code>score_total</code> - Puntuación 0-100</li>
-      <li><code>score_ajustado</code> - Score con bonus Scoring v2</li>
+      <li><code>tier</code> - Tier legacy (A/B/C/D)</li>
+      <li><code>score_total</code> - Score legacy (0-100)</li>
     </ul>
   </div>
   
   <div class="card" style="font-size: 0.85rem;">
-    <h4 style="margin-top: 0; color: #C41E3A;">Scoring v2 (Nuevo)</h4>
+    <h4 style="margin-top: 0; color: #C41E3A;">Scoring v4 (Actual)</h4>
     <ul style="margin: 0; padding-left: 1.2rem; color: #555;">
-      <li><code>es_prioritario</code> - 1 si cumple reglas v2</li>
-      <li><code>razon_prioridad</code> - Razón de priorización</li>
+      <li><code>tipo_cliente_fcarnes</code> - Tipo de cliente (15 categorías)</li>
+      <li><code>tier_fcarnes</code> - Tier por tipo (1-4)</li>
+      <li><code>score_v4</code> - Score v4 diferenciado</li>
+      <li><code>tier_final</code> - Tier por percentil de score</li>
+      <li><code>score_volumen</code> - Componente volumen</li>
+      <li><code>score_calidad</code> - Componente calidad</li>
+      <li><code>score_logistica</code> - Componente logística</li>
+      <li><code>score_conversion</code> - Componente conversión</li>
+    </ul>
+  </div>
+  
+  <div class="card" style="font-size: 0.85rem;">
+    <h4 style="margin-top: 0; color: #C41E3A;">Detección de Cadenas</h4>
+    <ul style="margin: 0; padding-left: 1.2rem; color: #555;">
       <li><code>es_cadena</code> - 1 si es cadena (4+ suc)</li>
       <li><code>nombre_cadena</code> - Nombre de la cadena</li>
       <li><code>num_sucursales</code> - Sucursales detectadas</li>

@@ -43,7 +43,7 @@ display(kpi([
     Cuando decimos que un prospecto es "verificado" o de "alta calidad", significa que pasó <strong>7 criterios específicos</strong> de filtrado:
   </p>
   <ol style="margin: 0; padding-left: 1.5rem; font-size: 0.9rem; color: #78350f; line-height: 1.8;">
-    <li><strong>Todos los Tiers:</strong> Incluye A, B, C y D — Priorización via Scoring v2</li>
+    <li><strong>Todos los Tiers:</strong> Incluye todos los niveles de prioridad — Scoring v4 usa dos sistemas (tier por tipo y tier por score percentil)</li>
     <li><strong>Score ≥ 35:</strong> Puntuación mínima de relevancia basada en canal, tamaño y ubicación</li>
     <li><strong>Datos de contacto:</strong> Tiene teléfono, email, web o reseñas verificables en Google</li>
     <li><strong>Coordenadas precisas:</strong> Mínimo 4 decimales de precisión (~11 metros)</li>
@@ -332,7 +332,7 @@ Para garantizar que **solo se entreguen prospectos verificables**, se implement�
 
 | Filtro | Criterio | Impacto |
 |--------|----------|---------|
-| **Tier** | Todos los tiers incluidos | Priorización via Scoring v2 (cadenas, bodegones) |
+| **Tier** | Todos los tiers incluidos | Sistema v4 con doble clasificación (tipo + score percentil) |
 | **Score mínimo** | ≥ 35 puntos | Elimina baja relevancia |
 | **Completitud** | ≥ 30% de campos | Elimina registros vacíos |
 | **Nombres** | Excluir genéricos | Elimina "CARNICERIA", "EXPENDIO", etc. |
@@ -367,31 +367,54 @@ Cada prospecto filtrado recibe un nivel de confianza:
 | **RETAIL_MICRO** | Carnicerías de barrio | 461121 (0-5 empleados) |
 | **SUPERMERCADO** | Tiendas de autoservicio | 462111 |
 
-#### Tiers de Prioridad
+#### Tiers de Prioridad (Sistema v4)
 
-| Tier | Criterio | Score |
-|------|----------|-------|
-| **A_PREMIUM** | Mayoristas + alto score | ≥80 |
-| **B_ALTA** | Consolidados con potencial | 65-79 |
-| **C_MEDIA** | Retail micro con oportunidad | 45-64 |
-| **D_BAJA** | Baja prioridad | <45 |
+**Sistema Dual de Clasificación:**
 
-### 2.3 Score de Relevancia
+El sistema v4 utiliza dos clasificaciones complementarias:
 
-El score de relevancia (0-100) se calcula combinando:
+**1. Tier por Tipo de Cliente** (`tier_fcarnes`): Basado en la categoría de negocio
+
+| Tier | Tipos de Cliente | Justificación |
+|------|------------------|---------------|
+| **Tier 1** | Mayoristas, Cadenas grandes, Procesadores, Empacadoras | Máximo volumen y valor estratégico |
+| **Tier 2** | Supermercados regionales, Carnicerias premium, HORECA alto volumen | Alto potencial y profesionalización |
+| **Tier 3** | Carnicerias consolidadas, Obradores, Restaurantes, Taquerias individuales | Volumen medio, mercado masivo |
+| **Tier 4** | Carnicerias micro, Minisupers, Cremerias | Bajo volumen individual |
+
+**2. Tier por Score** (`tier_final`): Basado en percentiles de desempeño
+
+| Tier | Percentil | Umbral Score | Proporción |
+|------|-----------|--------------|------------|
+| **TIER_1_PREMIUM** | Top 5% | Score ≥ 27.9 | ~5% del total |
+| **TIER_2_ALTA** | Top 20% | Score ≥ 21.1 | ~15% del total |
+| **TIER_3_MEDIA** | Medio 50% | Score ≥ 15.7 | ~50% del total |
+| **TIER_4_BAJA** | Bottom 30% | Score < 15.7 | ~30% del total |
+
+Los umbrales se calculan dinámicamente según la distribución real de scores, garantizando una segmentación equilibrada y útil.
+
+### 2.3 Score v4 (Scoring Diferenciado)
+
+El score v4 (0-100) combina cuatro componentes ponderados según el tipo de cliente y ubicación:
 
 ```
-Score = (0.35 × Canal) + (0.25 × Tamaño) + (0.20 × Completitud) + 
-        (0.10 × Rating_GM) + (0.10 × Reviews_GM)
+Score v4 = (Componente Volumen × 40%) + (Componente Calidad × 25%) + 
+           (Componente Logística × 20%) + (Componente Conversión × 15%)
 ```
 
-| Factor | Peso | Descripción |
-|--------|------|-------------|
-| Canal | 35% | Tipo de negocio (mayorista > retail) |
-| Tamaño | 25% | Personal ocupado |
-| Completitud | 20% | Datos de contacto disponibles |
-| Rating GM | 10% | Calificación en Google Maps |
-| Reviews GM | 10% | Número de reseñas |
+**Componentes del Score:**
+
+| Componente | Peso | Factores Considerados |
+|------------|------|----------------------|
+| **Volumen** | 40% | Tipo de cliente, tamaño estimado, personal ocupado |
+| **Calidad** | 25% | Rating Google, número de reviews, horarios, datos completos |
+| **Logística** | 20% | Distancia a planta, zona logística, accesibilidad |
+| **Conversión** | 15% | Probabilidad de conversión según histórico por tipo |
+
+**Ajustes Geográficos:**
+- **ZM Monterrey**: Bonus para bodegones y mayoristas
+- **Resto de NL**: Scoring estándar
+- **Exterior**: Bonus para cadenas confirmadas (4+ sucursales)
 
 ### 2.4 Zonas Logísticas
 

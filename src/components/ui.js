@@ -191,15 +191,21 @@ export function miniStat(options = {}) {
 
 /**
  * Crea un badge de tier/categoría
- * @param {string} tier - Tier (A_PREMIUM, B_ALTA, C_MEDIA, D_BAJA)
+ * @param {string} tier - Tier (A_PREMIUM, B_ALTA, C_MEDIA, D_BAJA, TIER_1_PREMIUM, etc.)
  * @returns {HTMLElement} Badge element
  */
 export function tierBadge(tier) {
   const colors = {
+    // Legacy tiers
     "A_PREMIUM": { bg: "#C41E3A", text: "#fff" },
     "B_ALTA": { bg: "#FF9800", text: "#fff" },
     "C_MEDIA": { bg: "#2196F3", text: "#fff" },
-    "D_BAJA": { bg: "#9E9E9E", text: "#fff" }
+    "D_BAJA": { bg: "#9E9E9E", text: "#fff" },
+    // V4 tiers (percentile-based)
+    "TIER_1_PREMIUM": { bg: "#15803d", text: "#fff" },
+    "TIER_2_ALTA": { bg: "#3b82f6", text: "#fff" },
+    "TIER_3_MEDIA": { bg: "#eab308", text: "#fff" },
+    "TIER_4_BAJA": { bg: "#9ca3af", text: "#fff" }
   };
 
   const style = colors[tier] || { bg: "#e0e0e0", text: "#333" };
